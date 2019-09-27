@@ -20,7 +20,21 @@ module.exports = function(app) {
 
     app.post('/register/submit', async (req, res) => {        
         
-        passwordHash.storePassword(req.params.email, req.params.password).then(
+        if(!req.body.email) {
+            return res.status(400).send({
+                success: 'false',
+                message: 'Email is required'
+            });
+        }
+    
+        if(!req.body.password) {
+            return res.status(400).send({
+                success: 'false',
+                message: 'Password is required'
+            });
+        }
+          
+        passwordHash.storePassword(req.body.email, req.body.password).then(
             
             function(successMessage){
                 return res.status(201).send({
