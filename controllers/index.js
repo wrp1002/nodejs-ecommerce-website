@@ -1,4 +1,4 @@
-const passwordHash = require('./passwordHash');
+const passwordHash = require('../passwordHash');
 
 module.exports = function(app) {  
     app.get('/', async (req, res) => {
