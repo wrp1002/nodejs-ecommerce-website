@@ -1,7 +1,8 @@
 module.exports = function(app) {  
     app.get('/', async (req, res) => {
         //nav bar
-        //
+        //recommended stuff
+		// test
 
         res.render('pages/index');
     });
