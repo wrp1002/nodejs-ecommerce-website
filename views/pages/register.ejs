@@ -108,30 +108,30 @@ button:hover {
 
 <script type="text/javascript">
   $(document).ready(function () {
-      $('#signupbtn').click(function (event) {
-          
-        event.preventDefault();          
-          
-          $.ajax({
-            method: 'POST',
-            url: 'register/submit/',
-            dataType: 'json',
-            processData: false,
-            contentType: 'application/json',
-            data: JSON.stringify({
-              'email':  $('#email').val(),
-              "password": $('#password').val()
-            }),
-            success: (result) => {
-              location.href = "/"
-            },
-            error: (result) => {
-              console.log(result.message);
-            }
-          })
-
-        return false;
-      });
+    $('#signupbtn').click(function (event) {
+        
+      event.preventDefault();          
+        
+      $.ajax({
+        method: 'POST',
+        url: 'register/submit/',
+        dataType: 'json',
+        processData: false,
+        contentType: 'application/json',
+        data: JSON.stringify({
+          'email':  $('#email').val(),
+          "password": $('#password').val()
+        }),
+        success: (result) => {
+          location.href = "/"
+        },
+        error: (result) => {
+          console.log(result.message);
+        }
+      })
+        
+      return true;
+    });
   });
 </script>      
 

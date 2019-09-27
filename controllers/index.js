@@ -18,7 +18,7 @@ module.exports = function(app) {
         res.render('pages/register');
     });
 
-    app.get('/register/submit', async (req, res) => {        
+    app.post('/register/submit', async (req, res) => {        
         
         passwordHash.storePassword(req.params.email, req.params.password).then(
             
