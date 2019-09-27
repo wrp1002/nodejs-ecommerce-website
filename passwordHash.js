@@ -77,7 +77,7 @@ function validatePassword(receivedPassword, receivedEmail){
         }
     }
 
-    Promise.all(asyncPromise).catch(console.error);
+    Promise.all(asyncPromise).catch(Error);
 
     databaseHash = "asdasdhjk";
     databaseSalt = "asdasdasd";
