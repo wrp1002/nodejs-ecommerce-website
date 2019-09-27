@@ -99,6 +99,7 @@ function validatePassword(receivedPassword, receivedEmail){
             console.log("Hash in databese is " + databaseHash);
 
             var hashDiff = databaseHash.length ^ passwordHash.length;
+            console.log("Intial diff = " + hashDiff)
             for(var i = 0; i < databaseHash.length && i < passwordHash.length; ++i){
                 hashDiff |= databaseHash[i] ^ passwordHash[i];
             }
