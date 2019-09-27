@@ -75,7 +75,10 @@ function validatePassword(receivedPassword, receivedEmail){
                 return;
             }
 
-            if(userInformation.rowCount != 1) console.log("Could not find user in table");
+            if(userInformation.rowCount != 1){
+                console.log("Could not find user in table");
+                return;
+            }
 
             databaseHash = userInformation.rows[0].password_hash;
             databaseSalt = userInformation.rows[0].salt;
