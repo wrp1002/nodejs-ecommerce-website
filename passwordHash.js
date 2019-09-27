@@ -93,9 +93,10 @@ function validatePassword(receivedPassword, receivedEmail){
 
             console.log("--------------------- " + promiseResult + " ---------------------") 
 
-            console.log("Comparing passwords");
-
             const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
+
+            console.log("Hash for entered password is " + passwordHash);
+            console.log("Hash in databese is " + databaseHash);
 
             var hashDiff = databaseHash.length ^ passwordHash.length;
             for(var i = 0; i < databaseHash.length && i < passwordHash.length; ++i){
