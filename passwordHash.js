@@ -49,17 +49,17 @@ function validatePassword(receivedPassword, receivedEmail){
     var databaseSalt;
 
     async(receivedEmail) => {
-        
+
         try {
             
-            const client = pool.connect();
+            const client = await pool.connect();
             
             if(client == null){
                 console.log("Problem connection to database");
                 return;
             }
 
-            const userInformation = client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\'");
+            const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\'");
 
             if(userInformation == null){
                 console.log("Problem getting user information from database");
