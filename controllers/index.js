@@ -47,20 +47,12 @@ module.exports = function(app) {
                 res.render('pages/index', {
                     loginFailed: ""
                 });
-                return res.status(201).send({
-                    success: 'true',
-                    message: 'User created successfully'
-                })
             },
 
             function(errorMessage){
                 res.render('pages/register', {
                     loginFailed: errorMessage
                 });
-                return res.status(400).send({
-                    success: 'false',
-                    message: errorMessage
-                })
             }
         )
 
