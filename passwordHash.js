@@ -33,6 +33,8 @@ function storePassword(receivedPassword, receivedEmail){
             }
 
             const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\');');
+            
+            console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
 
             if(!insertSuccess){
                 console.log("Problem inserting new user into the database");
@@ -77,6 +79,8 @@ function validatePassword(receivedPassword, receivedEmail){
             return;
         }
     }
+
+    console.log("Finished async retrieval");
 
     Promise.all(asyncPromise).then((databaseHash, databaseSalt, receivedPassword) => {
 
