@@ -28,18 +28,17 @@ function updatePassword(receivedPassword, receivedEmail){
                     return reject("Problem connecting to database");
                 }
 
-                await client.query("UPDATE users SET (password_hash, salt) VALUES ($1, $2) WHERE email = $3", [passwordHash, generatedSalt, receivedEmail], function(errorMessage, results) {
+                await client.query("UPDATE users SET password_hash = $1, salt = $2 WHERE email = $3", [passwordHash, generatedSalt, receivedEmail], function(errorMessage, results) {
                     
                     if(errorMessage) return reject("Problem updating user information into the database: " + String(errorMessage));
 
                     console.log("Updated " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " in the database");
 
                     return resolve("Successfully updated hash and salt");
+
                 })
 
-            } catch(Exception) {
-                return reject(Exception);
-            }
+            } catch(Exception) { return reject(Exception); }
         
         })
     })
@@ -69,9 +68,7 @@ function storePassword(receivedPassword, receivedEmail){
                     return resolve("Successfully stored hash and salt");
                 })
 
-            } catch(Exception) {
-                return reject(Exception);
-            }
+            } catch(Exception) { return reject(Exception); }
         
         })
     })
@@ -111,11 +108,9 @@ function validatePassword(receivedPassword, receivedEmail){
                     return resolve("Successfully retrieved hash and salt");
                 })
 
-            } catch(Exception){
-                return reject(Exception);
-            }
-        })
+            } catch(Exception){ return reject(Exception); }
 
+        })
     })
 
     asyncPromise.then(function(promiseResult){
@@ -141,13 +136,11 @@ function validatePassword(receivedPassword, receivedEmail){
 module.exports = {
     testFunction: function(){
         
-        storePassword("password", "test1@gmail.com")
+        updatePassword("password", "test1@gmail.com")
         .then(validatePassword("password", "test1@gmail.com"))
         .then(updatePassword("reset", "test1@gmail.com"))
         .then(validatePassword("reset", "test1@gmail.com"))
-        .catch(function(Error){
-            console.log(Error)
-        })
+        .catch(function(Error){ console.error(String(Error)) })
     }
 }
 
