@@ -75,7 +75,8 @@ function validatePassword(receivedPassword, receivedEmail){
                 return;
             }
 
-            console.log(userInformation);
+            databaseHash = userInformation.rows.password_hash;
+            databaseSalt = userInformation.rows.salt;
 
         } catch(Exception){
 
@@ -85,9 +86,6 @@ function validatePassword(receivedPassword, receivedEmail){
     });
 
     Promise.all(asyncPromise).then((databaseHash, databaseSalt, receivedPassword) => {
-
-        databaseHash = "asdasdhjk";
-        databaseSalt = "asdasdasd";
 
         const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
 
@@ -112,7 +110,8 @@ module.exports = {
         console.log("----------------------------------------");
         validatePassword("password", "test1@gmail.com");
         console.log("----------------------------------------");
-        //validatePassword("hacker", "test1@gmail");
+        validatePassword("hacker", "test1@gmail");
+        console.log("----------------------------------------");
     }
 }
 
