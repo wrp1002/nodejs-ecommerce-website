@@ -28,6 +28,11 @@ function storePassword(receivedPassword, receivedEmail){
                     reject("Problem connecting to database");
                 }
 
+                /*
+                    Using this method of creating SQL queries makes our program vulnerable to SQL injection attacks. Use this method instead:
+
+                    client.query('INSERT INTO todo (task, username, done) values ($1, $2, $3)', [req.body.task, req.body.username, done], (error, results) => {}
+                */
                 const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\');');
                 
                 if(!insertSuccess){
