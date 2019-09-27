@@ -46,6 +46,8 @@ function storePassword(receivedPassword, receivedEmail){
             return;
         }
     })
+
+    Promise.all(asyncPromise).catch(Error);
 }
 
 function validatePassword(receivedPassword, receivedEmail){
