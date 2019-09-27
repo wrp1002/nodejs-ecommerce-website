@@ -121,7 +121,13 @@ button:hover {
             data: JSON.stringify({
               'email':  $('#email').val(),
               "password": $('#password').val()
-            })
+            }),
+            success: (result) => {
+              location.href = "/"
+            },
+            error: (result) => {
+              console.log(result.message);
+            }
           })
 
         return false;

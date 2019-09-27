@@ -19,9 +19,25 @@ module.exports = function(app) {
         res.render('pages/register');
     });
 
-    app.get('/register/submit', async (req, res) => {
-        console.log("Register attempt by " + req.params.email + ", " + req.params.password);
-        return "Login " + passwordHash.storePassword(req.params.email, req.params.password) ? "Successful" : "Failed"
+    app.get('/register/submit', async (req, res) => {        
+        
+        passwordHash.storePassword(req.params.email, req.params.password).then(
+            
+            function(successMessage){
+                return res.status(201).send({
+                    success: 'true',
+                    message: 'User created successfully'
+                })
+            },
+
+            function(errorMessage){
+                return res.status(201).send({
+                    success: 'false',
+                    message: errorMessage
+                })
+            }
+        )
+
     });
 
     app.get('/resetpassword', async (req, res) => {
