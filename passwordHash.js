@@ -123,10 +123,6 @@ module.exports = {
     testFunction: function(){
         
         storePassword("password", "test1@gmail.com")
-        .then(
-            function(promiseResult) { console.log("--------------------- " + promiseResult + " ---------------------") }, 
-            function(promiseError) { console.log("--------------------- " + promiseError + " ---------------------") }
-        )
         .then(validatePassword("password", "test1@gmail.com"))
         .catch(console.error)
     }
