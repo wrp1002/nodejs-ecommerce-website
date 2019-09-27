@@ -21,7 +21,7 @@ function storePassword(receivedPassword, receivedEmail){
     
     console.log("Hash: " + passwordHash);
    
-    var asyncPromise = new Promise(async() => {
+    async() => {
 
         try {   
             
@@ -45,11 +45,7 @@ function storePassword(receivedPassword, receivedEmail){
             console.log("Caught exception: " + Exception);
             return;
         }
-    });
-
-    Promise.all(asyncPromise).then(() => { 
-        console.log("Promise completed"); 
-    }).catch(Error);
+    }
 }
 
 function validatePassword(receivedPassword, receivedEmail){
@@ -114,13 +110,16 @@ function validatePassword(receivedPassword, receivedEmail){
 }
 
 module.exports = {
-    testFunction: function(){
-        storePassword("password", "test1@gmail.com"),
-        console.log("----------------------------------------"),
-        validatePassword("password", "test1@gmail.com"),
-        console.log("----------------------------------------"),
-        validatePassword("hacker", "test1@gmail"),
-        console.log("----------------------------------------")
+    testFunction: async function(){
+        
+        var storePromise = new Promise(() => storePassword("password", "test1@gmail.com"))
+
+        Promise.all(storePromise).then(() => { 
+            console.log("----------------------------------------")
+            validatePassword("password", "test1@gmail.com")
+        }).catch(Error);
+        
+    
     }
 }
 
