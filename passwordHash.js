@@ -87,49 +87,38 @@ function validatePassword(receivedPassword, receivedEmail){
 
     })
 
-    asyncPromise.then(
-        
-        function(promiseResult){
+    asyncPromise.then(function(promiseResult){
 
-            console.log("--------------------- " + promiseResult + " ---------------------") 
+        const passwordHash = String(sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion));
 
-            const passwordHash = String(sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion));
+        console.log("Hash for entered password is " + passwordHash + " of length " + passwordHash.length);
+        console.log("Hash in database is " + databaseHash + " of length " + databaseHash.length);
 
-            console.log("Hash for entered password is " + passwordHash + " of length " + passwordHash.length + " and type " + typeof passwordHash);
-            console.log("Hash in database is " + databaseHash + " of length " + databaseHash.length + " and type " + typeof databaseHash);
+        var hashDiff = databaseHash.length ^ passwordHash.length;
+        for(var i = 0; i < databaseHash.length && i < passwordHash.length; ++i){
+            hashDiff |= databaseHash[i] ^ passwordHash[i];
+        }
 
-            var hashDiff = databaseHash.length ^ passwordHash.length;
-            console.log("Intial diff = " + hashDiff)
-            for(var i = 0; i < databaseHash.length && i < passwordHash.length; ++i){
-                hashDiff |= databaseHash[i] ^ passwordHash[i];
-            }
+        if(hashDiff == 0){
+            console.log("Success");
+            return true;
+        }
+        else {
+            console.log("Failure");
+            return false;
+        }
 
-            if(hashDiff == 0){
-                console.log("Success");
-                return true;
-            }
-            else {
-                console.log("Failure");
-                return false;
-            }
-
-        },
-    
-        function(promiseError) { console.log("--------------------- " + promiseError + " ---------------------") }
-    
-    ).catch(console.error)
+    }).catch(console.error)
 }
 
 module.exports = {
     testFunction: function(){
         
         storePassword("password", "test1@gmail.com")
-        .then(
-            function(promiseResult) { console.log("--------------------- " + promiseResult + " ---------------------") }, 
-            function(promiseError) { console.log("--------------------- " + promiseError + " ---------------------") }
-        )
         .then(validatePassword("password", "test1@gmail.com"))
-        .catch(console.error)
+        .catch(function(Error){
+            console.log(Error)
+        })
     }
 }
 
