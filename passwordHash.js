@@ -11,7 +11,7 @@ const hashIterations = 1000;
 const pseudoRandomFucntion = sjcl.misc.hmac;
 const saltLength = 160;
 
-async function storePassword(receivedPassword, receivedEmail){
+function storePassword(receivedPassword, receivedEmail){
     
     const generatedSalt = csprng(saltLength, 36);
 
@@ -21,55 +21,61 @@ async function storePassword(receivedPassword, receivedEmail){
     
     console.log("Hash: " + passwordHash);
    
-    try {
-        
-        const client = await pool.connect();
-        
-        if(!client){
-            console.log("Problem connection to database");
+    async(receivedEmail) => {
+
+        try {
+            
+            const client = await pool.connect();
+            
+            if(!client){
+                console.log("Problem connection to database");
+                return;
+            }
+
+            const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\');');
+
+            if(!insertSuccess){
+                console.log("Problem inserting new user into the database");
+                return;
+            }
+
+        } catch(Exception) {
+            console.log("Caught exception: " + Exception);
             return;
         }
-
-        const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\'');
-
-        if(!insertSuccess){
-            console.log("Problem inserting new user into the database");
-            return;
-        }
-
-    } catch(Exception) {
-        console.log("Caught exception: " + Exception);
-        return;
-    } 
+    }
     
 }
 
-async function validatePassword(receivedPassword, receivedEmail){
+function validatePassword(receivedPassword, receivedEmail){
 
     var databaseHash;
     var databaseSalt;
 
-    try {
-        
-        const client = await pool.connect();
-        
-        if(client == null){
-            console.log("Problem connection to database");
+    async(receivedEmail) => {
+
+        try {
+            
+            const client = await pool.connect();
+            
+            if(client == null){
+                console.log("Problem connection to database");
+                return;
+            }
+
+            const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\':;");
+
+            if(userInformation == null){
+                console.log("Problem getting user information from database");
+                return;
+            }
+
+            console.log("Database information: " + userInformation);
+
+        } catch(Exception){
+            console.log("Caught exception: " + Exception);
             return;
         }
-
-        const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\'");
-
-        if(userInformation == null){
-            console.log("Problem getting user information from database");
-            return;
-        }
-
-        console.log("Database information: " + userInformation);
-
-    } catch(Exception){
-        console.log("Caught exception: " + Exception);
-        return;
     }
 
     databaseHash = "asdasdhjk";
@@ -91,10 +97,10 @@ async function validatePassword(receivedPassword, receivedEmail){
 }
 
 module.exports = {
-    testFunction: async function(){
-        await storePassword("password", "test1@gmail")
+    testFunction: function(){
+        storePassword("password", "test1@gmail.com")
         console.log("----------------------------------------");
-        await validatePassword("password", "test1@gmail.com");
+        validatePassword("password", "test1@gmail.com");
         console.log("----------------------------------------");
         //validatePassword("hacker", "test1@gmail");
     }
