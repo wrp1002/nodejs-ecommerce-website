@@ -21,9 +21,11 @@ function storePassword(receivedPassword, receivedEmail){
     
     console.log("Hash: " + passwordHash);
    
-    var asyncPromise = async(receivedEmail) => {
+    var asyncPromise = new Promise(async(receivedEmail) => {
 
-        try {
+        try {   
+
+            console.log("Trying to connect");
             
             const client = await pool.connect();
             
@@ -45,9 +47,11 @@ function storePassword(receivedPassword, receivedEmail){
             console.log("Caught exception: " + Exception);
             return;
         }
-    }
+    });
 
-    Promise.all(asyncPromise).then(() => { return }).catch(Error);
+    Promise.all(asyncPromise).then(() => { 
+        console.log("Promise completed"); 
+    }).catch(Error);
 }
 
 function validatePassword(receivedPassword, receivedEmail){
@@ -55,7 +59,7 @@ function validatePassword(receivedPassword, receivedEmail){
     var databaseHash;
     var databaseSalt;
 
-    var asyncPromise = async(receivedEmail) => {
+    var asyncPromise = new Promise(async(receivedEmail) => {
 
         try {
             
@@ -63,6 +67,7 @@ function validatePassword(receivedPassword, receivedEmail){
             
             if(client == null){
                 console.log("Problem connection to database");
+                return;
             }
 
             const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\':;");
@@ -71,6 +76,7 @@ function validatePassword(receivedPassword, receivedEmail){
 
             if(userInformation == null){
                 console.log("Problem getting user information from database");
+                return;
             }
 
             console.log("Database information: " + userInformation);
@@ -80,9 +86,7 @@ function validatePassword(receivedPassword, receivedEmail){
             console.log("Caught exception: " + Exception);
             return;
         }
-    }
-
-    console.log("Finished async retrieval");
+    });
 
     Promise.all(asyncPromise).then((databaseHash, databaseSalt, receivedPassword) => {
 
