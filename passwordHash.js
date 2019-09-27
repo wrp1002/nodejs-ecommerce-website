@@ -41,13 +41,12 @@ function storePassword(receivedPassword, receivedEmail){
 
             console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
 
+            done();
+
         } catch(Exception) {
-            console.log("Caught exception: " + Exception);
             return;
         }
     })
-
-    Promise.all(asyncPromise).catch(Error);
 }
 
 function validatePassword(receivedPassword, receivedEmail){
@@ -83,14 +82,14 @@ function validatePassword(receivedPassword, receivedEmail){
 
             console.log("Retrived hash " + databaseHash + " and salt " + databaseSalt + " from the database");
 
-        } catch(Exception){
+            done();
 
+        } catch(Exception){
             console.log("Caught exception: " + Exception);
-            return;
         }
     });
 
-    Promise.all(asyncPromise).then(() => {
+    asyncPromise.then(() => {
 
         console.log("Comparing passwords");
 
@@ -108,7 +107,9 @@ function validatePassword(receivedPassword, receivedEmail){
             console.log("Failure");
         }
 
-    }).catch(Error);
+    })
+
+    done();
 }
 
 module.exports = {
@@ -116,10 +117,10 @@ module.exports = {
         
         var storePromise = new Promise(() => storePassword("password", "test1@gmail.com"))
 
-        Promise.all(storePromise).then(() => { 
+        storePromise.then(() => { 
             console.log("----------------------------------------")
             validatePassword("password", "test1@gmail.com")
-        }).catch(Error);
+        })
     }
 }
 
