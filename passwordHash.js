@@ -95,8 +95,8 @@ function validatePassword(receivedPassword, receivedEmail){
 
             const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
 
-            console.log("Hash for entered password is " + passwordHash + " of length" + passwordHash.length);
-            console.log("Hash in databese is " + databaseHash + " of length " + databaseHash.length);
+            console.log("Hash for entered password is " + passwordHash + " of length " + passwordHash.length + " and type " + typeof passwordHash);
+            console.log("Hash in database is " + databaseHash + " of length " + databaseHash.length + " and type " + typeof databaseHash);
 
             var hashDiff = databaseHash.length ^ passwordHash.length;
             console.log("Intial diff = " + hashDiff)
