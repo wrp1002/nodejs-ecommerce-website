@@ -26,7 +26,13 @@
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li class="navbar-right">
-        <a href="https://devcenter.heroku.com"><span class="glyphicon glyphicon-book"></span> Heroku Dev Center</a>
+        <% if (loggedin) { %>
+          <a href="https://devcenter.heroku.com"><span class="glyphicon glyphicon-book"></span> Account</a>
+        <% } %>
+        <% if (!loggedin) { %>
+          <a href="/login"><span class="glyphicon glyphicon-book"></span> Login</a>
+          <!--<a href="/register"><span class="glyphicon glyphicon-book"></span> Register</a>-->
+        <% } %>
       </li>
     </ul>
   </div>
