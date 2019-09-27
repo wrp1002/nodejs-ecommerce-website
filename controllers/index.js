@@ -15,7 +15,6 @@ module.exports = function(app) {
     });
 
     app.get('/register', async (req, res) => {
-        
         res.render('pages/register');
     });
 
@@ -31,7 +30,7 @@ module.exports = function(app) {
             },
 
             function(errorMessage){
-                return res.status(201).send({
+                return res.status(400).send({
                     success: 'false',
                     message: errorMessage
                 })
