@@ -9,7 +9,7 @@ const pool = new Pool({
 
 const hashIterations = 1000;
 const pseudoRandomFucntion = sjcl.misc.hmac;
-const saltLength = 1000;
+const saltLength = 160;
 
 function updatePassword(receivedPassword, receivedEmail){
 

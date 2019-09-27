@@ -1,3 +1,5 @@
+const passwordHash = require('./passwordHash');
+
 module.exports = function(app) {  
     app.get('/', async (req, res) => {
         //nav bar
@@ -15,6 +17,10 @@ module.exports = function(app) {
     app.get('/register', async (req, res) => {
         
         res.render('pages/register');
+    });
+
+    app.get('/register/submit', async (req, res) => {
+        return "Login " + passwordHash.storePassword(req.params.password, req.params.email) ? "Successful" : "Failed"
     });
 
     app.get('/resetpassword', async (req, res) => {
