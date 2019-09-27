@@ -67,6 +67,8 @@ function validatePassword(receivedPassword, receivedEmail){
 
             const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\':;");
 
+            console.log("Queried databse for " + receivedEmail);
+
             if(userInformation == null){
                 console.log("Problem getting user information from database");
             }
