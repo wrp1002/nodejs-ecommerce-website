@@ -8,12 +8,12 @@ module.exports = function(app) {
 
     app.get('/login', async (req, res) => {
         
-        //res.render('pages/index');
+        res.render('pages/login');
     });
 
-    app.get('/registration', async (req, res) => {
+    app.get('/register', async (req, res) => {
         
-        //res.render('pages/index');
+        res.render('pages/register');
     });
 
     app.get('/resetpassword', async (req, res) => {
