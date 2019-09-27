@@ -28,29 +28,27 @@ module.exports = function(app) {
     app.post('/register/submit', async (req, res) => {        
         
         if(!req.body.email) {
-            return res.status(400).send({
-                success: 'false',
-                message: 'Email is required'
+            return res.render('pages/register', {
+                loginFailed: "Email is required"
             });
         }
     
         if(!req.body.password) {
-            return res.status(400).send({
-                success: 'false',
-                message: 'Password is required'
+            return res.render('pages/register', {
+                loginFailed: "Password is required"
             });
         }
         
         passwordHash.storePassword(req.body.email, req.body.password).then(
             
             function(successMessage){
-                res.render('pages/index', {
+                return res.render('pages/index', {
                     loginFailed: ""
                 });
             },
 
             function(errorMessage){
-                res.render('pages/register', {
+                return res.render('pages/register', {
                     loginFailed: errorMessage
                 });
             }
