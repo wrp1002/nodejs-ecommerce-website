@@ -25,18 +25,21 @@ async function storePassword(receivedPassword, receivedEmail){
         
         const client = await pool.connect();
         
-        if(client == null){
+        if(!client){
             console.log("Problem connection to database");
+            return;
         }
 
         const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\'');
 
-        if(insertSuccess == null){
+        if(!insertSuccess){
             console.log("Problem inserting new user into the database");
+            return;
         }
 
     } catch(Exception) {
         console.log("Caught exception: " + Exception);
+        return;
     } 
     
 }
