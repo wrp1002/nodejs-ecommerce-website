@@ -21,7 +21,7 @@ function storePassword(receivedPassword, receivedEmail){
     
     console.log("Hash: " + passwordHash);
    
-    var asyncPromise = new Promise(async(receivedEmail) => {
+    var asyncPromise = new Promise(async() => {
 
         try {   
 
@@ -59,7 +59,7 @@ function validatePassword(receivedPassword, receivedEmail){
     var databaseHash;
     var databaseSalt;
 
-    var asyncPromise = new Promise(async(receivedEmail) => {
+    var asyncPromise = new Promise(async() => {
 
         try {
             
