@@ -20,7 +20,9 @@ module.exports = function(app) {
     });
 
     app.get('/register', async (req, res) => {
-        res.render('pages/register');
+        res.render('pages/register', {
+            loginFailed: ""
+        });
     });
 
     app.post('/register/submit', async (req, res) => {        
@@ -42,7 +44,9 @@ module.exports = function(app) {
         passwordHash.storePassword(req.body.email, req.body.password).then(
             
             function(successMessage){
-                res.render('pages/index');
+                res.render('pages/index', {
+                    loginFailed: ""
+                });
                 return res.status(201).send({
                     success: 'true',
                     message: 'User created successfully'
