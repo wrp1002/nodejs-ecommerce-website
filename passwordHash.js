@@ -52,7 +52,7 @@ function validatePassword(receivedPassword, receivedEmail){
     var databaseHash;
     var databaseSalt;
 
-    async(receivedEmail) => {
+    var asyncPromise = async(receivedEmail) => {
 
         try {
             
@@ -60,23 +60,24 @@ function validatePassword(receivedPassword, receivedEmail){
             
             if(client == null){
                 console.log("Problem connection to database");
-                return;
             }
 
             const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\':;");
 
             if(userInformation == null){
                 console.log("Problem getting user information from database");
-                return;
             }
 
             console.log("Database information: " + userInformation);
 
         } catch(Exception){
+
             console.log("Caught exception: " + Exception);
             return;
         }
     }
+
+    Promise.all(asyncPromise).catch(console.error);
 
     databaseHash = "asdasdhjk";
     databaseSalt = "asdasdasd";
