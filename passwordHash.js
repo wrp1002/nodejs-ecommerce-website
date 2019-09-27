@@ -41,6 +41,7 @@ function updatePassword(receivedEmail, receivedPassword){
             } catch(Exception) { return reject(Exception); }
         
         })
+
     })
 }
 

@@ -20,37 +20,39 @@ module.exports = function(app) {
     });
 
     app.get('/register', async (req, res) => {
-        res.render('pages/register', {
-            loginFailed: ""
-        });
+        res.render('pages/register');
     });
 
     app.post('/register/submit', async (req, res) => {        
         
         if(!req.body.email) {
-            res.render('pages/register', {
-                loginFailed: "Email is required"
+            return res.status(400).send({
+                success: 'false',
+                message: 'Email is required'
             });
         }
     
         if(!req.body.password) {
-            res.render('pages/register', {
-                loginFailed: "Password is required"
+            return res.status(400).send({
+                success: 'false',
+                message: 'Password is required'
             });
         }
         
         passwordHash.storePassword(req.body.email, req.body.password).then(
             
             function(successMessage){
-                res.render('pages/index', {
-                    loginFailed: ""
-                });
+                return res.status(201).send({
+                    success: 'true',
+                    message: 'User created successfully'
+                })
             },
 
             function(errorMessage){
-                res.render('pages/register', {
-                    loginFailed: errorMessage
-                });
+                return res.status(400).send({
+                    success: 'false',
+                    message: errorMessage
+                })
             }
         )
 
