@@ -28,13 +28,13 @@ module.exports = function(app) {
     app.post('/register/submit', async (req, res) => {        
         
         if(!req.body.email) {
-            return res.render('pages/register', {
+            res.render('pages/register', {
                 loginFailed: "Email is required"
             });
         }
     
         if(!req.body.password) {
-            return res.render('pages/register', {
+            res.render('pages/register', {
                 loginFailed: "Password is required"
             });
         }
@@ -42,13 +42,13 @@ module.exports = function(app) {
         passwordHash.storePassword(req.body.email, req.body.password).then(
             
             function(successMessage){
-                return res.render('pages/index', {
+                res.render('pages/index', {
                     loginFailed: ""
                 });
             },
 
             function(errorMessage){
-                return res.render('pages/register', {
+                res.render('pages/register', {
                     loginFailed: errorMessage
                 });
             }

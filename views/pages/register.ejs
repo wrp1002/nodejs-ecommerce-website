@@ -125,7 +125,10 @@ button:hover {
         data: JSON.stringify({
           'email':  $('#email').val(),
           "password": $('#password').val()
-        })
+        }),
+        success: (result) => {
+          html.html(result);
+        }
       })
     });
   });
