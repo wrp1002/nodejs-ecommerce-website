@@ -74,10 +74,11 @@ function validatePassword(receivedPassword, receivedEmail){
                 console.log("Problem getting user information from database");
                 return;
             }
-
-            databaseHash = userInformation.rows[0];
+            
+            databaseHash = userInformation.rows.password_hash;
             databaseSalt = userInformation.rows.salt;
 
+            console.log(userInformation);
             console.log("Retrived hash " + databaseHash + " and salt " + databaseSalt + " from the database");
 
         } catch(Exception){
