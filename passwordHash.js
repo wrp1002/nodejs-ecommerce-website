@@ -21,31 +21,33 @@ function storePassword(receivedPassword, receivedEmail){
     
     console.log("Hash: " + passwordHash);
    
-    var asyncPromise = new Promise(async() => {
+    return new Promise(function(resolve, reject) {
+        
+        return new Promise(async() => {
+            
+            try {   
+                
+                const client = await pool.connect();
+                
+                if(!client){
+                    reject("Problem connection to database");
+                }
 
-        try {   
-            
-            const client = await pool.connect();
-            
-            if(!client){
-                console.log("Problem connection to database");
-                reject();
+                const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\');');
+                
+                if(!insertSuccess){
+                    reject("Problem inserting new user into the database");
+                }
+
+                console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
+
+                resolve("Success");
+
+            } catch(Exception) {
+                reject(Exception);
             }
-
-            const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\');');
-            
-            if(!insertSuccess){
-                console.log("Problem inserting new user into the database");
-                reject();
-            }
-
-            console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
-
-            resolve();
-
-        } catch(Exception) {
-            console.log("Caught exception: " + Exception);
-        }
+        
+        })
     })
 }
 
@@ -54,74 +56,80 @@ function validatePassword(receivedPassword, receivedEmail){
     var databaseHash;
     var databaseSalt;
 
-    var asyncPromise = new Promise(async() => {
-
-        try {
+    new Promise(function(resolve, reject){
+        
+        return new Promise(async() => {
             
-            const client = await pool.connect();
-            
-            if(!client){
-                console.log("Problem connection to database");
-                reject();
+            try {
+                
+                const client = await pool.connect();
+                
+                if(!client){
+                    reject("Problem connection to database");
+                }
+
+                const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\';");
+                
+                if(!userInformation){
+                    reject("Problem getting user information from database");
+                }
+
+                if(userInformation.rowCount != 1){
+                    reject("Could not find user in table");
+                }
+
+                databaseHash = userInformation.rows[0].password_hash;
+                databaseSalt = userInformation.rows[0].salt;
+
+                console.log("Retrived hash " + databaseHash + " and salt " + databaseSalt + " from the database");
+
+                resolve("Success");
+
+            } catch(Exception){
+                reject(Exception);
             }
-
-            const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\';");
-            
-            if(!userInformation){
-                console.log("Problem getting user information from database");
-                reject();
-            }
-
-            if(userInformation.rowCount != 1){
-                console.log("Could not find user in table");
-                reject();
-            }
-
-            databaseHash = userInformation.rows[0].password_hash;
-            databaseSalt = userInformation.rows[0].salt;
-
-            console.log("Retrived hash " + databaseHash + " and salt " + databaseSalt + " from the database");
-
-            resolve();
-
-        } catch(Exception){
-            console.log("Caught exception: " + Exception);
-            reject();
-        }
-    });
-
-    asyncPromise.then(() => {
-
-        console.log("Comparing passwords");
-
-        const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
-
-        var hashDiff = databaseHash.length ^ passwordHash.length;
-        for(var i = 0; i < databaseHash.length && i < passwordHash.length; ++i){
-            hashDiff |= databaseHash[i] ^ passwordHash[i];
-        }
-
-        if(hashDiff == 0){
-            console.log("Success");
-        }
-        else {
-            console.log("Failure");
-        }
+        })
 
     })
 
-    done();
+    asyncPromise.then(
+        
+        function(promiseResult){
+
+            console.log("--------------------- " + promiseResult + " ---------------------") 
+
+            const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
+
+            var hashDiff = databaseHash.length ^ passwordHash.length;
+            for(var i = 0; i < databaseHash.length && i < passwordHash.length; ++i){
+                hashDiff |= databaseHash[i] ^ passwordHash[i];
+            }
+
+            if(hashDiff == 0){
+                console.log("Success");
+                return true;
+            }
+            else {
+                console.log("Failure");
+                return false;
+            }
+
+        },
+        function(promiseError) { console.log("--------------------- " + promiseError + " ---------------------") }
+    
+    ).catch(console.error)
 }
 
 module.exports = {
     testFunction: function(){
         
-        var storePromise = new Promise(() => storePassword("password", "test1@gmail.com"))
-
-        storePromise.then(() => { 
-            console.log("----------------------------------------")
-            validatePassword("password", "test1@gmail.com")
-        })
+        storePassword("password", "test1@gmail.com")
+        .then(
+            function(promiseResult) { console.log("--------------------- " + promiseResult + " ---------------------") }, 
+            function(promiseError) { console.log("--------------------- " + promiseError + " ---------------------") }
+        )
+        .then(validatePassword("password", "test1@gmail.com"))
+        .catch(console.error)
     }
 }
 
