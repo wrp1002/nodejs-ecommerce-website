@@ -56,7 +56,7 @@ function validatePassword(receivedPassword, receivedEmail){
     var databaseHash;
     var databaseSalt;
 
-    new Promise(function(resolve, reject){
+    var asyncPromise = new Promise(function(resolve, reject){
         
         return new Promise(async() => {
             
@@ -98,6 +98,8 @@ function validatePassword(receivedPassword, receivedEmail){
 
             console.log("--------------------- " + promiseResult + " ---------------------") 
 
+            console.log("Comparing passwords");
+
             const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
 
             var hashDiff = databaseHash.length ^ passwordHash.length;
@@ -115,6 +117,7 @@ function validatePassword(receivedPassword, receivedEmail){
             }
 
         },
+    
         function(promiseError) { console.log("--------------------- " + promiseError + " ---------------------") }
     
     ).catch(console.error)
