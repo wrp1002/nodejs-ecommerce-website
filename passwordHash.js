@@ -1,6 +1,5 @@
 const sjcl = require('sjcl');
 const csprng = require('csprng');
-const async = require('async');
 
 const { Pool } = require('pg');
 const pool = new Pool({
@@ -35,12 +34,12 @@ function storePassword(receivedPassword, receivedEmail){
 
             const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\');');
             
-            console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
-
             if(!insertSuccess){
                 console.log("Problem inserting new user into the database");
                 return;
             }
+
+            console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
 
         } catch(Exception) {
             console.log("Caught exception: " + Exception);
@@ -86,7 +85,7 @@ function validatePassword(receivedPassword, receivedEmail){
         }
     });
 
-    Promise.all(asyncPromise).then((databaseHash, databaseSalt, receivedPassword) => {
+    Promise.all(asyncPromise).then(() => {
 
         console.log("Comparing passwords");
 
@@ -109,14 +108,12 @@ function validatePassword(receivedPassword, receivedEmail){
 
 module.exports = {
     testFunction: function(){
-        async.series([
-            storePassword("password", "test1@gmail.com"),
-            console.log("----------------------------------------"),
-            validatePassword("password", "test1@gmail.com"),
-            console.log("----------------------------------------"),
-            validatePassword("hacker", "test1@gmail"),
-            console.log("----------------------------------------")
-        ]).catch(Error);
+        storePassword("password", "test1@gmail.com"),
+        console.log("----------------------------------------"),
+        validatePassword("password", "test1@gmail.com"),
+        console.log("----------------------------------------"),
+        validatePassword("hacker", "test1@gmail"),
+        console.log("----------------------------------------")
     }
 }
 
