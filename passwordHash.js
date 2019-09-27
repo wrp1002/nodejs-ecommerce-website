@@ -21,7 +21,7 @@ function storePassword(receivedPassword, receivedEmail){
     
     console.log("Hash: " + passwordHash);
    
-    async(receivedEmail) => {
+    var asyncPromise = async(receivedEmail) => {
 
         try {
             
@@ -44,6 +44,8 @@ function storePassword(receivedPassword, receivedEmail){
             return;
         }
     }
+
+    Promise.all(asyncPromise).catch(Error);
     
 }
 
