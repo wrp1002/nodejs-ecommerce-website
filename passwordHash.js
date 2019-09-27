@@ -1,5 +1,6 @@
-sjcl = require('sjcl');
-csprng = require('csprng');
+const sjcl = require('sjcl');
+const csprng = require('csprng');
+const async = require('async');
 
 const { Pool } = require('pg');
 const pool = new Pool({
@@ -108,12 +109,14 @@ function validatePassword(receivedPassword, receivedEmail){
 
 module.exports = {
     testFunction: function(){
-        storePassword("password", "test1@gmail.com")
-        .then(console.log("----------------------------------------"))
-        .then(validatePassword("password", "test1@gmail.com"))
-        .then(console.log("----------------------------------------"))
-        .then(validatePassword("hacker", "test1@gmail"))
-        .then(console.log("----------------------------------------"))
+        async.series([
+            storePassword("password", "test1@gmail.com"),
+            console.log("----------------------------------------"),
+            validatePassword("password", "test1@gmail.com"),
+            console.log("----------------------------------------"),
+            validatePassword("hacker", "test1@gmail"),
+            console.log("----------------------------------------")
+        ]).catch(Error);
     }
 }
 
