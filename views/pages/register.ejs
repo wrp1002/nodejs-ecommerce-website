@@ -127,7 +127,7 @@ button:hover {
           "password": $('#password').val()
         }),
         success: (result) => {
-          html.html(result);
+          $(document).html(result);
         }
       })
     });
