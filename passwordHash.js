@@ -25,21 +25,20 @@ function updatePassword(receivedPassword, receivedEmail){
                 const client = await pool.connect();
                 
                 if(!client){
-                    reject("Problem connecting to database");
+                    return reject("Problem connecting to database");
                 }
 
-                const insertSuccess = await client.query("UPDATE users SET password_hash=\'" + passwordHash + "\'" + "salt=" + "\'" + generatedSalt + "\'WHERE email=" + receivedEmail + ");");
+                await client.query("UPDATE users SET (password_hash, salt) VALUES ($1, $2) WHERE email = $3", [passwordHash, generatedSalt, receivedEmail], function(errorMessage, results) {
+                    
+                    if(errorMessage) return reject("Problem updating user information into the database: " + String(errorMessage));
 
-                if(!insertSuccess){
-                    reject("Problem updating user information into the database");
-                }
+                    console.log("Updated " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " in the database");
 
-                console.log("Updated " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " in the database");
-
-                resolve("Successfully updated hash and salt");
+                    return resolve("Successfully updated hash and salt");
+                })
 
             } catch(Exception) {
-                reject(Exception);
+                return reject(Exception);
             }
         
         })
@@ -59,27 +58,19 @@ function storePassword(receivedPassword, receivedEmail){
                 
                 const client = await pool.connect();
                 
-                if(!client){
-                    reject("Problem connecting to database");
-                }
-
-                /*
-                    Using this method of creating SQL queries makes our program vulnerable to SQL injection attacks. Use this method instead:
-
-                    client.query('INSERT INTO todo (task, username, done) values ($1, $2, $3)', [req.body.task, req.body.username, done], (error, results) => {}
-                */
-                const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\');');
+                if(!client) return reject("Problem connecting to database");
                 
-                if(!insertSuccess){
-                    reject("Problem inserting user information into the database");
-                }
+                await client.query("INSERT INTO users (email, password_hash, salt) VALUES ($1, $2, $3)", [receivedEmail, passwordHash, generatedSalt], function(errorMessage, results) {
+                    
+                    if(errorMessage) return reject("Problem inserting user information into the database: " + String(errorMessage));
 
-                console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
+                    console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
 
-                resolve("Successfully stored hash and salt");
+                    return resolve("Successfully stored hash and salt");
+                })
 
             } catch(Exception) {
-                reject(Exception);
+                return reject(Exception);
             }
         
         })
@@ -100,29 +91,28 @@ function validatePassword(receivedPassword, receivedEmail){
                 const client = await pool.connect();
                 
                 if(!client){
-                    reject("Problem connecting to database");
+                    return reject("Problem connecting to database");
                 }
 
-                const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\';");
-                
-                if(!userInformation){
-                    reject("Problem getting user information from database");
-                }
+                await client.query("SELECT * FROM users WHERE email = $1", [receivedEmail], function(errorMessage, userInformation) {
+                    
+                    if(errorMessage) return reject("Problem getting user information from database: " + String(errorMessage));
 
-                if(userInformation.rowCount != 1){
-                    reject("Could not find user in table");
-                }
-
-                databaseEmail = userInformation.rows[0].email;
-                databaseHash = userInformation.rows[0].password_hash;
-                databaseSalt = userInformation.rows[0].salt;
-
-                console.log("Retrieved " + databaseEmail + ", " + databaseHash + ", " + databaseSalt + " from the database");
-
-                resolve("Successfully retrieved hash and salt");
+                    if(userInformation.rowCount != 1){
+                        return reject("Could not find user in table");
+                    }
+    
+                    databaseEmail = userInformation.rows[0].email;
+                    databaseHash = userInformation.rows[0].password_hash;
+                    databaseSalt = userInformation.rows[0].salt;
+    
+                    console.log("Retrieved " + databaseEmail + ", " + databaseHash + ", " + databaseSalt + " from the database");
+    
+                    return resolve("Successfully retrieved hash and salt");
+                })
 
             } catch(Exception){
-                reject(Exception);
+                return reject(Exception);
             }
         })
 
