@@ -63,14 +63,14 @@ function validatePassword(receivedPassword, receivedEmail){
             
             const client = await pool.connect();
             
-            if(client == null){
+            if(!client){
                 console.log("Problem connection to database");
                 return;
             }
 
             const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\';");
             
-            if(userInformation == null){
+            if(!userInformation){
                 console.log("Problem getting user information from database");
                 return;
             }
@@ -86,6 +86,8 @@ function validatePassword(receivedPassword, receivedEmail){
     });
 
     Promise.all(asyncPromise).then((databaseHash, databaseSalt, receivedPassword) => {
+
+        console.log("Comparing passwords");
 
         const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
 
