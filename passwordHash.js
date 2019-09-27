@@ -11,6 +11,41 @@ const hashIterations = 1000;
 const pseudoRandomFucntion = sjcl.misc.hmac;
 const saltLength = 1000;
 
+function updatePassword(receivedPassword, receivedEmail){
+
+    const generatedSalt = csprng(saltLength, 36);
+    const passwordHash = sjcl.misc.pbkdf2(receivedPassword, generatedSalt, hashIterations, generatedSalt.length, pseudoRandomFucntion);
+   
+    return new Promise(function(resolve, reject) {
+        
+        return new Promise(async() => {
+            
+            try {   
+                
+                const client = await pool.connect();
+                
+                if(!client){
+                    reject("Problem connecting to database");
+                }
+
+                const insertSuccess = await client.query("UPDATE users SET password_hash=\'" + passwordHash + "\'" + "salt=" + "\'" + generatedSalt + "\'WHERE email=" + receivedEmail + ");");
+
+                if(!insertSuccess){
+                    reject("Problem updating user information into the database");
+                }
+
+                console.log("Updated " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " in the database");
+
+                resolve("Successfully updated hash and salt");
+
+            } catch(Exception) {
+                reject(Exception);
+            }
+        
+        })
+    })
+}
+
 function storePassword(receivedPassword, receivedEmail){
     
     const generatedSalt = csprng(saltLength, 36);
@@ -113,6 +148,8 @@ module.exports = {
         
         storePassword("password", "test1@gmail.com")
         .then(validatePassword("password", "test1@gmail.com"))
+        .then(updatePassword("reset", "test1@gmail.com"))
+        .then(validatePassword("reset", "test1@gmail.com"))
         .catch(function(Error){
             console.log(Error)
         })
