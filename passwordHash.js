@@ -36,7 +36,7 @@ function storePassword(receivedPassword, receivedEmail){
 
                 console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
 
-                resolve("Success");
+                resolve("Successfully stored hash and salt");
 
             } catch(Exception) {
                 reject(Exception);
@@ -78,7 +78,7 @@ function validatePassword(receivedPassword, receivedEmail){
 
                 console.log("Retrived hash " + databaseHash + " and salt " + databaseSalt + " from the database");
 
-                resolve("Success");
+                resolve("Successfully retrieved hash and salt");
 
             } catch(Exception){
                 reject(Exception);
@@ -123,6 +123,10 @@ module.exports = {
     testFunction: function(){
         
         storePassword("password", "test1@gmail.com")
+        .then(
+            function(promiseResult) { console.log("--------------------- " + promiseResult + " ---------------------") }, 
+            function(promiseError) { console.log("--------------------- " + promiseError + " ---------------------") }
+        )
         .then(validatePassword("password", "test1@gmail.com"))
         .catch(console.error)
     }
