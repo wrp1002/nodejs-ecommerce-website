@@ -93,7 +93,7 @@ function validatePassword(receivedPassword, receivedEmail){
 
             console.log("--------------------- " + promiseResult + " ---------------------") 
 
-            const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
+            const passwordHash = string(sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion));
 
             console.log("Hash for entered password is " + passwordHash + " of length " + passwordHash.length + " and type " + typeof passwordHash);
             console.log("Hash in database is " + databaseHash + " of length " + databaseHash.length + " and type " + typeof databaseHash);
