@@ -21,7 +21,7 @@ function storePassword(receivedPassword, receivedEmail){
     
     console.log("Hash: " + passwordHash);
    
-    async() => {
+    var asyncPromise = new Promise(async() => {
 
         try {   
             
@@ -45,7 +45,7 @@ function storePassword(receivedPassword, receivedEmail){
             console.log("Caught exception: " + Exception);
             return;
         }
-    }
+    })
 }
 
 function validatePassword(receivedPassword, receivedEmail){
@@ -110,7 +110,7 @@ function validatePassword(receivedPassword, receivedEmail){
 }
 
 module.exports = {
-    testFunction: async function(){
+    testFunction: function(){
         
         var storePromise = new Promise(() => storePassword("password", "test1@gmail.com"))
 
@@ -118,8 +118,6 @@ module.exports = {
             console.log("----------------------------------------")
             validatePassword("password", "test1@gmail.com")
         }).catch(Error);
-        
-    
     }
 }
 
