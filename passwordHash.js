@@ -109,11 +109,11 @@ function validatePassword(receivedPassword, receivedEmail){
 module.exports = {
     testFunction: function(){
         storePassword("password", "test1@gmail.com")
-        console.log("----------------------------------------");
-        validatePassword("password", "test1@gmail.com");
-        console.log("----------------------------------------");
-        validatePassword("hacker", "test1@gmail");
-        console.log("----------------------------------------");
+        .then(console.log("----------------------------------------"))
+        .then(validatePassword("password", "test1@gmail.com"))
+        .then(console.log("----------------------------------------"))
+        .then(validatePassword("hacker", "test1@gmail"))
+        .then(console.log("----------------------------------------"))
     }
 }
 
