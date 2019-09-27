@@ -78,6 +78,8 @@ function validatePassword(receivedPassword, receivedEmail){
             databaseHash = userInformation.rows.password_hash;
             databaseSalt = userInformation.rows.salt;
 
+            console.log("Retrived hash " + databaseHash + " and salt " + databaseSalt + " from the database");
+
         } catch(Exception){
 
             console.log("Caught exception: " + Exception);
