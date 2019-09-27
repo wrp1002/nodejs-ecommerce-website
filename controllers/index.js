@@ -20,7 +20,8 @@ module.exports = function(app) {
     });
 
     app.get('/register/submit', async (req, res) => {
-        return "Login " + passwordHash.storePassword(req.params.password, req.params.email) ? "Successful" : "Failed"
+        console.log("Register attempt by " + req.params.email + ", " + req.params.password);
+        return "Login " + passwordHash.storePassword(req.params.email, req.params.password) ? "Successful" : "Failed"
     });
 
     app.get('/resetpassword', async (req, res) => {
