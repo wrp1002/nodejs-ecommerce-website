@@ -38,7 +38,7 @@ module.exports = function(app) {
                 message: 'Password is required'
             });
         }
-          
+        
         passwordHash.storePassword(req.body.email, req.body.password).then(
             
             function(successMessage){

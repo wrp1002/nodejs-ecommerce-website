@@ -30,7 +30,7 @@ function updatePassword(receivedEmail, receivedPassword){
 
                 await client.query("UPDATE users SET password_hash = $1, salt = $2 WHERE email = $3", [passwordHash, generatedSalt, receivedEmail], function(errorMessage, results) {
                     
-                    if(errorMessage) return reject("Problem updating user information into the database: " + String(errorMessage));
+                    if(errorMessage) return reject("Problem updating user information in the database: " + String(errorMessage));
 
                     console.log("Updated " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " in the database");
 
@@ -59,7 +59,7 @@ function storePassword(receivedEmail, receivedPassword){
                 
                 if(!client) return reject("Problem connecting to database");
                 
-                await client.query("INSERT INTO users (email, password_hash, salt) VALUES ($1, $2, $3)", [receivedEmail, passwordHash, generatedSalt], function(errorMessage, results) {
+                await client.query("INSERT INTO users (email, password_hash, salt) VALUES ($1, $2, $3)", [receivedEmail, String(passwordHash), generatedSalt], function(errorMessage, results) {
                     
                     if(errorMessage) return reject("Problem inserting user information into the database: " + String(errorMessage));
 
