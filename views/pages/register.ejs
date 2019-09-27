@@ -90,12 +90,14 @@ button:hover {
     <label for="password"><b>Password</b></label>
     <input type="password" placeholder="Enter Password" name="password" id="password" required>
 
-    <label for="psw-repeat"><b>Repeat Password</b></label>
-    <input type="password" placeholder="Repeat Password" name="psw-repeat" required>
+    <label for="passsword-repeat"><b>Repeat Password</b></label>
+    <input type="password" placeholder="Repeat Password" name="password-repeat" id="password-repeat" required>
     
     <label>
       <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me
     </label>
+
+    <p><%= loginFailed %></p>
     
     <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
 
@@ -121,16 +123,8 @@ button:hover {
         data: JSON.stringify({
           'email':  $('#email').val(),
           "password": $('#password').val()
-        }),
-        success: (result) => {
-          location.href = "/"
-        },
-        error: (result) => {
-          console.log(result.message);
-        }
+        })
       })
-        
-      return true;
     });
   });
 </script>      

@@ -42,6 +42,7 @@ module.exports = function(app) {
         passwordHash.storePassword(req.body.email, req.body.password).then(
             
             function(successMessage){
+                res.render('pages/index');
                 return res.status(201).send({
                     success: 'true',
                     message: 'User created successfully'
@@ -49,6 +50,9 @@ module.exports = function(app) {
             },
 
             function(errorMessage){
+                res.render('pages/register', {
+                    loginFailed: errorMessage
+                });
                 return res.status(400).send({
                     success: 'false',
                     message: errorMessage
