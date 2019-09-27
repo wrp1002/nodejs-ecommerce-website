@@ -29,22 +29,22 @@ function storePassword(receivedPassword, receivedEmail){
             
             if(!client){
                 console.log("Problem connection to database");
-                return;
+                reject();
             }
 
             const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\');');
             
             if(!insertSuccess){
                 console.log("Problem inserting new user into the database");
-                return;
+                reject();
             }
 
             console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
 
-            done();
+            resolve();
 
         } catch(Exception) {
-            return;
+            console.log("Caught exception: " + Exception);
         }
     })
 }
@@ -62,19 +62,19 @@ function validatePassword(receivedPassword, receivedEmail){
             
             if(!client){
                 console.log("Problem connection to database");
-                return;
+                reject();
             }
 
             const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\';");
             
             if(!userInformation){
                 console.log("Problem getting user information from database");
-                return;
+                reject();
             }
 
             if(userInformation.rowCount != 1){
                 console.log("Could not find user in table");
-                return;
+                reject();
             }
 
             databaseHash = userInformation.rows[0].password_hash;
@@ -82,10 +82,11 @@ function validatePassword(receivedPassword, receivedEmail){
 
             console.log("Retrived hash " + databaseHash + " and salt " + databaseSalt + " from the database");
 
-            done();
+            resolve();
 
         } catch(Exception){
             console.log("Caught exception: " + Exception);
+            reject();
         }
     });
 
