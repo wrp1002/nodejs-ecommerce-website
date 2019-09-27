@@ -45,8 +45,7 @@ function storePassword(receivedPassword, receivedEmail){
         }
     }
 
-    Promise.all(asyncPromise).catch(Error);
-    
+    Promise.all(asyncPromise).then(() => { return }).catch(Error);
 }
 
 function validatePassword(receivedPassword, receivedEmail){
@@ -79,24 +78,26 @@ function validatePassword(receivedPassword, receivedEmail){
         }
     }
 
-    Promise.all(asyncPromise).catch(Error);
+    Promise.all(asyncPromise).then((databaseHash, databaseSalt, receivedPassword) => {
 
-    databaseHash = "asdasdhjk";
-    databaseSalt = "asdasdasd";
+        databaseHash = "asdasdhjk";
+        databaseSalt = "asdasdasd";
 
-    const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
+        const passwordHash = sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion);
 
-    var hashDiff = databaseHash.length ^ passwordHash.length;
-    for(var i = 0; i < databaseHash.length && i < passwordHash.length; ++i){
-        hashDiff |= databaseHash[i] ^ passwordHash[i];
-    }
+        var hashDiff = databaseHash.length ^ passwordHash.length;
+        for(var i = 0; i < databaseHash.length && i < passwordHash.length; ++i){
+            hashDiff |= databaseHash[i] ^ passwordHash[i];
+        }
 
-    if(hashDiff == 0){
-        console.log("Success");
-    }
-    else {
-        console.log("Failure");
-    }
+        if(hashDiff == 0){
+            console.log("Success");
+        }
+        else {
+            console.log("Failure");
+        }
+
+    }).catch(Error);
 }
 
 module.exports = {
