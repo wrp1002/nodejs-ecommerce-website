@@ -89,10 +89,10 @@ async function validatePassword(receivedPassword, receivedEmail){
 
 module.exports = {
     testFunction: async function(){
-        storePassword("password", "test1@gmail")
-        .then(console.log("----------------------------------------"))
-        .then(validatePassword("password", "test1@gmail.com"))
-        .then(console.log("----------------------------------------"));
+        await storePassword("password", "test1@gmail")
+        console.log("----------------------------------------");
+        await validatePassword("password", "test1@gmail.com");
+        console.log("----------------------------------------");
         //validatePassword("hacker", "test1@gmail");
     }
 }
