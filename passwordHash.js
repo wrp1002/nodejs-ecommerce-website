@@ -24,8 +24,6 @@ function storePassword(receivedPassword, receivedEmail){
     var asyncPromise = new Promise(async() => {
 
         try {   
-
-            console.log("Trying to connect");
             
             const client = await pool.connect();
             
@@ -70,16 +68,14 @@ function validatePassword(receivedPassword, receivedEmail){
                 return;
             }
 
-            const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\':;");
-
-            console.log("Queried databse for " + receivedEmail);
-
+            const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\';");
+            
             if(userInformation == null){
                 console.log("Problem getting user information from database");
                 return;
             }
 
-            console.log("Database information: " + userInformation);
+            console.log(userInformation);
 
         } catch(Exception){
 
