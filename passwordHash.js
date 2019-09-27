@@ -9,7 +9,7 @@ const pool = new Pool({
 
 const hashIterations = 1000;
 const pseudoRandomFucntion = sjcl.misc.hmac;
-const saltLength = 160;
+const saltLength = 1000;
 
 function storePassword(receivedPassword, receivedEmail){
     
@@ -25,13 +25,13 @@ function storePassword(receivedPassword, receivedEmail){
                 const client = await pool.connect();
                 
                 if(!client){
-                    reject("Problem connection to database");
+                    reject("Problem connecting to database");
                 }
 
                 const insertSuccess = await client.query('INSERT INTO users VALUES (\'' + receivedEmail + '\', \'' + passwordHash + '\', \'' + generatedSalt + '\');');
                 
                 if(!insertSuccess){
-                    reject("Problem inserting new user into the database");
+                    reject("Problem inserting user information into the database");
                 }
 
                 console.log("Inserted " + receivedEmail + ", " + passwordHash + ", " + generatedSalt + " into the database");
@@ -60,7 +60,7 @@ function validatePassword(receivedPassword, receivedEmail){
                 const client = await pool.connect();
                 
                 if(!client){
-                    reject("Problem connection to database");
+                    reject("Problem connecting to database");
                 }
 
                 const userInformation = await client.query("SELECT * FROM users WHERE email=\'" + receivedEmail + "\';");
@@ -73,10 +73,11 @@ function validatePassword(receivedPassword, receivedEmail){
                     reject("Could not find user in table");
                 }
 
+                databaseEmail = userInformation.rows[0].email;
                 databaseHash = userInformation.rows[0].password_hash;
                 databaseSalt = userInformation.rows[0].salt;
 
-                console.log("Retrived hash " + databaseHash + " and salt " + databaseSalt + " from the database");
+                console.log("Retrieved " + databaseEmail + ", " + databaseHash + ", " + databaseSalt + " from the database");
 
                 resolve("Successfully retrieved hash and salt");
 
@@ -99,16 +100,12 @@ function validatePassword(receivedPassword, receivedEmail){
             hashDiff |= databaseHash[i] ^ passwordHash[i];
         }
 
-        if(hashDiff == 0){
-            console.log("Success");
-            return true;
-        }
-        else {
-            console.log("Failure");
-            return false;
-        }
+        if(hashDiff == 0) return true;
+        else return false;
 
-    }).catch(console.error)
+    }).catch(function(Error){
+        return Error;
+    })
 }
 
 module.exports = {
