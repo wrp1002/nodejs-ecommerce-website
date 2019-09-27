@@ -11,7 +11,7 @@ const hashIterations = 1000;
 const pseudoRandomFucntion = sjcl.misc.hmac;
 const saltLength = 160;
 
-function updatePassword(receivedPassword, receivedEmail){
+function updatePassword(receivedEmail, receivedPassword){
 
     const generatedSalt = csprng(saltLength, 36);
     const passwordHash = sjcl.misc.pbkdf2(receivedPassword, generatedSalt, hashIterations, generatedSalt.length, pseudoRandomFucntion);
@@ -44,7 +44,7 @@ function updatePassword(receivedPassword, receivedEmail){
     })
 }
 
-function storePassword(receivedPassword, receivedEmail){
+function storePassword(receivedEmail, receivedPassword){
     
     const generatedSalt = csprng(saltLength, 36);
     const passwordHash = sjcl.misc.pbkdf2(receivedPassword, generatedSalt, hashIterations, generatedSalt.length, pseudoRandomFucntion);
@@ -74,7 +74,7 @@ function storePassword(receivedPassword, receivedEmail){
     })
 }
 
-function validatePassword(receivedPassword, receivedEmail){
+function validatePassword(receivedEmail, receivedPassword){
 
     var databaseHash;
     var databaseSalt;
@@ -141,6 +141,9 @@ module.exports = {
         .then(updatePassword("reset", "test1@gmail.com"))
         .then(validatePassword("reset", "test1@gmail.com"))
         .catch(function(Error){ console.error(String(Error)) })
+    },
+    storePassword: function(receivedEmail, receivedPassword){
+        return storePassword(receivedEmail, receivedPassword)
     }
 }
 
