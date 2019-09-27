@@ -88,7 +88,7 @@ async function validatePassword(receivedPassword, receivedEmail){
 }
 
 module.exports = {
-    testFunction: function(){
+    testFunction: async function(){
         storePassword("password", "test1@gmail")
         .then(console.log("----------------------------------------"))
         .then(validatePassword("password", "test1@gmail.com"))
