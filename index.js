@@ -1,5 +1,8 @@
-const express = require('express')
-const path = require('path')
+const express = require('express');
+const path = require('path');
+
+const passwordHash = require('./passwordHash');
+
 var bodyParser = require("body-parser");
 var controller = require('./controllers/index.js');
 
@@ -27,5 +30,7 @@ app
   .listen(PORT, () => console.log(`Listening on ${ PORT }`))
   
   //app.use(express.static('./public'));
+
+passwordHash.testFunction();
   
   

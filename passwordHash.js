@@ -92,7 +92,13 @@ function validatePassword(receivedPassword, receivedEmail){
     }
 }
 
-storePassword("password", "test1@gmail");
-console.log("----------------------------------------");
-validatePassword("password", "test1@gmail.com");
-//validatePassword("hacker", "test1@gmail");
+module.exports = {
+    testFunction: function(){
+        storePassword("password", "test1@gmail");
+        console.log("----------------------------------------");
+        validatePassword("password", "test1@gmail.com");
+        console.log("----------------------------------------");
+        //validatePassword("hacker", "test1@gmail");
+    }
+}
+
