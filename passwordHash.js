@@ -14,12 +14,7 @@ const saltLength = 160;
 function storePassword(receivedPassword, receivedEmail){
     
     const generatedSalt = csprng(saltLength, 36);
-
-    console.log("Salt: " + generatedSalt)
-
     const passwordHash = sjcl.misc.pbkdf2(receivedPassword, generatedSalt, hashIterations, generatedSalt.length, pseudoRandomFucntion);
-    
-    console.log("Hash: " + passwordHash);
    
     return new Promise(function(resolve, reject) {
         
