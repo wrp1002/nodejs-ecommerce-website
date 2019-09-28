@@ -37,6 +37,8 @@ module.exports = function(app) {
 
         const validPassword = passwordHash.validatePassword(req.body.email, req.body.password)
         
+        console.log(validPassword)
+
         if(validPassword){
             
             jwt.sign(req.body.email, "secretkey", { expiresIn: '15m' }, (err, token) => {
