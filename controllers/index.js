@@ -157,6 +157,8 @@ function verifyToken(req, res, next) {
             message: 'No token found in cookie'
         }) 
     }
+
+    console.log("Found cookie token")
     
     const bearerHeader = req.headers['authorization'];
 
