@@ -55,7 +55,13 @@
         credentials: 'include',
         headers: JSON.stringify({
           'authorization': 'Bearer ' + window.sessionStorage.getItem('token'),
-        })
+        }),
+        success: (result) => {
+          console.log("Success")
+        },
+        error: (result) => {
+          console.log(result.message)
+        }
       })
     });
   });
