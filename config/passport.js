@@ -1,5 +1,11 @@
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
+const pg = require('pg');
+
+const databasePool = new pg.Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: true
+});
 
 module.exports = function(passport) {
         
