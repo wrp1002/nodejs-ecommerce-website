@@ -53,9 +53,9 @@
         processData: false,
         contentType: 'application/json',
         credentials: 'include',
-        headers: JSON.stringify({
+        headers: {
           'authorization': 'Bearer ' + window.sessionStorage.getItem('token'),
-        }),
+        },
         success: (result) => {
           console.log("Success")
         },
