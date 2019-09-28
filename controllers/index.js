@@ -1,11 +1,14 @@
 const passwordHash = require('../passwordHash');
+const cookieParser = require("cookie-parser");
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
+const sjcl = require('sjcl');
 
 module.exports = function(app) {  
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
+    app.use(cookieParser())
 
     app.get('/', async (req, res) => {
         //nav bar
@@ -50,10 +53,11 @@ module.exports = function(app) {
                             })
                         }
 
+                        res.cookie('token', token, { maxAge: 900000, httpOnly: true, secure: true });
                         return res.status(201).send({
                             success: 'true',
                             message: 'User login successful',
-                            token: token
+                            token: sjcl.hash.sha256.hash(token)
                         })
                     })
                 }
@@ -145,6 +149,15 @@ module.exports = function(app) {
 
 function verifyToken(req, res, next) {
     
+    const cookieToken = req.cookies.token;
+
+    if(!cookieToken){
+        return res.status(400).send({
+            success: 'false',
+            message: 'No token found in cookie'
+        }) 
+    }
+    
     const bearerHeader = req.headers['authorization'];
 
     if(typeof bearerHeader !== 'undefined'){
@@ -153,12 +166,22 @@ function verifyToken(req, res, next) {
         const accessToken = bearerArray[1];
         req.token = accessToken;
 
-        jwt.verify(req.token, process.env.JWT_KEY, (errorMessage, authData) => {
+        jwt.verify(cookieToken, process.env.JWT_KEY, (errorMessage, authData) => {
             
             if(errorMessage){
                 return res.status(403).send({
                     success: 'false',
                     message: 'Error verifying authorization token ' + errorMessage
+                })
+            }
+            
+            console.log(accessToken)
+            console.log(sjcl.hash.sha256.hash(cookieToken))
+
+            if(String(sjcl.hash.sha256.hash(cookieToken)) != String(accessToken)){
+                return res.status(400).send({
+                    success: 'false',
+                    message: 'Error tokens did not match'
                 })
             }
 
