@@ -35,13 +35,19 @@ module.exports = function(app) {
             });
         }
 
-        //const validPassword = passwordHash.validatePassword(req.body.email, req.body.password)
+        const validPassword = passwordHash.validatePassword(req.body.email, req.body.password)
         
-        var validPassword = true;
-
         if(validPassword){
             
             jwt.sign(req.body.email, "secretkey", { expiresIn: '15m' }, (err, token) => {
+
+                if(err){
+                    return res.status(400).send({
+                        success: 'false',
+                        message: 'Signing the authorization token failed'
+                    })
+                }
+
                 return res.status(201).send({
                     success: 'true',
                     message: 'User login successful',
