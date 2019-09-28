@@ -11,7 +11,7 @@
 
 	<% include ../partials/header.ejs %>
 	<%- include("../partials/nav.ejs", {loggedin: false}) %>
-	
+
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
 	<script src="/scripts/login.js"></script>
 
@@ -37,7 +37,7 @@
 				<p><a href="/register">Don't have an account? Create one!</a></p>
 
 				<div class="clearfix">
-					<button type="submit" class="loginbtn" id="loginbtn" >Login</button>
+					<button type="submit" class="loginbtn" id="loginbtn" disabled >Login</button>
 				</div>
 
 			</fieldset>

@@ -1,19 +1,18 @@
 $(document).ready(function () {
-    //variables for instant validation
-    const loginForm = document.getElementById('loginForm');
+    const $loginForm = $('#loginForm');
+    const $loginBtn = $('#loginbtn');
     const emailField = document.getElementById('email');
     const passwordField = document.getElementById('password');
-    const loginButton = document.getElementById('loginbtn');
-    
+
     /**
-     * Validation
+     * Validation for the login form
      */
-    $('#loginForm').validate({
+    $loginForm.validate({
         rules: {
             email: {
                 required: true,
                 email: true
-            }, 
+            },
             password: {
                 required: true
             }
@@ -29,7 +28,20 @@ $(document).ready(function () {
         }
     });
 
-    $('#loginbtn').click(function (event) {
+    /**
+     * Disables login button until all fields are valid
+     */
+    $loginForm.on("blur keyup change", "input", () => {
+        if (passwordField.value && emailField.value) {
+            if ($loginForm.valid()) {
+                $loginBtn.removeAttr("disabled");
+            } else {
+                $loginBtn.attr("disabled", "disabled");
+            }
+        } 
+    });
+
+    $loginBtn.click(function (event) {
 
         event.preventDefault();
 
