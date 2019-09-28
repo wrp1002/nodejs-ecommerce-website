@@ -27,7 +27,7 @@
     <ul class="nav navbar-nav navbar-right">
       <li class="navbar-right">
         <% if (loggedin) { %>
-          <a href="https://devcenter.heroku.com"><span class="glyphicon glyphicon-book"></span> Account</a>
+          <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span> Login</a>
         <% } %>
         <% if (!loggedin) { %>
           <a href="/login"><span class="glyphicon glyphicon-book"></span> Login</a>
@@ -37,3 +37,24 @@
     </ul>
   </div>
 </nav>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $('#account').click(function (event) {
+        
+      event.preventDefault();          
+        
+      $.ajax({
+        method: 'POST',
+        url: 'account',
+        dataType: 'json',
+        processData: false,
+        contentType: 'application/json',
+        credentials: 'include',
+        headers: JSON.stringify({
+          'authorization': 'Bearer ' + window.sessionStorage.getItem('token'),
+        })
+      })
+    });
+  });
+</script>      

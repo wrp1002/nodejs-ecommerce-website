@@ -1,6 +1,7 @@
 const passwordHash = require('../passwordHash');
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
+const sjcl = require('sjcl');
 
 module.exports = function(app) {  
 
@@ -50,10 +51,11 @@ module.exports = function(app) {
                             })
                         }
 
+                        res.cookie('token', token, { maxAge: 900000, httpOnly: true, secure: true });
                         return res.status(201).send({
                             success: 'true',
                             message: 'User login successful',
-                            token: token
+                            token: sjcl.hash.sha256.hash(token)
                         })
                     })
                 }
@@ -145,6 +147,13 @@ module.exports = function(app) {
 
 function verifyToken(req, res, next) {
     
+    if(!req.body.token){
+        return res.status(40).send({
+            success: 'false',
+            message: 'No token found in body'
+        }) 
+    }
+    
     const bearerHeader = req.headers['authorization'];
 
     if(typeof bearerHeader !== 'undefined'){
@@ -159,6 +168,13 @@ function verifyToken(req, res, next) {
                 return res.status(403).send({
                     success: 'false',
                     message: 'Error verifying authorization token ' + errorMessage
+                })
+            }
+
+            if(sjcl.hash.sha256.hash(req.token) != req.body.token){
+                return res.status(400).send({
+                    success: 'false',
+                    message: 'Error tokens did not match'
                 })
             }
 
