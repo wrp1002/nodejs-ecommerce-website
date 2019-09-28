@@ -114,13 +114,13 @@ button:hover {
         
       $.ajax({
         method: 'POST',
-        url: 'register/submit/',
+        url: 'register',
         dataType: 'json',
         processData: false,
         contentType: 'application/json',
         data: JSON.stringify({
           'email':  $('#email').val(),
-          "password": $('#password').val()
+          'password': $('#password').val()
         }),
         success: (result) => {
           location.href = "/"
