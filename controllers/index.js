@@ -41,7 +41,7 @@ module.exports = function(app) {
                 
                 if(successMessage){
             
-                    jwt.sign({email: req.body.email}, "secretkey", { expiresIn: '1h' }, (errorMessage, token) => {
+                    jwt.sign({email: req.body.email}, process.env.JWT_KEY, { expiresIn: '1h' }, (errorMessage, token) => {
 
                         if(errorMessage){
                             return res.status(400).send({
@@ -133,7 +133,7 @@ module.exports = function(app) {
 
     app.get('/account', processToken, async (req, res) => {
 
-        jwt.verify(req.token, 'secretkey', (errorMessage, authData) => {
+        jwt.verify(req.token, process.env.JWT_KEY, (errorMessage, authData) => {
             
             if(errorMessage){
                 //res.render('pages/login');

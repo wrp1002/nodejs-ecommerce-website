@@ -174,14 +174,16 @@ form fieldset a:hover { text-decoration: underline; }
 
 			<fieldset>
 
-				<p><input type="text" required value="Username" onBlur="if(this.value=='')this.value='Username'" onFocus="if(this.value=='Username')this.value='' "></p> <!-- JS because of IE support; better: placeholder="Username" -->
+				<p><input type="text" id="username" required value="Username" onBlur="if(this.value=='')this.value='Username'" onFocus="if(this.value=='Username')this.value='' "></p> <!-- JS because of IE support; better: placeholder="Username" -->
 
-				<p><input type="password" required value="Password" onBlur="if(this.value=='')this.value='Password'" onFocus="if(this.value=='Password')this.value='' "></p> <!-- JS because of IE support; better: placeholder="Password" -->
+				<p><input type="password" id="password" required value="Password" onBlur="if(this.value=='')this.value='Password'" onFocus="if(this.value=='Password')this.value='' "></p> <!-- JS because of IE support; better: placeholder="Password" -->
 
                 <p><a href="#">Forgot Password?</a></p>
                 <p><a href="/register">Don't have an account? Create one!</a></p>
 
-				<p><input type="submit" value="Login"></p>
+				<div class="clearfix">
+					<button type="submit" class="loginbtn" id="loginbtn">Login</button>
+				</div>
 
 			</fieldset>
 
@@ -204,6 +206,35 @@ form fieldset a:hover { text-decoration: underline; }
 		</p>
 
 	</div> <!-- end login -->
+
+	<script type="text/javascript">
+	$(document).ready(function () {
+		$('#loginbtn').click(function (event) {
+			
+		event.preventDefault();          
+			
+		$.ajax({
+			method: 'POST',
+			url: 'login',
+			dataType: 'json',
+			processData: false,
+			contentType: 'application/json',
+			data: JSON.stringify({
+				'email':  $('#email').val(),
+				'password': $('#password').val()
+			}),
+			success: (result) => {
+				location.href = "/"
+				console.log(result.token)
+			},
+			error: (result) => {
+				console.log(result.message)
+			}
+		})
+		});
+	});
+	</script>      
+	  
 
 </body>
 </html>
