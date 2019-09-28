@@ -68,7 +68,7 @@ module.exports = function(app) {
             function(errorMessage){
                 return res.status(400).send({
                     success: 'false',
-                    message: errorMessage
+                    message: "Password validation failed with error " + errorMessage
                 })
             }
         )
