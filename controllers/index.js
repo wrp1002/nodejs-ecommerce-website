@@ -149,7 +149,7 @@ module.exports = function(app) {
 
 function verifyToken(req, res, next) {
     
-    const cookieToken = req.cookies;
+    const cookieToken = req.cookies.token;
 
     console.log(cookieToken)
 
