@@ -59,8 +59,6 @@ router.post('/register', async(req, res) => {
                 });
             }
 
-            console.log("Hashing password")
-
             bcrypt.genSalt(10, (saltError, generatedSalt) => {
                 
                 if(saltError) throw saltError
@@ -69,8 +67,6 @@ router.post('/register', async(req, res) => {
                     
                     if(hashError) throw hashError
                     
-                    console.log("Attempting to insert new user")
-
                     await client.query("INSERT INTO users (email, password_hash, salt) VALUES ($1, $2, $3)", [email, String(passwordHash), generatedSalt], function(errorMessage, results) {
             
                         if(errorMessage) throw errorMessage
@@ -79,8 +75,6 @@ router.post('/register', async(req, res) => {
                             'success_msg',
                             'You are now registered and can log in'
                         );
-
-                        console.log("Insertion success")
     
                     })
 
@@ -99,7 +93,7 @@ router.post('/login', async(req, res, next) => {
     passport.authenticate('local', {
 
         successRedirect: '/',
-        failureRedirect: 'users/login',
+        failureRedirect: '/login',
         failureFlash: true
 
     })(req, res, next);
@@ -109,7 +103,7 @@ router.get('/logout', async(req, res) => {
     
     req.logout();
     req.flash('success_msg', 'You are logged out');
-    res.redirect('users/login');
+    res.redirect('/login');
 
 });
 

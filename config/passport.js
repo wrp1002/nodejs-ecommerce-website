@@ -32,7 +32,7 @@ module.exports = function(passport) {
                     })
                 })
 
-            } catch(Exception){ return reject(Exception); }
+            } catch(Error){ console.log(Error) }
 
         })
     );
