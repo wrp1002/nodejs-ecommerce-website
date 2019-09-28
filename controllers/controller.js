@@ -3,6 +3,26 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
 const sjcl = require('sjcl');
+const { Pool } = require('pg');
+
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: false
+});
+
+
+// Used to local testing
+/*
+const pool = new Pool({
+    user: 'eqoaufryrlziba',
+    host: 'ec2-54-235-104-136.compute-1.amazonaws.com',
+    database: 'debldnvrsqnjov',
+    password: 'ca96d213b57dca84daf23d6c6e76840266b0aa26f73bbf30bff67f81d84002ff',
+    port: 5432,
+    ssl: true
+  });
+*/
 
 module.exports = function(app) {  
 
@@ -131,8 +151,19 @@ module.exports = function(app) {
     });
 
     app.get('/search', async (req, res) => {
-        
-        //res.render('pages/index');
+        console.log('SEARCH');
+        try {
+            const client = await pool.connect();
+            var result = await client.query('SELECT * FROM products;');
+            console.log(result.rows);
+            res.render('pages/search', {'products': result.rows});
+
+            client.release();
+
+        } catch (err) {
+            console.error(err);
+            res.send("Error " + err);
+        }
     });
 
     app.get('/account', verifyToken, async (req, res) => {

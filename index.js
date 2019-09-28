@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 
 var bodyParser = require("body-parser");
-var controller = require('./controllers/index.js');
+var controller = require('./controllers/controller.js');
 
 const PORT = process.env.PORT || 5000;
 
