@@ -35,35 +35,44 @@ module.exports = function(app) {
             });
         }
 
-        const validPassword = passwordHash.validatePassword(req.body.email, req.body.password)
+        passwordHash.validatePassword(req.body.email, req.body.password).then(
         
-        console.log(validPassword)
-
-        if(validPassword){
+            function(successMessage){   
+                
+                if(successMessage){
             
-            jwt.sign(req.body.email, "secretkey", { expiresIn: '15m' }, (err, token) => {
+                    jwt.sign(req.body.email, "secretkey", { expiresIn: '15m' }, (err, token) => {
 
-                if(err){
-                    return res.status(400).send({
-                        success: 'false',
-                        message: 'Signing the authorization token failed'
+                        if(err){
+                            return res.status(400).send({
+                                success: 'false',
+                                message: 'Signing the authorization token failed'
+                            })
+                        }
+
+                        return res.status(201).send({
+                            success: 'true',
+                            message: 'User login successful',
+                            token: token
+                        })
                     })
                 }
+                else {
+                    return res.status(400).send({
+                        success: 'false',
+                        message: 'User login unsuccessful'
+                    })
+                }
+            },
 
-                return res.status(201).send({
-                    success: 'true',
-                    message: 'User login successful',
-                    token: token
+            function(errorMessage){
+                return res.status(400).send({
+                    success: 'false',
+                    message: errorMessage
                 })
-            })
-        }
-        else {
-            return res.status(400).send({
-                success: 'false',
-                message: 'User login unsuccessful'
-            })
-        }
-
+            }
+        )
+        
     });
 
     app.get('/register', async (req, res) => {

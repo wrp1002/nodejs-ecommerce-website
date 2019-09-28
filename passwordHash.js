@@ -114,7 +114,9 @@ function validatePassword(receivedEmail, receivedPassword){
         })
     })
 
-    asyncPromise.then(function(promiseResult){
+    return new Promise(function(resolve, reject){
+        
+        asyncPromise.then(function(promiseResult){
 
         const passwordHash = String(sjcl.misc.pbkdf2(receivedPassword, databaseSalt, hashIterations, databaseSalt.length, pseudoRandomFucntion));
 
@@ -126,10 +128,11 @@ function validatePassword(receivedEmail, receivedPassword){
             hashDiff |= databaseHash[i] ^ passwordHash[i];
         }
 
-        if(hashDiff == 0) return true;
-        else return false;
+        if(hashDiff == 0) return resolve(true);
+        else return resolve(false);
 
-    }).catch(function(Error){ return Error; })
+        }).catch(function(Error){ return reject(Error); })
+    })
 }
 
 module.exports = {
