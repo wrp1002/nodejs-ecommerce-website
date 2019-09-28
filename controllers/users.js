@@ -59,6 +59,8 @@ router.post('/register', async(req, res) => {
                 });
             }
 
+            console.log("Hashing password")
+
             bcrypt.genSalt(10, (saltError, generatedSalt) => {
                 
                 if(saltError) throw saltError
@@ -66,6 +68,8 @@ router.post('/register', async(req, res) => {
                 bcrypt.hash(password, generatedSalt, async(hashError, passwordHash) => {
                     
                     if(hashError) throw hashError
+                    
+                    console.log("Attempting to insert new user")
 
                     await client.query("INSERT INTO users (email, password_hash, salt) VALUES ($1, $2, $3)", [email, String(passwordHash), generatedSalt], function(errorMessage, results) {
             
@@ -75,6 +79,8 @@ router.post('/register', async(req, res) => {
                             'success_msg',
                             'You are now registered and can log in'
                         );
+
+                        console.log("Insertion success")
     
                     })
 
