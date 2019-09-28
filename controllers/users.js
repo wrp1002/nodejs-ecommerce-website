@@ -78,9 +78,9 @@ router.post('/register', async(req, res) => {
     
                     })
 
-                }).catch(Error => console.error(String(Error)))
+                })
 
-            }).catch(Error => console.error(String(Error)))
+            })
            
         })
 
