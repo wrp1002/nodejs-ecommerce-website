@@ -174,9 +174,6 @@ function verifyToken(req, res, next) {
                     message: 'Error verifying authorization token ' + errorMessage
                 })
             }
-            
-            console.log(accessToken)
-            console.log(sjcl.hash.sha256.hash(cookieToken))
 
             if(String(sjcl.hash.sha256.hash(cookieToken)) != String(accessToken)){
                 return res.status(400).send({
