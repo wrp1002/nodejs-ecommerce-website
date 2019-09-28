@@ -6,11 +6,15 @@
 
 	<title>Login with Facebook or Twitter</title>
 
-	<% include ../partials/header.ejs %>
-	<%- include("../partials/nav.ejs", {loggedin: false}) %>
 	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300'>
 	<link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
+
+	<% include ../partials/header.ejs %>
+	<%- include("../partials/nav.ejs", {loggedin: false}) %>
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
 	<script src="/scripts/login.js"></script>
+
 </head>
 
 <body>
@@ -24,16 +28,16 @@
 			<fieldset>
 
 				<label for="email">Email Address</label>
-				<p><input type="email" id="email" placeholder="Enter email address" name="email" required pattern=".{3,}"></p>
+				<p><input type="email" id="email" placeholder="Enter email address" name="email" required autocomplete="email"></p>
 
 				<label for="password">Password</label>
-				<p><input type="password" id="password" placeholder="Enter password" name="password" required></p>
+				<p><input type="password" id="password" placeholder="Enter password" name="password" required autocomplete="current-password"></p>
 
 				<p><a href="#">Forgot Password?</a></p>
 				<p><a href="/register">Don't have an account? Create one!</a></p>
 
 				<div class="clearfix">
-					<button type="submit" class="loginbtn" id="loginbtn" disabled>Login</button>
+					<button type="submit" class="loginbtn" id="loginbtn" >Login</button>
 				</div>
 
 			</fieldset>

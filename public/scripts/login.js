@@ -4,28 +4,30 @@ $(document).ready(function () {
     const emailField = document.getElementById('email');
     const passwordField = document.getElementById('password');
     const loginButton = document.getElementById('loginbtn');
-    console.log("text");
-    // let isEmailValid = false;
-
-    // emailField.addEventListener('keyup', function (event) {
-    // 	isValidEmail = emailField.checkValidity();
-
-    // 	if (isValidEmail && emailField.value) {
-    // 		isEmailValid = true;
-    // 		isAllFieldsValid();
-    // 	} else {
-    // 		isEmailValid = false;
-    // 	}
-    // });
-
-    // function isAllFieldsValid () {
-    // 	if (passwordField.value && isEmailValid) {
-    // 		loginButton.disabled = false;
-    // 		console.log("valid");
-    // 	} 
-
-    // 	return false;
-    // }
+    
+    /**
+     * Validation
+     */
+    $('#loginForm').validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            }, 
+            password: {
+                required: true
+            }
+        },
+        messages: {
+            email: {
+                required: "Please enter your email address",
+                email: "A valid email address is required"
+            },
+            password: {
+                required: "Password required",
+            }
+        }
+    });
 
     $('#loginbtn').click(function (event) {
 
