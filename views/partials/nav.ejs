@@ -26,40 +26,14 @@
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li class="navbar-right">
-        <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span> Account</a>
-
         <% if (loggedin) { %>
           <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span> Login</a>
         <% } %>
         <% if (!loggedin) { %>
-          <a href="/login"><span class="glyphicon glyphicon-book"></span> Login</a>
+          <a href="users/login"><span class="glyphicon glyphicon-book"></span> Login</a>
           <!--<a href="/register"><span class="glyphicon glyphicon-book"></span> Register</a>-->
         <% } %>
       </li>
     </ul>
   </div>
-</nav>
-
-<script type="text/javascript">
-  $(document).ready(function () {
-    $('#account').click(function (event) {
-        
-      event.preventDefault();          
-        
-      $.ajax({
-        method: 'GET',
-        url: 'account',
-        dataType: 'json',
-        processData: false,
-        contentType: 'application/json',
-        credentials: 'include',
-        beforeSend: function(request) {
-          request.setRequestHeader('authorization', 'Bearer ' + window.sessionStorage.getItem('token'));
-        },
-        success: (result) => {
-          $(document).html(result)
-        }
-      })
-    });
-  });
-</script>      
+</nav> 
