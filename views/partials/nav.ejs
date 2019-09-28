@@ -53,8 +53,8 @@
         processData: false,
         contentType: 'application/json',
         credentials: 'include',
-        headers: {
-          'authorization': 'Bearer ' + window.sessionStorage.getItem('token'),
+        beforeSend: function(request) {
+          request.setRequestHeader('authorization', 'Bearer ' + window.sessionStorage.getItem('token'));
         },
         success: (result) => {
           console.log("Success")
