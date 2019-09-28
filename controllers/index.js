@@ -158,7 +158,7 @@ function verifyToken(req, res, next) {
             if(errorMessage){
                 return res.status(403).send({
                     success: 'false',
-                    message: 'Error verifying authorization token'
+                    message: 'Error verifying authorization token ' + errorMessage
                 })
             }
 
