@@ -1,4 +1,5 @@
 const passwordHash = require('../passwordHash');
+const cookieParser = require("cookie-parser");
 const bodyParser = require('body-parser')
 const jwt = require('jsonwebtoken')
 const sjcl = require('sjcl');
@@ -7,6 +8,7 @@ module.exports = function(app) {
 
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: true}));
+    app.use(cookieParser())
 
     app.get('/', async (req, res) => {
         //nav bar
@@ -147,10 +149,15 @@ module.exports = function(app) {
 
 function verifyToken(req, res, next) {
     
-    if(!req.body.token){
-        return res.status(40).send({
+    const cookieToken = req.cookies;
+    const cookieArray = cookieToken.split('; ');
+
+    console.log(cookieArray)
+
+    if(!cookieToken){
+        return res.status(400).send({
             success: 'false',
-            message: 'No token found in body'
+            message: 'No token found in cookie'
         }) 
     }
     
@@ -162,7 +169,7 @@ function verifyToken(req, res, next) {
         const accessToken = bearerArray[1];
         req.token = accessToken;
 
-        jwt.verify(req.token, process.env.JWT_KEY, (errorMessage, authData) => {
+        jwt.verify(cookieToken, process.env.JWT_KEY, (errorMessage, authData) => {
             
             if(errorMessage){
                 return res.status(403).send({
@@ -171,7 +178,7 @@ function verifyToken(req, res, next) {
                 })
             }
 
-            if(sjcl.hash.sha256.hash(req.token) != req.body.token){
+            if(sjcl.hash.sha256.hash(cookieToken) != accessToken){
                 return res.status(400).send({
                     success: 'false',
                     message: 'Error tokens did not match'
