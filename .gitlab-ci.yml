@@ -8,7 +8,7 @@ before_script:
 staging:
     type: deploy
     tags:
-        - shell
+        - docker
     image: ruby:latest
     script:
         - dpl --provider=heroku --app=$HEROKU_APP --api-key=$HEROKU_API_KEY
