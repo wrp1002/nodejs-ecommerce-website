@@ -227,7 +227,7 @@ form fieldset a:hover { text-decoration: underline; }
 				}),
 				success: (result) => {
 					location.href = "/"
-					window.sessionStorage.setItem('token', req.token);
+					window.sessionStorage.setItem('token', result.token);
 				},
 				error: (result) => {
 					console.log(result.message)
