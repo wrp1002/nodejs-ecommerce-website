@@ -228,7 +228,7 @@ form fieldset a:hover { text-decoration: underline; }
 				console.log(result.token)
 			},
 			error: (result) => {
-				console.log(result.message)
+				console.log(result.body.message)
 			}
 		})
 		});
