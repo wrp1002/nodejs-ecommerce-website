@@ -41,7 +41,7 @@ module.exports = function(app) {
                 
                 if(successMessage){
             
-                    jwt.sign(req.body.email, "secretkey", { expiresIn: 900 }, (errorMessage, token) => {
+                    jwt.sign({email: req.body.email}, "secretkey", { expiresIn: '1h' }, (errorMessage, token) => {
 
                         if(errorMessage){
                             return res.status(400).send({
