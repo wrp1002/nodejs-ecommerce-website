@@ -131,22 +131,10 @@ module.exports = function(app) {
         //res.render('pages/index');
     });
 
-    app.get('/account', processToken, async (req, res) => {
+    app.get('/account', verifyToken, async (req, res) => {
 
-        jwt.verify(req.token, process.env.JWT_KEY, (errorMessage, authData) => {
-            
-            if(errorMessage){
-                //res.render('pages/login');
-                return res.status(403).send({
-                    success: 'false',
-                    message: 'Error verifying authorization token'
-                })
-            }
-
-            // Purchase history and other info
-            res.render('pages/account');
-
-        })        
+        // Purchase history and other info
+        res.render('pages/account');
     });
 
     app.get('/cart', async (req, res) => {
@@ -155,15 +143,29 @@ module.exports = function(app) {
     });
 }
 
-function processToken(req, res, next) {
+function verifyToken(req, res, next) {
     
     const bearerHeader = req.headers['authorization'];
 
     if(typeof bearerHeader !== 'undefined'){
+        
         const bearerArray = bearerHeader.split(' ');
         const accessToken = bearerArray[1];
         req.token = accessToken;
-        next();
+
+        jwt.verify(req.token, process.env.JWT_KEY, (errorMessage, authData) => {
+            
+            if(errorMessage){
+                return res.status(403).send({
+                    success: 'false',
+                    message: 'Error verifying authorization token'
+                })
+            }
+
+            req.authData = authData;
+
+            next();
+        })
     }
     else {
         return res.status(403).send({
