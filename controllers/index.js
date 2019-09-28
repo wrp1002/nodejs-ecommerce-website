@@ -150,9 +150,8 @@ module.exports = function(app) {
 function verifyToken(req, res, next) {
     
     const cookieToken = req.cookies;
-    const cookieArray = cookieToken.split('; ');
 
-    console.log(cookieArray)
+    console.log(cookieToken)
 
     if(!cookieToken){
         return res.status(400).send({
