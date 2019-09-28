@@ -6,6 +6,10 @@
 
     <body>
         <div>
+            <% if (products.length == 0) { %>
+                <p>No products found</p>
+            <% } %>
+
             <% for (let i = 0; i < products.length; i++) { %>
 
                 <div style="width:90%; margin:0 auto; padding: 10px 10px;">

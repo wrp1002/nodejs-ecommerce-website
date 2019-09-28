@@ -5,15 +5,15 @@ const jwt = require('jsonwebtoken')
 const sjcl = require('sjcl');
 const { Pool } = require('pg');
 
-
+/*
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: false
 });
-
+*/
 
 // Used to local testing
-/*
+
 const pool = new Pool({
     user: 'eqoaufryrlziba',
     host: 'ec2-54-235-104-136.compute-1.amazonaws.com',
@@ -22,7 +22,7 @@ const pool = new Pool({
     port: 5432,
     ssl: true
   });
-*/
+
 
 module.exports = function(app) {  
 
@@ -155,10 +155,14 @@ module.exports = function(app) {
         try {
             const client = await pool.connect();
             var result = await client.query('SELECT * FROM products;');
+            client.release();
+
             console.log(result.rows);
+            console.log("Length:" + result.rows.length);
+
             res.render('pages/search', {'products': result.rows});
 
-            client.release();
+            
 
         } catch (err) {
             console.error(err);
@@ -166,10 +170,32 @@ module.exports = function(app) {
         }
     });
 
-    app.get('/account', verifyToken, async (req, res) => {
+    app.get('/add', async (req, res) => {
+        res.render('pages/add');
+    });
 
-        // Purchase history and other info
-        res.render('pages/account');
+    app.post('/add', async (req, res) => {
+        console.log('SEARCH');
+        try {
+            console.log(req.body.name)
+            if (req.body.name == "" || req.body.description == "" || req.body.price == "" || req.body.image_path == "" || req.body.category == "") {
+                res.send("Error: not all fields were filled");
+            }
+            else {
+                const client = await pool.connect();
+                client.query('INSERT INTO products (name, description, price, image_path, category) values ($1, $2, $3, $4, $5)', [req.body.name, req.body.description, req.body.price, req.body.image_path, req.body.category], (error, results) => {
+                    if (error) throw error;    
+                });
+                res.send('<html><head><script>window.close();</script></head></html>');
+
+                client.release();
+        }
+
+        } catch (err) {
+            console.error(err);
+            res.send("Error " + err);
+        }
+        
     });
 
     app.get('/cart', async (req, res) => {
