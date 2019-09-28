@@ -129,9 +129,7 @@ function validatePassword(receivedEmail, receivedPassword){
         if(hashDiff == 0) return true;
         else return false;
 
-    }).catch(function(Error){
-        return Error;
-    })
+    }).catch(function(Error){ return Error; })
 }
 
 module.exports = {
@@ -145,6 +143,9 @@ module.exports = {
     },
     storePassword: function(receivedEmail, receivedPassword){
         return storePassword(receivedEmail, receivedPassword)
+    },
+    validatePassword: function(receivedEmail, receivedPassword){
+        return validatePassword(receivedEmail, receivedPassword)
     }
 }
 
