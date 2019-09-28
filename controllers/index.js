@@ -151,8 +151,6 @@ function verifyToken(req, res, next) {
     
     const cookieToken = req.cookies.token;
 
-    console.log(cookieToken)
-
     if(!cookieToken){
         return res.status(400).send({
             success: 'false',
@@ -176,8 +174,11 @@ function verifyToken(req, res, next) {
                     message: 'Error verifying authorization token ' + errorMessage
                 })
             }
+            
+            console.log(accessToken)
+            console.log(sjcl.hash.sha256.hash(cookieToken))
 
-            if(sjcl.hash.sha256.hash(cookieToken) != accessToken){
+            if(String(sjcl.hash.sha256.hash(cookieToken)) != String(accessToken)){
                 return res.status(400).send({
                     success: 'false',
                     message: 'Error tokens did not match'
