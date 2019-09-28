@@ -1,166 +1,19 @@
 <html lang="en-Us">
+
 <head>
 
 	<meta charset="utf-8">
-    
+
 	<title>Login with Facebook or Twitter</title>
 
-	<link rel="stylesheet" href="css/style.css">
-    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300'>
-    
-    <style>
-@charset "utf-8";
-/* CSS Document */
+	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300'>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
 
-/* ---------- FONTAWESOME ---------- */
-/* ---------- https://fortawesome.github.com/Font-Awesome/ ---------- */
-/* ---------- http://weloveiconfonts.com/ ---------- */
+	<% include ../partials/header.ejs %>
+	<%- include("../partials/nav.ejs", {loggedin: false}) %>
 
-@import url(http://weloveiconfonts.com/api/?family=fontawesome);
-
-/* ---------- ERIC MEYER'S RESET CSS ---------- */
-/* ---------- https://meyerweb.com/eric/tools/css/reset/ ---------- */
-
-@import url(https://meyerweb.com/eric/tools/css/reset/reset.css);
-
-/* ---------- FONTAWESOME ---------- */
-
-[class*="fontawesome-"]:before {
-  font-family: 'FontAwesome', sans-serif;
-}
-
-/* ---------- GENERAL ---------- */
-
-body {
-	background: #f4f4f4;
-	color: #5a5656;
-	font: 100%/1.5em 'Open Sans', sans-serif;
-  margin: 0;
-}
-
-a { text-decoration: none; }
-
-h1 { font-size: 1em; }
-
-h1, p {
-	margin-bottom: 10px;
-}
-
-strong {
-	font-weight: bold;
-}
-
-.uppercase { text-transform: uppercase; }
-
-/* ---------- LOGIN ---------- */
-
-#login {
-	margin: 50px auto;
-	width: 300px;
-}
-
-form fieldset input[type="text"], input[type="password"] {
-	background: #e5e5e5;
-	border: none;
-	border-radius: 3px;
-	color: #5a5656;
-	font-family: inherit;
-	font-size: 14px;
-	height: 50px;
-	outline: none;
-	padding: 0px 10px;
-	width: 280px;
-  -webkit-appearance:none;
-}
-
-form fieldset input[type="submit"] {
-	background-color: #008dde;
-	border: none;
-	border-radius: 3px;
-	color: #f4f4f4;
-	cursor: pointer;
-	font-family: inherit;
-	height: 50px;
-	text-transform: uppercase;
-	width: 300px;
-  -webkit-appearance:none;
-}
-
-form fieldset a {
-	color: #5a5656;
-	font-size: 10px;
-}
-
-form fieldset a:hover { text-decoration: underline; }
-
-.btn-round {
-	background: #5a5656;
-	border-radius: 50%;
-	color: #f4f4f4;
-	display: block;
-	font-size: 12px;
-	height: 50px;
-	line-height: 50px;
-	margin: 30px 125px;
-	text-align: center;
-	text-transform: uppercase;
-	width: 50px;
-}
-
-.facebook-before {
-	background: #0064ab;
-	border-radius: 3px 0px 0px 3px;
-	color: #f4f4f4;
-	display: block;
-	float: left;
-	height: 50px;
-	line-height: 50px;
-	text-align: center;
-	width: 50px;
-}
-
-.facebook {
-	background: #0079ce;
-	border: none;
-	border-radius: 0px 3px 3px 0px;
-	color: #f4f4f4;
-	cursor: pointer;
-	height: 50px;
-	text-transform: uppercase;
-	width: 250px;
-}
-
-.twitter-before {
-	background: #189bcb;
-	border-radius: 3px 0px 0px 3px;
-	color: #f4f4f4;
-	display: block;
-	float: left;
-	height: 50px;
-	line-height: 50px;
-	text-align: center;
-	width: 50px;
-}
-
-
-.twitter {
-	background: #1bb2e9;
-	border: none;
-	border-radius: 0px 3px 3px 0px;
-	color: #f4f4f4;
-	cursor: pointer;
-	height: 50px;
-	text-transform: uppercase;
-	width: 250px;
-}
-    </style>
-
-	<!--[if lt IE 9]>
-		<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-
-    <% include ../partials/header.ejs %>
-    <%- include("../partials/nav.ejs", {loggedin: false}) %> 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+	<script src="/scripts/login.js"></script>
 
 </head>
 
@@ -170,22 +23,24 @@ form fieldset a:hover { text-decoration: underline; }
 
 		<h1><strong>Welcome.</strong> Please login.</h1>
 
-		<form action="javascript:void(0);" method="get">
+		<form id="loginForm" action="javascript:void(0);" method="get">
 
 			<fieldset>
 
 				<label for="email">Email Address</label>
-				<p><input type="text" id="email" placeholder="Enter email address" name="email"></p> 
+				<p><input type="email" id="email" placeholder="Enter email address" name="email" required
+						autocomplete="email"></p>
 
 				<label for="password">Password</label>
-				<p><input type="password" id="password" placeholder="Enter password" name="password"></p> 
+				<p><input type="password" id="password" placeholder="Enter password" name="password" required
+						autocomplete="current-password"></p>
 
-                <p><a href="#">Forgot Password?</a></p>
-                <p><a href="/register">Don't have an account? Create one!</a></p>
+				<p><a href="#">Forgot Password?</a></p>
+				<p><a href="/register">Don't have an account? Create one!</a></p>
 
-				<div class="clearfix">
-					<button type="submit" class="loginbtn" id="loginbtn">Login</button>
-				</div>
+
+				<button type="submit" class="loginbtn" id="loginbtn" disabled>Login</button>
+
 
 			</fieldset>
 
@@ -208,35 +63,6 @@ form fieldset a:hover { text-decoration: underline; }
 		</p>
 
 	</div> <!-- end login -->
-
-	<script type="text/javascript">
-	$(document).ready(function () {
-		$('#loginbtn').click(function (event) {
-			
-			event.preventDefault();          
-				
-			$.ajax({
-				method: 'POST',
-				url: 'login',
-				dataType: 'json',
-				processData: false,
-				contentType: 'application/json',
-				data: JSON.stringify({
-					'email':  $('#email').val(),
-					'password': $('#password').val()
-				}),
-				success: (result) => {
-					location.href = "/"
-					window.sessionStorage.setItem('token', req.token);
-				},
-				error: (result) => {
-					console.log(result.message)
-				}
-			})
-		});
-	});
-	</script>      
-	  
-
 </body>
+
 </html>
