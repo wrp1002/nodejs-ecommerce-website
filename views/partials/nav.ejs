@@ -57,11 +57,7 @@
           request.setRequestHeader('authorization', 'Bearer ' + window.sessionStorage.getItem('token'));
         },
         success: (result) => {
-          console.log("Success")
-        },
-        error: (result) => {
-          console.log("Error")
-          console.log(result.message)
+          $(document).html(result)
         }
       })
     });
