@@ -36,17 +36,17 @@ module.exports = function(app) {
         }
 
         passwordHash.validatePassword(req.body.email, req.body.password).then(
-        
+            
             function(successMessage){   
                 
                 if(successMessage){
             
                     jwt.sign(req.body.email, "secretkey", { expiresIn: '15m' }, (err, token) => {
 
-                        if(err){
+                        if(errorMessage){
                             return res.status(400).send({
                                 success: 'false',
-                                message: 'Signing the authorization token failed'
+                                message: 'Signing the authorization token failed: ' + errorMessage
                             })
                         }
 
