@@ -23,10 +23,10 @@
       <li class="navbar-right">
         <% if (loggedIn) { %>
           <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span> Account</a>
+          <a href="/auth/logout"><span class="glyphicon glyphicon-book"></span> Logout</a>
         <% } %>
         <% if (!loggedIn) { %>
           <a href="/login"><span class="glyphicon glyphicon-book"></span> Login</a>
-          <a href="auth/logout"><span class="glyphicon glyphicon-book"></span> Logout</a>
         <% } %>
       </li>
     </ul>
