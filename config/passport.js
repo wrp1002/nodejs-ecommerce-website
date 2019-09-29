@@ -50,6 +50,8 @@ module.exports = function(passport) {
     }, 
 
     async(accessToken, refreshToken, userProfile, done) => {
+
+        //
         
         const client = await databasePool.connect();
 
