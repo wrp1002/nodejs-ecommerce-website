@@ -88,24 +88,41 @@ router.post('/register', async(req, res) => {
 
 })
 
+router.get('/google', passport.authenticate('google', {
+    scope: 'email'
+}))
+
+router.get('/google/callback', async(req, res, next) => {
+
+    passport.authenticate('google', {
+
+        successRedirect: '/',
+        failureRedirect: 'users/login',
+        failureFlash: true
+
+    })(req, res, next);
+
+})
+
 router.post('/login', async(req, res, next) => {
     
     passport.authenticate('local', {
 
         successRedirect: '/',
-        failureRedirect: '/login',
+        failureRedirect: 'users/login',
         failureFlash: true
 
     })(req, res, next);
-});
+
+})
   
 router.get('/logout', async(req, res) => {
     
-    req.logout();
+    req.logout();+
     req.flash('success_msg', 'You are logged out');
-    res.redirect('/login');
+    res.redirect('users/login');
 
-});
+})
 
 //Resetting password
 //await client.query("UPDATE users SET password_hash = $1, salt = $2 WHERE email = $3", [passwordHash, generatedSalt, receivedEmail], function(errorMessage, results) {

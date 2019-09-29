@@ -23,6 +23,7 @@
     "jsonwebtoken": "^8.5.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "passport-oauth": "^1.0.0",
     "pg": "^7.12.1",
     "sjcl": "^1.0.8"
   },
