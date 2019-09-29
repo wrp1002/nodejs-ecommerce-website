@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <% include ../partials/header.ejs %>
+        <%- include("../partials/nav.ejs", {loggedin: false}) %> 
+    </head>
+
+    <body>
+        <img id="product">
+
+        <form action="/add" method="POST">
+            Image path: <input type="text" id="in" name="image_path" oninput="document.getElementById('product').src=document.getElementById('in').value"><br>
+            Name: <input type="text" name="name"><br>
+            Description: <input type="text" name="description"><br>
+            Category: <input type="text" name="category"><br>
+            Price: <input type="text" name="price"><br>
+            <input type="submit" value="Submit">
+            
+        </form>
+
+        <script>
+            function getParameterByName(name, url) {
+                if (!url) url = window.location.href;
+                name = name.replace(/[\[\]]/g, '\\$&');
+                var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                    results = regex.exec(url);
+                if (!results) return null;
+                if (!results[2]) return '';
+                return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            }
+
+            document.getElementById('in').value = getParameterByName('imgpath');
+            document.getElementById('product').src = getParameterByName('imgpath');
+        </script>
+    </body>
+
+</html>

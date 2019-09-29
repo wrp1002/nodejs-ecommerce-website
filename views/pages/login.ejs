@@ -1,10 +1,12 @@
 <html lang="en-Us">
+
 <head>
 
 	<meta charset="utf-8">
-    
+
 	<title>Login with Facebook or Twitter</title>
 
+<<<<<<< HEAD
 	<link rel="stylesheet" href="css/style.css">
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300'>
     
@@ -161,6 +163,16 @@ form fieldset a:hover { text-decoration: underline; }
 
     <% include ../partials/header.ejs %>
 	<%- include("../partials/nav.ejs", { loggedIn }) %> 
+=======
+	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300'>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
+
+	<% include ../partials/header.ejs %>
+	<%- include("../partials/nav.ejs", {loggedin: false}) %>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+	<script src="/scripts/login.js"></script>
+>>>>>>> 3bf5f5f523e7653914ee3e85cda6746129e3162c
 
 </head>
 
@@ -170,16 +182,26 @@ form fieldset a:hover { text-decoration: underline; }
 
 		<h1><strong>Welcome.</strong> Please login.</h1>
 
+<<<<<<< HEAD
 		<form action="/users/login" method="POST">
+=======
+		<form id="loginForm" action="javascript:void(0);" method="get">
+>>>>>>> 3bf5f5f523e7653914ee3e85cda6746129e3162c
 
 			<fieldset>
 
 				<label for="email">Email Address</label>
-				<p><input type="text" id="email" placeholder="Enter email address" name="email"></p> 
+				<p><input type="email" id="email" placeholder="Enter email address" name="email" required
+						autocomplete="email"></p>
 
 				<label for="password">Password</label>
-				<p><input type="password" id="password" placeholder="Enter password" name="password"></p> 
+				<p><input type="password" id="password" placeholder="Enter password" name="password" required
+						autocomplete="current-password"></p>
 
+				<p><a href="#">Forgot Password?</a></p>
+				<p><a href="/register">Don't have an account? Create one!</a></p>
+
+<<<<<<< HEAD
                 <p><a href="#">Forgot Password?</a></p>
                 <p><a href="/register">Don't have an account? Create one!</a></p>
 				<a href="/auth/google">Log In with OAuth Google Provider</a>
@@ -187,6 +209,11 @@ form fieldset a:hover { text-decoration: underline; }
 				<div class="clearfix">
 					<button type="submit" class="loginbtn" id="loginbtn">Login</button>
 				</div>
+=======
+
+				<button type="submit" class="loginbtn" id="loginbtn" disabled>Login</button>
+
+>>>>>>> 3bf5f5f523e7653914ee3e85cda6746129e3162c
 
 			</fieldset>
 
@@ -208,7 +235,12 @@ form fieldset a:hover { text-decoration: underline; }
 
 		</p>
 
+<<<<<<< HEAD
 	</div> <!-- end login -->	  
 
+=======
+	</div> <!-- end login -->
+>>>>>>> 3bf5f5f523e7653914ee3e85cda6746129e3162c
 </body>
+
 </html>

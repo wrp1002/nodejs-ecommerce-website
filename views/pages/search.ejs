@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <% include ../partials/header.ejs %>
+        <%- include("../partials/nav.ejs", {loggedin: false}) %> 
+
+        <script>
+            function GetResults() {
+                let search = document.getElementById('search').value;
+                document.getElementById('results').innerHTML = "Searching...";
+
+                $.ajax({
+                    type: "POST",
+                    url: "/search",
+                    data: JSON.stringify({search: search}),
+                    contentType: "application/json; charset=utf-8",
+                    //success: function(data){ console.log(data); },
+                    failure: function(errMsg) { console.log(errMsg); }
+                }).then(function(data) {
+                    document.getElementById('results').innerHTML = data;
+                });
+            }
+        </script>
+
+    </head>
+
+    <body>
+        <form action="javascript:GetResults()">
+                <input type="search" id="search" name="search" value="">
+                <input type="submit" value="Submit">
+        </form>
+
+        <div id="results">
+
+
+        </div>
+
+    </body>
+
+</html>
