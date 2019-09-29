@@ -48,28 +48,4 @@ $(document).ready(function () {
         }
         showError = true;
     });
-
-    $loginBtn.click(function (event) {
-
-        event.preventDefault();
-
-        $.ajax({
-            method: 'POST',
-            url: 'login',
-            dataType: 'json',
-            processData: false,
-            contentType: 'application/json',
-            data: JSON.stringify({
-                'email': $('#email').val(),
-                'password': $('#password').val()
-            }),
-            success: (result) => {
-                location.href = "/"
-                window.sessionStorage.setItem('token', req.token);
-            },
-            error: (result) => {
-                console.log(result.message)
-            }
-        })
-    });
 });

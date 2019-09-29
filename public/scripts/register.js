@@ -3,7 +3,7 @@ $(document).ready(function () {
     const $signupBtn = $('#signupbtn');
     const $emailField = $('#email');
     const $passwordField = $('#password');
-    const $confirmField = $('#confirmPassword');
+    const $confirmField = $('#confirm');
     let showError = true;
 
     /**
@@ -18,7 +18,7 @@ $(document).ready(function () {
             password: {
                 required: true
             },
-            confirmPassword: {
+            confirm: {
                 required: true,
                 equalTo: "#password"
             }
@@ -31,7 +31,7 @@ $(document).ready(function () {
             password: {
                 required: "Please enter your password",
             },
-            confirmPassword: {
+            confirm: {
                 required: "Please re-enter password",
                 equalTo: "Passwords must match"
             }
@@ -57,28 +57,5 @@ $(document).ready(function () {
             $signupBtn.attr("disabled", "disabled");
         }
         showError = true;
-    });
-    
-    $('#signupbtn').click(function (event) {
-
-      event.preventDefault();
-
-      $.ajax({
-        method: 'POST',
-        url: 'register',
-        dataType: 'json',
-        processData: false,
-        contentType: 'application/json',
-        data: JSON.stringify({
-          'email': $('#email').val(),
-          'password': $('#password').val()
-        }),
-        success: (result) => {
-          location.href = "/"
-        },
-        error: (result) => {
-          console.log(result.message);
-        }
-      })
     });
   });
