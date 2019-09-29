@@ -54,7 +54,7 @@ module.exports = function(passport) {
         
         const client = await databasePool.connect();
 
-        await client.query("SELECT * FROM users WHERE email = $1", [email], async(errorMessage, userInformation) => {
+        await client.query("SELECT * FROM users WHERE email = $1", [userProfile.emails[0].value], async(errorMessage, userInformation) => {
             
             if(errorMessage) throw errorMessage
 
