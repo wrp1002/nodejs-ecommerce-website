@@ -26,11 +26,12 @@
     </ul>
     <ul class="nav navbar-nav navbar-right">
       <li class="navbar-right">
+        <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span>Account</a>
         <% if (loggedin) { %>
-          <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span> Login</a>
+          <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span>Account</a>
         <% } %>
         <% if (!loggedin) { %>
-          <a href="users/login"><span class="glyphicon glyphicon-book"></span> Login</a>
+          <a href="/login"><span class="glyphicon glyphicon-book"></span> Login</a>
           <!--<a href="/register"><span class="glyphicon glyphicon-book"></span> Register</a>-->
         <% } %>
       </li>

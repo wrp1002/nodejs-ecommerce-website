@@ -87,7 +87,7 @@ router.get('/google/callback', async(req, res, next) => {
     passport.authenticate('google', {
 
         successRedirect: '/',
-        failureRedirect: 'auth/login',
+        failureRedirect: '/login',
         failureFlash: true
 
     })(req, res, next);
@@ -99,7 +99,7 @@ router.post('/login', async(req, res, next) => {
     passport.authenticate('local', {
 
         successRedirect: '/',
-        failureRedirect: 'auth/login',
+        failureRedirect: '/login',
         failureFlash: true
 
     })(req, res, next);
@@ -108,9 +108,9 @@ router.post('/login', async(req, res, next) => {
   
 router.get('/logout', async(req, res) => {
     
-    req.logout();+
+    req.logout();
     req.flash('success_msg', 'You are logged out');
-    res.redirect('auth/login');
+    res.redirect('/login');
 
 })
 
