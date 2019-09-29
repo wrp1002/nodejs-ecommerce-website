@@ -89,7 +89,7 @@ router.post('/register', async(req, res) => {
 })
 
 router.get('/google', passport.authenticate('google', {
-    scope: ['profile', 'email' ]
+    scope: [ 'profile' ]
 }))
 
 router.get('/google/callback', async(req, res, next) => {
