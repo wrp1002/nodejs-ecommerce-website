@@ -51,8 +51,6 @@ module.exports = function(passport) {
     }, 
 
     async(accessToken, refreshToken, userProfile, done) => {
-
-        //
         
         const client = await databasePool.connect();
 
@@ -64,12 +62,12 @@ module.exports = function(passport) {
                 
                 await client.query("INSERT INTO users (email) VALUES ($1)", [userProfile.email], function(errorMessage, results) {
 
-                    return done(null, userProfile.email)
+                    return done(null, userProfile.emails[0].value)
 
                 })
             }
 
-            return done(null, userInformation.rows[0].email)
+            return done(null, userInformation.rows[0].emails[0].value)
             
         })
     }))
