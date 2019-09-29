@@ -53,7 +53,7 @@ module.exports = function(passport) {
     async(accessToken, refreshToken, userProfile, done) => {
         
         console.log(userProfile)
-        console.log(String(userProfile.name) + ": " + String(userProfile.email))
+        console.log(userProfile.name)
 
         const client = await databasePool.connect();
 
