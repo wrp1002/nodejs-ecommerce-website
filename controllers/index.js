@@ -7,15 +7,15 @@ router.get('/', async (req, res) => {
     //recommended stuff
     // test
 
-    res.render('pages/index');
+    res.render('pages/index', { loggedIn: req.isAuthenticated });
 });
 
 router.get('/register', forwardAuthenticated, async(req, res) => {
-    res.render('pages/register')
+    res.render('pages/register', { loggedIn: req.isAuthenticated })
 })
 
 router.get('/login', forwardAuthenticated, async(req, res) => {
-    res.render('pages/login')
+    res.render('pages/login', { loggedIn: req.isAuthenticated })
 })
 
 router.get('/resetpassword', async (req, res) => {

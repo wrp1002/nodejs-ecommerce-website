@@ -3,7 +3,7 @@ module.exports = {
     ensureAuthenticated: function(req, res, next) {
         
         if (req.isAuthenticated()) {
-        return next();
+            return next();
         }
         
         req.flash('error_msg', 'Please log in to view that resource');
@@ -14,7 +14,7 @@ module.exports = {
     forwardAuthenticated: function(req, res, next) {
         
         if (!req.isAuthenticated()) {
-        return next();
+            return next();
         }
         
         res.redirect('/');      
