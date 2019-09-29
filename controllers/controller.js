@@ -151,18 +151,26 @@ module.exports = function(app) {
     });
 
     app.get('/search', async (req, res) => {
-        console.log('SEARCH');
+        res.render('pages/search');
+    });
+
+    app.post('/search', async (req, res) => {
         try {
             const client = await pool.connect();
-            var result = await client.query('SELECT * FROM products;');
+            client.query("select * from products where upper(name) LIKE upper('%' || $1 || '%') OR upper(description) LIKE upper('%' || $1 || '%') OR upper(category) LIKE upper('%' || $1 || '%')", [req.body.search], (error, results) => {
+                if (error) {
+                    console.log(error);
+                    res.send("No results found");
+                } 
+                else {
+                    if (results.rows.length > 0)
+                        res.render('partials/searchResults', {'products': results.rows});
+                    else
+                        res.send("No results found");
+                }
+            });
+
             client.release();
-
-            console.log(result.rows);
-            console.log("Length:" + result.rows.length);
-
-            res.render('pages/search', {'products': result.rows});
-
-            
 
         } catch (err) {
             console.error(err);

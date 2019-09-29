@@ -2,33 +2,38 @@
     <head>
         <% include ../partials/header.ejs %>
         <%- include("../partials/nav.ejs", {loggedin: false}) %> 
+
+        <script>
+            function GetResults() {
+                let search = document.getElementById('search').value;
+                document.getElementById('results').innerHTML = "Searching...";
+
+                $.ajax({
+                    type: "POST",
+                    url: "/search",
+                    data: JSON.stringify({search: search}),
+                    contentType: "application/json; charset=utf-8",
+                    //success: function(data){ console.log(data); },
+                    failure: function(errMsg) { console.log(errMsg); }
+                }).then(function(data) {
+                    document.getElementById('results').innerHTML = data;
+                });
+            }
+        </script>
+
     </head>
 
     <body>
-        <div>
-            <% if (products.length == 0) { %>
-                <p>No products found</p>
-            <% } %>
+        <form action="javascript:GetResults()">
+                <input type="search" id="search" name="search" value="">
+                <input type="submit" value="Submit">
+        </form>
 
-            <% for (let i = 0; i < products.length; i++) { %>
+        <div id="results">
 
-                <div style="width:90%; margin:0 auto; padding: 10px 10px;">
-
-                    <div style="display:inline-block; width:15%; padding: 0">
-                        <img style="max-width: 100%;  margin: 0; padding: 0" src=<%=products[i].image_path %>>
-                    </div><div style="display:inline-block; width:65%; vertical-align: top">
-                            <div><h3><%= products[i].name %></h3></div>
-                            <div style="display:inline-block;"><%= products[i].description %></div>
-                    </div><div style="float:right; width:20%; text-align: right;">
-                        <h3>$<%= products[i].price %></h3>
-                        <img height="7%" src="/interface images/buy4.jpg">
-                    </div>
-
-                </div>
-                <hr>
-            <% } %>
 
         </div>
+
     </body>
 
 </html>
