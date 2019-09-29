@@ -1,23 +1,13 @@
 const bcrypt = require('bcryptjs')
-const express = require('express')
 const passport = require('passport')
-const router = express.Router()
+const router = require('express').Router()
 const pg = require('pg');
-
-const { forwardAuthenticated} = require('../config/auth.js')
 
 const databasePool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: true
 });
 
-router.get('/register', forwardAuthenticated, async(req, res) => {
-    res.render('pages/register')
-})
-
-router.get('/login', forwardAuthenticated, async(req, res) => {
-    res.render('pages/login')
-})
 
 router.post('/register', async(req, res) => {
 
@@ -97,7 +87,7 @@ router.get('/google/callback', async(req, res, next) => {
     passport.authenticate('google', {
 
         successRedirect: '/',
-        failureRedirect: 'users/login',
+        failureRedirect: 'auth/login',
         failureFlash: true
 
     })(req, res, next);
@@ -109,7 +99,7 @@ router.post('/login', async(req, res, next) => {
     passport.authenticate('local', {
 
         successRedirect: '/',
-        failureRedirect: 'users/login',
+        failureRedirect: 'auth/login',
         failureFlash: true
 
     })(req, res, next);
@@ -120,11 +110,8 @@ router.get('/logout', async(req, res) => {
     
     req.logout();+
     req.flash('success_msg', 'You are logged out');
-    res.redirect('users/login');
+    res.redirect('auth/login');
 
 })
-
-//Resetting password
-//await client.query("UPDATE users SET password_hash = $1, salt = $2 WHERE email = $3", [passwordHash, generatedSalt, receivedEmail], function(errorMessage, results) {
 
 module.exports = router;

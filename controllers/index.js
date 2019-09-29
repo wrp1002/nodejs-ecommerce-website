@@ -1,5 +1,5 @@
-const express = require('express')
-const router = express.Router()
+const router = require('express').Router()
+const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth.js')
 
 router.get('/', async (req, res) => {
     
@@ -9,6 +9,14 @@ router.get('/', async (req, res) => {
 
     res.render('pages/index');
 });
+
+router.get('/register', forwardAuthenticated, async(req, res) => {
+    res.render('pages/register')
+})
+
+router.get('/login', forwardAuthenticated, async(req, res) => {
+    res.render('pages/login')
+})
 
 router.get('/resetpassword', async (req, res) => {
     
@@ -27,7 +35,7 @@ router.get('/search', async (req, res) => {
     //res.render('pages/index');
 });
 
-router.get('/account', async (req, res) => {
+router.get('/account', ensureAuthenticated, async (req, res) => {
 
     // Purchase history and other info
     res.render('pages/account');

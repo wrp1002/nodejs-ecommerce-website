@@ -41,7 +41,7 @@ app
   .set('view engine', 'ejs')
   .use(express.json())
   .use(express.urlencoded({extended: true}))
-  .use('/users', require('./controllers/users.js'))
+  .use('/auth', require('./controllers/auth.js'))
   .use('/', require('./controllers/index.js'))
   .use(function (req, res, next) {
       // Website you wish to allow to connect

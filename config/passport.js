@@ -53,7 +53,6 @@ module.exports = function(passport) {
     async(accessToken, refreshToken, userProfile, done) => {
         
         const googleInformation = userProfile._json
-        console.log(googleInformation.email)
 
         const client = await databasePool.connect();
 
