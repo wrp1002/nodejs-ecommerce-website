@@ -47,7 +47,7 @@ module.exports = function(passport) {
             
         clientID: process.env.GoogleID,
         clientSecret: process.env.GoogleSecret,
-        callbackURL: 'https://nwen304finalproject.herokuapp.com/users/login/callback'
+        callbackURL: 'https://nwen304finalproject.herokuapp.com/users/google/callback'
     }, 
 
     async(accessToken, refreshToken, userProfile, done) => {
