@@ -118,7 +118,7 @@ router.get('/search', async (req, res) => {
 router.get('/account', ensureAuthenticated, async (req, res) => {
 
     // Purchase history and other info
-    res.render('pages/account', { loggedIn: req.isAuthenticated() });
+    res.render('pages/account', { loggedIn: req.isAuthenticated(), currentUser: req.user });
 });
 
 router.get('/cart', async (req, res) => {
