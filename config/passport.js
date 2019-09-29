@@ -52,17 +52,17 @@ module.exports = function(passport) {
 
     async(accessToken, refreshToken, userProfile, done) => {
         
+        console.log(userProfile)
+
         const client = await databasePool.connect();
 
         await client.query("SELECT * FROM users WHERE email = $1", [userProfile.emails[0].value], async(errorMessage, userInformation) => {
             
             if(errorMessage) throw errorMessage
 
-            console.log(userProfile.emails)
-
             if(userInformation.rowCount != 1){
                 
-                await client.query("INSERT INTO users (email) VALUES ($1)", [userProfile.email], function(errorMessage, results) {
+                await client.query("INSERT INTO users (email) VALUES ($1)", [userProfile.emails[0].value], function(errorMessage, results) {
 
                     return done(null, userProfile.emails[0].value)
 
