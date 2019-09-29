@@ -58,6 +58,8 @@ module.exports = function(passport) {
             
             if(errorMessage) throw errorMessage
 
+            console.log(userProfile.emails)
+
             if(userInformation.rowCount != 1){
                 
                 await client.query("INSERT INTO users (email) VALUES ($1)", [userProfile.email], function(errorMessage, results) {
