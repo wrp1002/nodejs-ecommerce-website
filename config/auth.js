@@ -7,7 +7,7 @@ module.exports = {
         }
         
         req.flash('error_msg', 'Please log in to view that resource');
-        res.redirect('auth/login');
+        res.redirect('/login');
     
     },
 
