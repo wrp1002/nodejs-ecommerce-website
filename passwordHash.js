@@ -2,15 +2,14 @@ const sjcl = require('sjcl');
 const csprng = require('csprng');
 const { Pool } = require('pg');
 
-
+/*
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: false
   });
-  
+*/
   
   // Used to local testing
-  /*
   const pool = new Pool({
       user: 'eqoaufryrlziba',
       host: 'ec2-54-235-104-136.compute-1.amazonaws.com',
@@ -19,7 +18,6 @@ const pool = new Pool({
       port: 5432,
       ssl: true
     });
-  */
 
 const hashIterations = 1000;
 const pseudoRandomFucntion = sjcl.misc.hmac;

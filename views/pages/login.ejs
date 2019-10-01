@@ -10,7 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
 
 	<% include ../partials/header.ejs %>
-	<%- include("../partials/nav.ejs", {loggedin: false}) %>
+	<%- include("../partials/nav.ejs", { loggedIn} ) %>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
 	<script src="/scripts/login.js"></script>
@@ -23,7 +23,7 @@
 
 		<h1><strong>Welcome.</strong> Please login.</h1>
 
-		<form id="loginForm" action="javascript:void(0);" method="get">
+		<form action="/auth/login" method="POST">
 
 			<fieldset>
 
@@ -36,8 +36,9 @@
 						autocomplete="current-password"></p>
 
 				<p><a href="#">Forgot Password?</a></p>
+				<p><a href="/auth/google">Sign in with google OAuth</a></p>
 				<p><a href="/register">Don't have an account? Create one!</a></p>
-
+				
 
 				<button type="submit" class="loginbtn" id="loginbtn" disabled>Login</button>
 
