@@ -1,6 +1,10 @@
 const express = require('express');
 const path = require('path');
 
+if(!process.env.onHeroku) {
+  require('dotenv').config();
+}
+
 const passport = require('passport');
 const flash = require('connect-flash');
 const session = require('express-session');
