@@ -50,7 +50,7 @@ router.get('/forgotpassword', async (req, res) => {
 });
 
 router.get('/search', async (req, res) => {
-    res.render('pages/search');
+    res.render('pages/search', { loggedIn: req.isAuthenticated() });
 });
 
 router.post('/search', async (req, res) => {
@@ -62,8 +62,9 @@ router.post('/search', async (req, res) => {
                 res.send("No results found");
             } 
             else {
-                if (results.rows.length > 0)
-                    res.render('partials/searchResults', {'products': results.rows});
+                if (results.rows.length > 0) {
+                    res.render('partials/searchResults', { loggedIn: req.isAuthenticated(), products: results.rows });
+                }
                 else
                     res.send("No results found");
             }
@@ -78,7 +79,7 @@ router.post('/search', async (req, res) => {
 });
 
 router.get('/add', async (req, res) => {
-    res.render('pages/add');
+    res.render('pages/add', { loggedIn: req.isAuthenticated() });
 });
 
 router.post('/add', async (req, res) => {
