@@ -16,7 +16,8 @@ $(document).ready(function () {
                 email: true
             },
             password: {
-                required: true
+                required: true,
+                minlength: 6
             },
             confirmPassword: {
                 required: true,
@@ -30,10 +31,11 @@ $(document).ready(function () {
             },
             password: {
                 required: "Please enter your password",
+                minlength: "Password must be at least 6 characters"
             },
             confirmPassword: {
                 required: "Please re-enter password",
-                equalTo: "Passwords must match"
+                equalTo: "Passwords must match",
             }
         },
         showErrors: function (errorMap, errorList) {
