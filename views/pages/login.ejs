@@ -23,7 +23,7 @@
 
 		<h1><strong>Welcome.</strong> Please login.</h1>
 
-		<form action="/auth/login" method="POST">
+		<form action="/auth/login" method="POST" id="loginForm">
 
 			<fieldset>
 
@@ -35,7 +35,7 @@
 				<p><input type="password" id="password" placeholder="Enter password" name="password" required
 						autocomplete="current-password"></p>
 
-				<p><a href="#">Forgot Password?</a></p>
+				<p><a href="/forgotpassword">Forgot Password?</a></p>
 				<p><a href="/auth/google">Sign in with google OAuth</a></p>
 				<p><a href="/register">Don't have an account? Create one!</a></p>
 				
