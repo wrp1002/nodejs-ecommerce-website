@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <title>Register</title>
-  <link rel="stylesheet" type="text/css" href="/stylesheets/register.css" />
+  <link rel="stylesheet" type="text/css" href="/stylesheets/generalFormPage.css" />
 
   <% include ../partials/header.ejs %>
 	<%- include("../partials/nav.ejs", { loggedIn} ) %>
@@ -42,7 +42,7 @@
 
       <div class="clearfix">
         <button onclick="window.location.href ='/login'"" type="button" class="cancelbtn">Cancel</button>
-        <button type="submit" class="signupbtn" id="signupbtn" disabled>Sign Up</button>
+        <button type="submit" class="submitbtn" id="signupbtn" disabled>Sign Up</button>
       </div>
     </div>
   </form>
