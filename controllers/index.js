@@ -46,7 +46,7 @@ router.get('/resetpassword', async (req, res) => {
 
 router.get('/forgotpassword', async (req, res) => {
 
-    //res.render('pages/index');
+    res.render('pages/forgotpassword', { loggedIn: req.isAuthenticated() });
 });
 
 router.get('/search', async (req, res) => {
