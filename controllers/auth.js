@@ -69,7 +69,7 @@ router.post('/register', async(req, res) => {
                             'You are now registered and can log in'
                         );
 
-                        res.redirect("/");
+                        res.redirect('/login');
     
                     })
 
