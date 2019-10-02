@@ -119,6 +119,8 @@ router.get('/logout', async (req, res) => {
 router.post('/forgotpassword', [
     check('email', `The email entered is not valid. Please enter a valid email address`).not().isEmpty().isEmail().normalizeEmail()
 ], async (req, res) => {
+
+    // input validation
     const errors = validationResult(req);
     const { email } = req.body;
     if (!errors.isEmpty()) {
@@ -126,6 +128,35 @@ router.post('/forgotpassword', [
         req.flash("error", emailError);
         return res.redirect("/forgotpassword");
     }
+
+    try {
+        const client = await databasePool.connect();
+
+        // check if inputted email address exists
+        await client.query("SELECT * FROM users WHERE email = $1", [email], async (errorMessage, userInformation) => {
+
+            if (errorMessage) throw errorMessage;
+
+            if (userInformation.rowCount == 0) {
+                req.flash('error', 'No account with that email address exists.');
+                return res.redirect('/forgotpassword');
+            }
+
+            // verified email exists, proceed with generating reset password token
+            const token = crypto.randomBytes(20).toString('hex');
+            console.log("token", token);
+
+            // add token and token expiry time to user row in db
+            const result = await client
+            .query(`UPDATE users SET reset_token = $1, token_expiry = to_timestamp($2 / 1000.0) WHERE email = $3 RETURNING *`, [token, Date.now() + 900000, email])
+            .then(rows => console.log("results", rows))
+            .catch(error => console.error(error));
+
+
+        })
+
+    } catch (Error) { console.error(String(Error)) }
+
 
     req.flash("success", `Password reset link successfully sent to ${email}`);
     return res.redirect("/login");
