@@ -68,6 +68,8 @@ router.post('/register', async(req, res) => {
                             'success_msg',
                             'You are now registered and can log in'
                         );
+
+                        res.redirect("/");
     
                     })
 
