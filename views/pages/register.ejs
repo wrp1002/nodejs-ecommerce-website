@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/register.css" />
 
   <% include ../partials/header.ejs %>
-	<%- include("../partials/nav.ejs", { loggedIn} ) %>
+	<% include ../partials/nav.ejs %>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
   <script src="scripts/register.js"></script>
@@ -21,6 +21,8 @@
       <h1>Sign Up</h1>
       <p>Please fill in this form to create an account.</p>
       <hr>
+
+      <% include ../partials/messages.ejs %>
 
       <label for="name"><b>Email</b></label>
       <p><input type="text" placeholder="Enter name" name="name" id="name" autocomplete="name" required></p>
