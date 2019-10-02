@@ -117,16 +117,18 @@ router.get('/logout', async (req, res) => {
 })
 
 router.post('/forgotpassword', [
-    check('email', 'Your email is not valid. Please enter a valid email address').not().isEmpty().isEmail().normalizeEmail()
+    check('email', `The email entered is not valid. Please enter a valid email address`).not().isEmpty().isEmail().normalizeEmail()
 ], async (req, res) => {
     const errors = validationResult(req);
-
+    const { email } = req.body;
     if (!errors.isEmpty()) {
         const emailError = errors.mapped().email.msg;
-        // console.log("errors" , errors.mapped());
         req.flash("error", emailError);
         return res.redirect("/forgotpassword");
     }
+
+    req.flash("success", `Password reset link successfully sent to ${email}`);
+    return res.redirect("/login");
 
 })
 
