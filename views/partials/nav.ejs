@@ -17,18 +17,40 @@
             <li><a href="https://devcenter.heroku.com/articles/getting-started-with-jruby">Getting Started with Ruby on Heroku (Microsoft Windows)</a></li>
           </ul>
       </li>
-      
+
+      <li>
+        <form class="form-inline nav navbar-nav navbar-right" action="/search" method="GET">
+            <div style="padding: 8px 0 0 0;">
+              <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search" aria-label="Search">
+              <button type="submit"><i class="fa fa-search"></i></button>
+            </div>
+        </form>
+      </li>
+
     </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li class="navbar-right">
+
+    <ul class="nav navbar-nav navbar-right">  
+
         <% if (loggedIn) { %>
-          <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span> Account</a>
-          <a href="/auth/logout"><span class="glyphicon glyphicon-book"></span> Logout</a>
+          <li class="navbar-right">
+            <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span> Account</a>
+          </li>
+          <li class="navbar-right">
+            <a href="/auth/logout"><span class="glyphicon glyphicon-book"></span> Logout</a>
+          </li>
         <% } %>
         <% if (!loggedIn) { %>
-          <a href="/login"><span class="glyphicon glyphicon-book"></span> Login</a>
+          <li class="navbar-right">
+            <a href="/login"><span class="glyphicon glyphicon-book"></span> Login</a>
+          </li>
         <% } %>
       </li>
+
+      <li class="navbar-right">
+          
+      </li>
+
     </ul>
+
   </div>
 </nav> 

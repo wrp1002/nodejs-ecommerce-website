@@ -25,6 +25,7 @@ router.post('/register', async (req, res) => {
         if (errorList.length > 0) {
 
             return res.render('pages/register', {
+                loggedIn: req.isAuthenticated(),
                 errorList,
                 name,
                 email,
@@ -43,6 +44,7 @@ router.post('/register', async (req, res) => {
 
                 errorList.push({ msg: 'Email already exists' });
                 return res.render('pages/register', {
+                    loggedIn: req.isAuthenticated(),
                     errorList,
                     name,
                     email,
@@ -68,6 +70,8 @@ router.post('/register', async (req, res) => {
                             'You are now registered and can log in'
                         );
 
+                        res.redirect('/login');
+    
                     })
 
                 })
