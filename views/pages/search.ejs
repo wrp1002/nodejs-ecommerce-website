@@ -80,20 +80,9 @@
     </head>
 
     <body>
-        <div class="topnav">
-            <a class="active" href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-            <input type="text" placeholder="Search..">
-        </div>
-
-
-        <form action="javascript:GetResults()">
-                <input type="search" id="search" name="search" value="">
-                <input type="submit" value="Search">
-        </form>
-
-        <div id="results"></div>
+      <div id="results">
+          <%- include("../partials/searchResults.ejs", { products: products } ) %>
+      </div>
 
     </body>
 

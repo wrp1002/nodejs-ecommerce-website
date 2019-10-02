@@ -50,7 +50,27 @@ router.get('/forgotpassword', async (req, res) => {
 });
 
 router.get('/search', async (req, res) => {
-    res.render('pages/search', { loggedIn: req.isAuthenticated() });
+    let search = req.query.search;
+
+    console.log("searching for " + search);
+
+    const client = await pool.connect();
+        client.query("select * from products where upper(name) LIKE upper('%' || $1 || '%') OR upper(description) LIKE upper('%' || $1 || '%') OR upper(category) LIKE upper('%' || $1 || '%')", [search], (error, results) => {
+            if (error) {
+                console.log(error);
+                res.render('pages/search', { loggedIn: req.isAuthenticated(), products: [] });
+            } 
+            else {
+                console.log(results.rows.length + " results");
+                if (results.rows.length > 0) {
+                    res.render('pages/search', { loggedIn: req.isAuthenticated(), products: results.rows });
+                }
+                else
+                res.render('pages/search', { loggedIn: req.isAuthenticated(), products: [] });
+            }
+        });
+
+        client.release();
 });
 
 router.post('/search', async (req, res) => {
@@ -62,6 +82,7 @@ router.post('/search', async (req, res) => {
                 res.send("No results found");
             } 
             else {
+                console.log(results.rows.length + " results");
                 if (results.rows.length > 0) {
                     res.render('partials/searchResults', { loggedIn: req.isAuthenticated(), products: results.rows });
                 }
@@ -83,9 +104,7 @@ router.get('/add', async (req, res) => {
 });
 
 router.post('/add', async (req, res) => {
-    console.log('SEARCH');
     try {
-        console.log(req.body.name)
         if (req.body.name == "" || req.body.description == "" || req.body.price == "" || req.body.image_path == "" || req.body.category == "") {
             res.send("Error: not all fields were filled");
         }
