@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const router = require('express').Router()
 const pg = require('pg');
+const {check, validationResult} = require('express-validator/check');
 
 const databasePool = new pg.Pool({
   connectionString: process.env.DATABASE_URL,
@@ -23,6 +24,7 @@ router.post('/register', async(req, res) => {
         if (errorList.length > 0) {
 
             return res.render('pages/register', {
+                loggedIn: req.isAuthenticated(),
                 errorList,
                 name,
                 email,
@@ -41,6 +43,7 @@ router.post('/register', async(req, res) => {
 
                 errorList.push({ msg: 'Email already exists' });
                 return res.render('pages/register', {
+                    loggedIn: req.isAuthenticated(),
                     errorList,
                     name,
                     email,
@@ -65,6 +68,8 @@ router.post('/register', async(req, res) => {
                             'success_msg',
                             'You are now registered and can log in'
                         );
+
+                        res.redirect("/");
     
                     })
 
@@ -111,6 +116,13 @@ router.get('/logout', async(req, res) => {
     req.logout();
     req.flash('success_msg', 'You are logged out');
     res.redirect('/login');
+
+})
+
+router.post('/forgotpassword',[
+    check('email','Your email is not valid. Please enter a valid email address').not().isEmpty().isEmail().normalizeEmail()
+] ,async(req, res) => {
+    const{ email } = req.body;
 
 })
 

@@ -8,7 +8,7 @@ $(document).ready(function () {
     /**
      * Validation for the login form
      */
-    let isValid = $loginForm.validate({
+    $loginForm.validate({
         rules: {
             email: {
                 required: true,
@@ -32,7 +32,7 @@ $(document).ready(function () {
                 this.defaultShowErrors();
             }
         }
-    }).checkForm();
+    });
 
 
     /**
