@@ -5,15 +5,15 @@ body {
   box-sizing: border-box;
 }
 
-form {
+form:not(.form-inline) {
   border: 1px solid #ccc;
 }
 
-input:valid {
+p input:valid {
   border: 1px solid black;
 }
 
-input:not(:only-child):invalid {
+p input:not(:only-child):invalid {
   border: 1px solid red;
 }
 
@@ -22,9 +22,9 @@ input:not(:only-child):invalid {
 }
 
 /* Full-width input fields */
-input[type="email"],
-input[type="text"],
-input[type="password"] {
+p input[type="email"],
+p input[type="text"],
+p input[type="password"] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;
@@ -33,10 +33,10 @@ input[type="password"] {
   background: #f1f1f1;
 }
 
-input[type="email"]:focus,
-input[type="name"]:focus,
-input[type="password"]:focus,
-input[type="text"]:focus {
+p input[type="email"]:focus,
+p input[type="name"]:focus,
+p input[type="password"]:focus,
+p input[type="text"]:focus {
   background-color: #ddd;
   outline: none;
 }
@@ -80,7 +80,7 @@ button[disabled] {
 }
 
 /* Add padding to container elements */
-.container {
+.container:not(nav .container)  {
   padding: 16px;
 }
 
