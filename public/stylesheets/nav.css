@@ -1,0 +1,16 @@
+.nav-search {
+    border-radius: 25px;
+}
+
+.nav-button {
+    position: absolute; 
+    right: 0; 
+    top: 8px; 
+    border-radius: 25px; 
+    background-color: #532F8C; 
+    color: white;
+}
+
+.nav-button:hover {
+    background-color: #845ac7;
+}
