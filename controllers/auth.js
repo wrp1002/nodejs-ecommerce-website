@@ -158,15 +158,11 @@ router.post('/forgotpassword', [
                     // send email to user with reset token link
                     const transporter = nodemailer.createTransport({
                         host: 'smtp.mailtrap.io',
-                        port: 465,
-                        secure: true,
+                        port: 2525,
                         auth: {
                             user: process.env.MAILTRAP_USER,
                             pass: process.env.MAILTRAP_PASSWORD
                         },
-                        tls: {
-                            ciphers:'SSLv3'
-                    }
                     });
 
                     const message = {
