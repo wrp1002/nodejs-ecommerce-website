@@ -62,41 +62,11 @@ router.get('/search', async (req, res) => {
             } 
             else {
                 console.log(results.rows.length + " results");
-                if (results.rows.length > 0) {
-                    res.render('pages/search', { loggedIn: req.isAuthenticated(), products: results.rows });
-                }
-                else
-                res.render('pages/search', { loggedIn: req.isAuthenticated(), products: [] });
+                res.render('pages/search', { loggedIn: req.isAuthenticated(), products: results.rows });
             }
         });
 
         client.release();
-});
-
-router.post('/search', async (req, res) => {
-    try {
-        const client = await pool.connect();
-        client.query("select * from products where upper(name) LIKE upper('%' || $1 || '%') OR upper(description) LIKE upper('%' || $1 || '%') OR upper(category) LIKE upper('%' || $1 || '%')", [req.body.search], (error, results) => {
-            if (error) {
-                console.log(error);
-                res.send("No results found");
-            } 
-            else {
-                console.log(results.rows.length + " results");
-                if (results.rows.length > 0) {
-                    res.render('partials/searchResults', { loggedIn: req.isAuthenticated(), products: results.rows });
-                }
-                else
-                    res.send("No results found");
-            }
-        });
-
-        client.release();
-
-    } catch (err) {
-        console.error(err);
-        res.send("Error " + err);
-    }
 });
 
 router.get('/add', async (req, res) => {
@@ -123,6 +93,10 @@ router.post('/add', async (req, res) => {
         res.send("Error " + err);
     }
     
+});
+
+router.get('/cart', ensureAuthenticated, async (req, res) => {
+    res.render('pages/cart', { loggedIn: req.isAuthenticated(), currentUser: req.user });
 });
 
 router.get('/cart', async (req, res) => {

@@ -1,3 +1,23 @@
+<style>
+  .nav-search {
+    border-radius: 25px;
+  }
+
+  .nav-button {
+    position: absolute; 
+    right: 0; 
+    top: 8px; 
+    border-radius: 25px; 
+    background-color: #532F8C; 
+    color: white;
+  }
+
+  .nav-button:hover {
+    background-color: #845ac7;
+  }
+</style>
+
+
 <nav class="navbar navbar-default navbar-static-top navbar-inverse">
   <div class="container">
     <ul class="nav navbar-nav">
@@ -20,10 +40,12 @@
 
       <li>
         <form class="form-inline nav navbar-nav navbar-right" action="/search" method="GET">
-            <div style="padding: 8px 0 0 0;">
-              <input class="form-control mr-sm-2" type="text" name="search" placeholder="Search" aria-label="Search">
-              <button type="submit"><i class="fa fa-search"></i></button>
-            </div>
+          <div style="padding: 8px 0 0 0; position: relative;">
+            <input class="form-control nav-search" type="text" name="search" placeholder="Search" aria-label="Search">
+            <button type="submit" class="form-control nav-button">
+              <span class="glyphicon glyphicon-search"></span>
+            </button>
+          </div>
         </form>
       </li>
 
@@ -36,12 +58,12 @@
             <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span> Account</a>
           </li>
           <li class="navbar-right">
-            <a href="/auth/logout"><span class="glyphicon glyphicon-book"></span> Logout</a>
+            <a href="/auth/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
           </li>
         <% } %>
         <% if (!loggedIn) { %>
           <li class="navbar-right">
-            <a href="/login"><span class="glyphicon glyphicon-book"></span> Login</a>
+            <a href="/login"><span class="glyphicon glyphicon-log-in"></span> Login</a>
           </li>
         <% } %>
       </li>
