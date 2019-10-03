@@ -38,16 +38,15 @@ router.get('/login', forwardAuthenticated, async(req, res) => {
     res.render('pages/login', { loggedIn: req.isAuthenticated(), errorFlash: req.flash('error'), successFlash: req.flash('success') })
 })
 
-router.get('/resetpassword', async (req, res) => {
-    
+router.get('/resetpassword/:token', async (req, res) => {
+    // check that token is valid
+    const client = await pool.connect();
+    client.query("Sel")
 
     //res.render('pages/index');
 });
 
 router.get('/forgotpassword', async (req, res) => {
-
-    console.log("routing for fp ", res.locals);
-    console.log("rew au", req.isAuthenticated());
     res.render('pages/forgotpassword', { loggedIn: req.isAuthenticated(), flashMessages: res.locals});
 });
 
