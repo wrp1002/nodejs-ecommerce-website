@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const router = require('express').Router()
 const { Pool } = require('pg');
-const {check, validationResult} = require('express-validator/check');
+const { check, validationResult } = require('express-validator/check');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
@@ -155,9 +155,45 @@ router.post('/forgotpassword', [
 
             if (errorMessage) throw errorMessage;
 
+            // create mail transporter
+            const transporter = nodemailer.createTransport({
+                host: 'smtp.mailtrap.io',
+                port: 2525,
+                auth: {
+                    user: process.env.MAILTRAP_USER,
+                    pass: process.env.MAILTRAP_PASSWORD
+                },
+            });
+
+            // user does not exist in database, send them an email anyway but without reset token
             if (userInformation.rowCount == 0) {
-                req.flash('error', 'No account with that email address exists.');
-                return res.redirect('/forgotpassword');
+                const message = {
+                    from: `e-commerce@nwen.com`,
+                    to: `${email}`,
+                    subject: `Password Reset`,
+                    text:
+                        `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n` +
+                        `Unfortunately, an account using this email address does not exist in our database.\n\n` +
+                        `If you wish to request another reset password link for a different account, please follow this link: https://nwen304finalproject.herokuapp.com/forgotpassword \n` + `or\n` +
+                        `If you wish to create an account, please follow this link: https://nwen304finalproject.herokuapp.com/register\n\n` +
+                        'If you did not request this, please ignore this email.\n'
+                };
+
+                console.log("Sending reset mail");
+
+                transporter.sendMail(message, function (err, response) {
+                    if (err) {
+                        console.error("Error sending email " + err);
+                        req.flash('error', 'An error occurred trying to process your request. Please try again');
+                        return res.redirect(500, "/forgotpassword");
+                    } else {
+                        console.log("Email response ", response);
+                        req.flash('info', `An email has successfully been sent to ${email} with further instructions.`);
+                        return res.status(200).redirect("/login");
+                    }
+                });
+
+
             }
 
             // verified email exists, proceed with generating reset password token
@@ -169,14 +205,6 @@ router.post('/forgotpassword', [
                 .query(`UPDATE users SET reset_token = $1, token_expiry = to_timestamp($2 / 1000.0) WHERE email = $3`, [token, Date.now() + 900000, email])
                 .then(() => {
                     // send email to user with reset token link
-                    const transporter = nodemailer.createTransport({
-                        host: 'smtp.mailtrap.io',
-                        port: 2525,
-                        auth: {
-                            user: process.env.MAILTRAP_USER,
-                            pass: process.env.MAILTRAP_PASSWORD
-                        },
-                    });
 
                     const message = {
                         from: `e-commerce@nwen.com`,
