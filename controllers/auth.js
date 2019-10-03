@@ -163,7 +163,10 @@ router.post('/forgotpassword', [
                         auth: {
                             user: process.env.MAILTRAP_USER,
                             pass: process.env.MAILTRAP_PASSWORD
-                        }
+                        },
+                        tls: {
+                            ciphers:'SSLv3'
+                    }
                     });
 
                     const message = {
