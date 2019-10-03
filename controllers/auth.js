@@ -1,13 +1,26 @@
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const router = require('express').Router()
-const pg = require('pg');
-const { check, validationResult } = require('express-validator');
+const { Pool } = require('pg');
+const {check, validationResult} = require('express-validator/check');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
-const databasePool = new pg.Pool({
-    connectionString: process.env.DATABASE_URL,
+/*
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: false
+});
+*/
+
+// Used to local testing
+
+const databasePool = new Pool({
+    user: 'eqoaufryrlziba',
+    host: 'ec2-54-235-104-136.compute-1.amazonaws.com',
+    database: 'debldnvrsqnjov',
+    password: 'ca96d213b57dca84daf23d6c6e76840266b0aa26f73bbf30bff67f81d84002ff',
+    port: 5432,
     ssl: true
 });
 
