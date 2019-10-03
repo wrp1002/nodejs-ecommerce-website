@@ -23,8 +23,8 @@ input:not(:only-child):invalid {
 
 /* Full-width input fields */
 input[type="email"],
-input[type="password"],
-input[type="text"] {
+input[type="text"],
+input[type="password"] {
   width: 100%;
   padding: 15px;
   margin: 5px 0 22px 0;
@@ -34,6 +34,7 @@ input[type="text"] {
 }
 
 input[type="email"]:focus,
+input[type="name"]:focus,
 input[type="password"]:focus,
 input[type="text"]:focus {
   background-color: #ddd;
@@ -46,16 +47,6 @@ hr {
 }
 
 /* Set a style for all buttons */
-button {
-  background-color: #4caf50;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  opacity: 0.9;
-}
 
 button:hover {
   opacity: 1;
@@ -67,17 +58,25 @@ button[disabled] {
   cursor: not-allowed;
 }
 
+/* Float cancel and signup buttons and add an equal width */
+.cancelbtn,
+.submitbtn {
+  background-color: #4caf50;
+  color: white;
+  padding: 14px 20px;
+  margin: 8px 0;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  opacity: 0.9;
+  float: left;
+  width: 50%;
+}
+
 /* Extra styles for the cancel button */
 .cancelbtn {
   padding: 14px 20px;
   background-color: #f44336;
-}
-
-/* Float cancel and signup buttons and add an equal width */
-.cancelbtn,
-.submitbtn {
-  float: left;
-  width: 50%;
 }
 
 /* Add padding to container elements */

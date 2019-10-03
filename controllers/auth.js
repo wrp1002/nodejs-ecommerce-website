@@ -3,6 +3,8 @@ const passport = require('passport')
 const router = require('express').Router()
 const { Pool } = require('pg');
 const {check, validationResult} = require('express-validator/check');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 /*
 const pool = new Pool({
@@ -23,17 +25,17 @@ const databasePool = new Pool({
 });
 
 
-router.post('/register', async(req, res) => {
+router.post('/register', async (req, res) => {
 
     try {
 
         var errorList = [];
-        const{ email, name, password, confirm } = req.body;
-        
+        const { email, name, password, confirm } = req.body;
+
         if (!name || !email || !password || !confirm) errorList.push({ msg: 'Please enter all fields' });
         if (password != confirm) errorList.push({ msg: 'Passwords do not match' });
         if (password.length < 6) errorList.push({ msg: 'Password must be at least 6 characters' });
-      
+
         if (errorList.length > 0) {
 
             return res.render('pages/register', {
@@ -45,14 +47,14 @@ router.post('/register', async(req, res) => {
                 confirm
             });
         }
-        
-        const client = await databasePool.connect();
-                
-        await client.query("SELECT * FROM users WHERE email = $1", [email], function(errorMessage, userInformation) {
-                
-            if(errorMessage) throw errorMessage
 
-            if(userInformation.rowCount != 0){
+        const client = await databasePool.connect();
+
+        await client.query("SELECT * FROM users WHERE email = $1", [email], function (errorMessage, userInformation) {
+
+            if (errorMessage) throw errorMessage
+
+            if (userInformation.rowCount != 0) {
 
                 errorList.push({ msg: 'Email already exists' });
                 return res.render('pages/register', {
@@ -66,41 +68,41 @@ router.post('/register', async(req, res) => {
             }
 
             bcrypt.genSalt(10, (saltError, generatedSalt) => {
-                
-                if(saltError) throw saltError
 
-                bcrypt.hash(password, generatedSalt, async(hashError, passwordHash) => {
-                    
-                    if(hashError) throw hashError
-                    
-                    await client.query("INSERT INTO users (email, password_hash, salt) VALUES ($1, $2, $3)", [email, String(passwordHash), generatedSalt], function(errorMessage, results) {
-            
-                        if(errorMessage) throw errorMessage
+                if (saltError) throw saltError
+
+                bcrypt.hash(password, generatedSalt, async (hashError, passwordHash) => {
+
+                    if (hashError) throw hashError
+
+                    await client.query("INSERT INTO users (email, password_hash, salt) VALUES ($1, $2, $3)", [email, String(passwordHash), generatedSalt], function (errorMessage, results) {
+
+                        if (errorMessage) throw errorMessage
 
                         req.flash(
                             'success_msg',
                             'You are now registered and can log in'
                         );
 
-                        res.redirect("/");
-    
+                        res.redirect('/login');
+
                     })
 
                 })
 
             })
-           
+
         })
 
-    } catch(Error) { console.error(String(Error)) }
+    } catch (Error) { console.error(String(Error)) }
 
 })
 
 router.get('/google', passport.authenticate('google', {
-    scope: [ 'profile', 'email' ]
+    scope: ['profile', 'email']
 }))
 
-router.get('/google/callback', async(req, res, next) => {
+router.get('/google/callback', async (req, res, next) => {
 
     passport.authenticate('google', {
 
@@ -112,8 +114,8 @@ router.get('/google/callback', async(req, res, next) => {
 
 })
 
-router.post('/login', async(req, res, next) => {
-    
+router.post('/login', async (req, res, next) => {
+
     passport.authenticate('local', {
 
         successRedirect: '/',
@@ -123,19 +125,97 @@ router.post('/login', async(req, res, next) => {
     })(req, res, next);
 
 })
-  
-router.get('/logout', async(req, res) => {
-    
+
+router.get('/logout', async (req, res) => {
+
     req.logout();
     req.flash('success_msg', 'You are logged out');
     res.redirect('/login');
 
 })
 
-router.post('/forgotpassword',[
-    check('email','Your email is not valid. Please enter a valid email address').not().isEmpty().isEmail().normalizeEmail()
-] ,async(req, res) => {
-    const{ email } = req.body;
+router.post('/forgotpassword', [
+    check('email', `The email entered is not valid. Please enter a valid email address`).not().isEmpty().isEmail().normalizeEmail()
+], async (req, res) => {
+
+    // input validation
+    const errors = validationResult(req);
+    const { email } = req.body;
+    if (!errors.isEmpty()) {
+        const emailError = errors.mapped().email.msg;
+        req.flash("error", emailError);
+        return res.redirect("/forgotpassword");
+    }
+
+    try {
+        const client = await databasePool.connect();
+
+        // check if inputted email address exists
+        await client.query("SELECT * FROM users WHERE email = $1", [email], async (errorMessage, userInformation) => {
+
+            if (errorMessage) throw errorMessage;
+
+            if (userInformation.rowCount == 0) {
+                req.flash('error', 'No account with that email address exists.');
+                return res.redirect('/forgotpassword');
+            }
+
+            // verified email exists, proceed with generating reset password token
+            const token = crypto.randomBytes(20).toString('hex');
+            console.log("token", token);
+
+            // add token and token expiry time to user row in db
+            await client
+                .query(`UPDATE users SET reset_token = $1, token_expiry = to_timestamp($2 / 1000.0) WHERE email = $3`, [token, Date.now() + 900000, email])
+                .then(() => {
+                    // send email to user with reset token link
+                    const transporter = nodemailer.createTransport({
+                        host: 'smtp.mailtrap.io',
+                        port: 2525,
+                        auth: {
+                            user: process.env.MAILTRAP_USER,
+                            pass: process.env.MAILTRAP_PASSWORD
+                        },
+                    });
+
+                    const message = {
+                        from: `e-commerce@nwen.com`,
+                        to: `${email}`,
+                        subject: `Password Reset`,
+                        text:
+                            'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                            'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                            'https://nwen304finalproject.herokuapp.com/resetpassword/' + token + '\n\n' +
+                            'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+
+                    }
+
+                    console.log("Sending reset mail");
+
+                    transporter.sendMail(message, function (err, response) {
+                        if (err) {
+                            console.error("Error sending email " + err);
+                            req.flash('error', 'An error occurred trying to process your request. Please try again');
+                            return res.redirect(500, "/forgotpassword");
+                        } else {
+                            console.log("Email response ", response);
+                            req.flash('info', `An email has successfully been sent to ${email} with further instructions.`);
+                            return res.status(200).redirect("/login");
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                    return res.status(500).send('An error occurred trying to process your request');
+                });
+
+
+        });
+
+    } catch (Error) {
+        console.error(String(Error));
+        return res.status(500).send('An error occurred trying to process your request');
+    }
 
 })
 

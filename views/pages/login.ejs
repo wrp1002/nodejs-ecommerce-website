@@ -23,12 +23,14 @@
 
 		<h1><strong>Welcome.</strong> Please login.</h1>
 
+		<% include ../partials/messages.ejs %>
+
 		<form action="/auth/login" method="POST" id="loginForm">
 
 			<fieldset>
 
 				<label for="email">Email Address</label>
-				<p><input type="email" id="email" placeholder="Enter email address" name="email" required
+				<p><input type="email" id="email" placeholder="Enter email address" name="email" required pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*"
 						autocomplete="email"></p>
 
 				<label for="password">Password</label>

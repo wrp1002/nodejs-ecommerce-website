@@ -35,7 +35,7 @@ router.get('/register', forwardAuthenticated, async(req, res) => {
 })
 
 router.get('/login', forwardAuthenticated, async(req, res) => {
-    res.render('pages/login', { loggedIn: req.isAuthenticated() })
+    res.render('pages/login', { loggedIn: req.isAuthenticated(), errorFlash: req.flash('error'), successFlash: req.flash('success') })
 })
 
 router.get('/resetpassword', async (req, res) => {
@@ -46,7 +46,9 @@ router.get('/resetpassword', async (req, res) => {
 
 router.get('/forgotpassword', async (req, res) => {
 
-    res.render('pages/forgotpassword', { loggedIn: req.isAuthenticated() });
+    console.log("routing for fp ", res.locals);
+    console.log("rew au", req.isAuthenticated());
+    res.render('pages/forgotpassword', { loggedIn: req.isAuthenticated(), flashMessages: res.locals});
 });
 
 router.get('/search', async (req, res) => {
