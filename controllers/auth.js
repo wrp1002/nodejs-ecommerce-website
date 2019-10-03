@@ -3,7 +3,8 @@ const passport = require('passport')
 const router = require('express').Router()
 const pg = require('pg');
 const { check, validationResult } = require('express-validator');
-var crypto = require('crypto');
+const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 
 const databasePool = new pg.Pool({
     connectionString: process.env.DATABASE_URL,
@@ -71,7 +72,7 @@ router.post('/register', async (req, res) => {
                         );
 
                         res.redirect('/login');
-    
+
                     })
 
                 })
@@ -151,19 +152,58 @@ router.post('/forgotpassword', [
             console.log("token", token);
 
             // add token and token expiry time to user row in db
-            const result = await client
-            .query(`UPDATE users SET reset_token = $1, token_expiry = to_timestamp($2 / 1000.0) WHERE email = $3 RETURNING *`, [token, Date.now() + 900000, email])
-            .then(rows => console.log("results", rows))
-            .catch(error => console.error(error));
+            await client
+                .query(`UPDATE users SET reset_token = $1, token_expiry = to_timestamp($2 / 1000.0) WHERE email = $3`, [token, Date.now() + 900000, email])
+                .then(() => {
+                    // send email to user with reset token link
+                    const transporter = nodemailer.createTransport({
+                        host: 'smtp.mailtrap.io',
+                        port: 465,
+                        secure: true,
+                        auth: {
+                            user: process.env.MAILTRAP_USER,
+                            pass: process.env.MAILTRAP_PASSWORD
+                        }
+                    });
+
+                    const message = {
+                        from: `e-commerce@nwen.com`,
+                        to: `${email}`,
+                        subject: `Password Reset`,
+                        text:
+                            'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                            'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                            'https://nwen304finalproject.herokuapp.com/resetpassword/' + token + '\n\n' +
+                            'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+
+                    }
+
+                    console.log("Sending reset mail");
+
+                    transporter.sendMail(message, function (err, response) {
+                        if (err) {
+                            console.error("Error sending email " + err);
+                            req.flash('error', 'An error occurred trying to process your request. Please try again');
+                            return res.redirect(500, "/forgotpassword");
+                        } else {
+                            console.log("Email response ", response);
+                            req.flash('info', `An email has successfully been sent to ${email} with further instructions.`);
+                            return res.status(200).redirect("/login");
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                    return res.status(500).send('An error occurred trying to process your request');
+                });
 
 
-        })
+        });
 
-    } catch (Error) { console.error(String(Error)) }
-
-
-    req.flash("success", `Password reset link successfully sent to ${email}`);
-    return res.redirect("/login");
+    } catch (Error) {
+        console.error(String(Error));
+        return res.status(500).send('An error occurred trying to process your request');
+    }
 
 })
 
