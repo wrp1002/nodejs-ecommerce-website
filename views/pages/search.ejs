@@ -75,7 +75,149 @@
     border: 1px solid #ccc;
   }
 }
+
+
+/* The side navigation menu */
+.sidenav {
+  height: 100%; /* 100% Full-height */
+  width: 400px; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 5; /* Stay on top */
+  top: 50; /* Stay at the top */
+  right: -400px;
+  background-color: #333; /* Black*/
+  overflow-x: hidden; /* Disable horizontal scroll */
+  padding-top: 60px; /* Place content 60px from the top */
+  padding-left: 20px;
+  padding-right: 20px;
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidenav */
+}
+
+/* The navigation menu links */
+.sidenav span, label {
+  padding: 8px 8px 8px 8px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+/* Position and style the close button (top right corner) */
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+/* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+  .fade-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.0);
+    transition: 0.3s;
+    visibility: hidden;
+  }
+
+  .add-cart {
+    color: white;
+    background-color: #2196F3;
+    font-size: 18px;
+    border-radius: 10px;
+    padding: 4px;
+    outline-style: none;
+  }
+
+  .add-cart:hover {
+    background-color: #31B6FF;
+  }
+
+  .cart-title {
+    font-size: 20px;
+    color: blue;
+  }
+
+  .cart-button {
+    width: 90%;
+    font-size: 18px;
+    border-radius: 10px;
+    color: white;
+    border-color: #AAA;
+  }
+
+  .add-cart-submit {
+    background-color: green;
+    position:absolute;
+    bottom: 100px;
+  }
+
+  .add-cart-submit:hover {
+    background-color: lightgreen;
+
+  }
+
+  .cancel-cart-submit {
+    background-color: red;
+    position:absolute;
+    bottom: 60px;
+  }
+
+  .cancel-cart-submit:hover {
+    background-color: lightcoral;
+  }
+  
+
         </style>
+
+<script>
+/* Set the width of the side navigation to 250px */
+function openNav(item) {
+  item = $(item);
+  console.log(item);
+  $("#name").text(item.parent().parent().find('.name').text());
+  $("#price").val(item.parent().parent().find('.price').text());
+  $("#id").val(item.attr('id'));
+  UpdatePrice();
+
+  document.getElementById("mySidenav").style.right = "-0px";
+  document.getElementById("fade").style.visibility = "visible";
+  document.getElementById("fade").style.backgroundColor = "rgba(0,0,0,0.4)";
+  //document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+}
+
+/* Set the width of the side navigation to 0 */
+function closeNav() {
+  document.getElementById("mySidenav").style.right = "-400px";
+  document.getElementById("fade").style.visibility = "hidden";
+  document.getElementById("fade").style.backgroundColor = "rgba(0,0,0,0.0)";
+  //document.body.style.backgroundColor = "white";
+}
+
+function UpdatePrice() {
+  let total = $("#price").val().replace(/\$/g, '') * $("#quantity").val();
+  $("#total").val("$" + total);
+  console.log(price);
+  //$('#price').vaue = newPrice;
+}
+
+
+
+
+</script>
 
     </head>
 
@@ -83,6 +225,67 @@
       <div id="results">
           <%- include("../partials/searchResults.ejs", { products: products } ) %>
       </div>
+
+      
+      <div id="mySidenav" class="sidenav">
+          <a href="javascript:void(0)" class="closebtn" onclick="closeNav();">&times;</a>
+          <span id="name" class="cart-title">name</span>
+          <hr>
+
+          
+          <form id="form" action="/cartAdd">
+              <input id="id" name="id" style="visibility:hidden; display:none;">
+
+              <label for="price">Price:</label>
+              <input type="text" name="price" id="price" disabled><br>
+
+              <label for="quantity">Quantity:</label>
+              <input type="number" name="quantity" id="quantity" min="1" value="1" oninput="UpdatePrice();"><br>
+
+              <label for="total">Total:</label>
+              <input type="text" name="total" id="total" disabled><br>
+
+              <input type="submit" value="Add to cart" class="cart-button add-cart-submit"><br>
+              <input type="button" value="Cancel" class="cart-button cancel-cart-submit" onclick="closeNav();">
+          </form>
+
+
+          <script>
+            function UpdateCart() {
+              console.log("Updating cart...");
+              $.ajax({
+                  url: "/cartCount",
+                  type: 'POST',
+                  success: function(data) {
+                    $("#cart-count").text(data.cartItems);
+                  }
+              });
+            }
+
+            UpdateCart();
+
+            $(function() {
+                $("#form").on("submit", function(e) {
+                    e.preventDefault();
+                    $.ajax({
+                        url: $(this).attr("action"),
+                        type: 'POST',
+                        data: $(this).serialize(),
+                        success: function(data) {
+                          console.log(data.cartItems);
+                          console.log($("cart-count").text());
+                          $("cart-count").text(data.cartItems);
+
+                        }
+                    });
+                });
+            });
+        </script>
+
+
+      </div>
+
+      <div id="fade" class="fade-background" onclick="closeNav();"></div>
 
     </body>
 

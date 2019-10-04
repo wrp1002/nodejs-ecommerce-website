@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth.js')
+const Cart = require('../controllers/cart.js')
 
 const { Pool } = require('pg');
 
@@ -21,21 +22,24 @@ const pool = new Pool({
     ssl: true
 });
 
-router.get('/', async (req, res) => {
-    
-    //nav bar
-    //recommended stuff
-    // test
 
-    res.render('pages/index', { loggedIn: req.isAuthenticated() });
+router.get('/', async (req, res) => {
+
+    //recommended stuff
+
+    let count = await Cart.GetCartCount(req.user);
+    res.render('pages/index', { loggedIn: req.isAuthenticated(), cartCount: count});
+    
 });
 
 router.get('/register', forwardAuthenticated, async(req, res) => {
-    res.render('pages/register', { loggedIn: req.isAuthenticated() })
+    let count = await Cart.GetCartCount(req.user);
+    res.render('pages/register', { loggedIn: req.isAuthenticated(), cartCount: count })
 })
 
 router.get('/login', forwardAuthenticated, async(req, res) => {
-    res.render('pages/login', { loggedIn: req.isAuthenticated(), errorFlash: req.flash('error'), successFlash: req.flash('success') })
+    let count = await Cart.GetCartCount(req.user);
+    res.render('pages/login', { loggedIn: req.isAuthenticated(), cartCount: count, errorFlash: req.flash('error'), successFlash: req.flash('success') })
 })
 
 router.get('/resetpassword/:token', async (req, res) => {
@@ -47,10 +51,12 @@ router.get('/resetpassword/:token', async (req, res) => {
 });
 
 router.get('/forgotpassword', async (req, res) => {
-    res.render('pages/forgotpassword', { loggedIn: req.isAuthenticated(), flashMessages: res.locals});
+    let count = await Cart.GetCartCount(req.user);
+    res.render('pages/forgotpassword', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals});
 });
 
 router.get('/search', async (req, res) => {
+    let count = await Cart.GetCartCount(req.user);
     let search = req.query.search;
 
     console.log("searching for " + search);
@@ -63,7 +69,7 @@ router.get('/search', async (req, res) => {
             } 
             else {
                 console.log(results.rows.length + " results");
-                res.render('pages/search', { loggedIn: req.isAuthenticated(), products: results.rows });
+                res.render('pages/search', { loggedIn: req.isAuthenticated(), cartCount: count, products: results.rows });
             }
         });
 
@@ -71,7 +77,8 @@ router.get('/search', async (req, res) => {
 });
 
 router.get('/add', async (req, res) => {
-    res.render('pages/add', { loggedIn: req.isAuthenticated() });
+    let count = await Cart.GetCartCount(req.user);
+    res.render('pages/add', { loggedIn: req.isAuthenticated(), cartCount: count });
 });
 
 router.post('/add', async (req, res) => {
@@ -87,33 +94,72 @@ router.post('/add', async (req, res) => {
             res.send('<html><head><script>window.close();</script></head></html>');
 
             client.release();
-    }
-
-    } catch (err) {
+        }
+    } 
+    catch (err) {
         console.error(err);
         res.send("Error " + err);
     }
     
 });
 
-router.get('/cart', ensureAuthenticated, async (req, res) => {
-    res.render('pages/cart', { loggedIn: req.isAuthenticated(), currentUser: req.user });
+//router.get('/cart', ensureAuthenticated, async (req, res) => {
+//    res.render('pages/cart', { loggedIn: req.isAuthenticated(), currentUser: req.user });
+//});
+
+router.post('/cartCount', ensureAuthenticated, async (req, res) => {
+    try {
+        const client = await pool.connect();
+
+        client.query("SELECT * FROM cart_items WHERE email = $1", [req.user], (error, results) => {
+            if (error) {
+                if (error) throw error;
+            } 
+            else {
+                console.log(results.rows.length + " cart items");
+                res.json({cartItems: results.rows.length});
+            }
+        });
+
+        client.release();
+    } 
+    catch (err) {
+        console.error(err);
+        res.send("Error " + err);
+    }
 });
 
-router.get('/cart', async (req, res) => {
+router.post('/cartAdd', ensureAuthenticated, async (req, res) => {
+    console.log(req.user);
+    console.log(req.body.id);
+    console.log(req.body.quantity);
     
-    //res.render('pages/index');
+    //res.render('pages/account', { loggedIn: req.isAuthenticated(), currentUser: req.user });
+
+    try {
+        if (req.user == "" || req.body.id == "" || req.body.quantity == "") {
+            res.send("Error: not all fields were filled");
+        }
+        else {
+            const client = await pool.connect();
+            client.query('INSERT INTO cart_items (email, item_id, quantity) values ($1, $2, $3)', [req.user, req.body.id, req.body.quantity], (error, results) => {
+                if (error) throw error;    
+            });
+
+            client.release();
+        }
+    } 
+    catch (err) {
+        console.error(err);
+        res.send("Error " + err);
+    }
 });
 
-router.get('/search', async (req, res) => {
-    
-    //res.render('pages/index');
-});
-
-router.get('/account', ensureAuthenticated, async (req, res) => {
+router.get('/account', async (req, res) => {
 
     // Purchase history and other info
-    res.render('pages/account', { loggedIn: req.isAuthenticated(), currentUser: req.user });
+    let count = await Cart.GetCartCount(req.user);
+    res.render('pages/account', { loggedIn: req.isAuthenticated(), cartCount: count, currentUser: req.user });
 });
 
 router.get('/cart', async (req, res) => {

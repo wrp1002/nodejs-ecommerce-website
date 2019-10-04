@@ -5,19 +5,20 @@
 </div>
 
 <% for (let i = 0; i < products.length; i++) { %>
-    
-        <div style="display:inline-block; width:15%; padding: 0">
-            <img style="max-width: 100%;  margin: 0; padding: 0" src=<%= "..\\" + products[i].image_path %>>
-        </div><div style="display:inline-block; width:65%; vertical-align: top">
-                <div><h3><%= products[i].name %></h3></div>
-                <div style="display:inline-block;"><%= products[i].description %></div>
-        </div><div style="float:right; width:20%; text-align: right;">
-            <h3>$<%= products[i].price %></h3>
-            <button  id="<%= products[i].id %>" onclick="alert('PRODUCT ID: ' + this.id);">
-                <img height="7%" src="/interface images/buy4.jpg">
-            </button>
+        <div>
+            <div style="display:inline-block; width:15%; padding: 0">
+                <img style="max-width: 100%;  margin: 0; padding: 0" src=<%= "..\\" + products[i].image_path %>>
+            </div><div style="display:inline-block; width:65%; vertical-align: top">
+                    <h3 class="name"><%= products[i].name %></h3>
+                    <div style="display:inline-block;"><%= products[i].description %></div>
+            </div><div style="float:right; width:20%; text-align: right;">
+                <h3 class="price">$<%= products[i].price %></h3>
+                <button class="add-cart" id="<%= products[i].id %>" onclick="openNav(this);">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Add to cart
+                </button>
+            </div>
         </div>
-
     <hr>
 <% } %>
 </div>

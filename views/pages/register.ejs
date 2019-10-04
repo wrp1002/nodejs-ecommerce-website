@@ -8,7 +8,7 @@
   <link rel="stylesheet" type="text/css" href="/stylesheets/generalFormPage.css" />
 
   <% include ../partials/header.ejs %>
-	<% include ../partials/nav.ejs %>
+	<%- include("../partials/nav.ejs", { loggedIn, cartCount} ) %>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
   <script src="scripts/register.js"></script>

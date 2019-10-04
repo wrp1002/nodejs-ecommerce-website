@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="/stylesheets/nav.css" />
 
-<nav class="navbar navbar-default navbar-static-top navbar-inverse">
+<nav class="navbar navbar-default navbar-static-top navbar-inverse" style="position:fixed; width:100%;">
   <div class="container">
     <ul class="nav navbar-nav">
       <li class="active">
@@ -37,6 +37,14 @@
 
         <% if (loggedIn) { %>
           <li class="navbar-right">
+
+            <a href="/account">
+              <span class="glyphicon glyphicon-shopping-cart" style="font-size:16px"></span>
+              <span class="cart-badge" id="cart-count"><%= cartCount %></span>
+              
+            </a>
+          </li>
+          <li class="navbar-right">
             <a href="/account" id="account"><span class="glyphicon glyphicon-book"></span> Account</a>
           </li>
           <li class="navbar-right">
@@ -58,3 +66,4 @@
 
   </div>
 </nav> 
+<nav class="navbar navbar-default navbar-static-top navbar-inverse" style="z-index:-1;"></nav>
