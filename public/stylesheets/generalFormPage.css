@@ -80,7 +80,7 @@ button[disabled] {
 }
 
 /* Add padding to container elements */
-.container:not(nav .container)  {
+form:not(.form-inline) .container {
   padding: 16px;
 }
 

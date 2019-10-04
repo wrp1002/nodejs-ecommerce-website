@@ -18,7 +18,7 @@
 </head>
 
 <body>
-
+	<%- include("../partials/flashMessages.ejs") %>
 	<div id="login">
 
 		<h1><strong>Welcome.</strong> Please login.</h1>
@@ -30,7 +30,8 @@
 			<fieldset>
 
 				<label for="email">Email Address</label>
-				<p><input type="email" id="email" placeholder="Enter email address" name="email" required pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*"
+				<p><input type="email" id="email" placeholder="Enter email address" name="email" required
+						pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*"
 						autocomplete="email"></p>
 
 				<label for="password">Password</label>
@@ -40,7 +41,7 @@
 				<p><a href="/forgotpassword">Forgot Password?</a></p>
 				<p><a href="/auth/google">Sign in with google OAuth</a></p>
 				<p><a href="/register">Don't have an account? Create one!</a></p>
-				
+
 
 				<button type="submit" class="loginbtn" id="loginbtn" disabled>Login</button>
 

@@ -26,26 +26,24 @@ const pool = new Pool({
 router.get('/', async (req, res) => {
 
     //recommended stuff
-
     let count = await Cart.GetCartCount(req.user);
-    res.render('pages/index', { loggedIn: req.isAuthenticated(), cartCount: count});
-    
+    res.render('pages/index', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals });
 });
 
 router.get('/register', forwardAuthenticated, async(req, res) => {
     let count = await Cart.GetCartCount(req.user);
-    res.render('pages/register', { loggedIn: req.isAuthenticated(), cartCount: count })
+    res.render('pages/register', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals })
 })
 
 router.get('/login', forwardAuthenticated, async(req, res) => {
     let count = await Cart.GetCartCount(req.user);
-    res.render('pages/login', { loggedIn: req.isAuthenticated(), cartCount: count, errorFlash: req.flash('error'), successFlash: req.flash('success') })
+    res.render('pages/login', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals })
 })
 
 router.get('/resetpassword/:token', async (req, res) => {
     // check that token is valid
     const client = await pool.connect();
-    client.query("Sel")
+
 
     //res.render('pages/index');
 });
