@@ -98,7 +98,7 @@
   padding: 8px 8px 8px 8px;
   text-decoration: none;
   font-size: 25px;
-  color: #818181;
+  color: #BBB;
   transition: 0.3s;
 }
 
@@ -179,6 +179,12 @@
   .cancel-cart-submit:hover {
     background-color: lightcoral;
   }
+
+  .cart-input {
+    position:absolute;
+    right: 20px;
+    margin-top: 15px;
+  }
   
 
         </style>
@@ -237,15 +243,21 @@ function UpdatePrice() {
               <input id="id" name="id" style="visibility:hidden; display:none;">
 
               <label for="price">Price:</label>
-              <input type="text" name="price" id="price" disabled><br>
+              <input type="text" class="cart-input" name="price" id="price" disabled><br>
 
               <label for="quantity">Quantity:</label>
-              <input type="number" name="quantity" id="quantity" min="1" value="1" oninput="UpdatePrice();"><br>
+              <input type="number" class="cart-input" name="quantity" id="quantity" min="1" value="1" oninput="UpdatePrice();"><br>
 
+              <hr>
               <label for="total">Total:</label>
-              <input type="text" name="total" id="total" disabled><br>
+              <input type="text" class="cart-input" name="total" id="total" disabled><br>
 
-              <input type="submit" value="Add to cart" class="cart-button add-cart-submit"><br>
+              <% if (loggedIn) { %>
+                <input type="submit" value="Add to cart" class="cart-button add-cart-submit"><br>
+              <% } %>
+              <% if (!loggedIn) { %>
+                <input type="submit" value="Log in to purchase" class="cart-button add-cart-submit"><br>
+              <% } %>
               <input type="button" value="Cancel" class="cart-button cancel-cart-submit" onclick="closeNav();">
           </form>
 
@@ -257,12 +269,13 @@ function UpdatePrice() {
                   url: "/cartCount",
                   type: 'POST',
                   success: function(data) {
+                    console.log("cartItems:", data.cartItems);
+                    if (data.cartItems == -1)
+                      window.location = "/login";
                     $("#cart-count").text(data.cartItems);
                   }
               });
             }
-
-            UpdateCart();
 
             $(function() {
                 $("#form").on("submit", function(e) {
@@ -274,8 +287,8 @@ function UpdatePrice() {
                         success: function(data) {
                           console.log(data.cartItems);
                           console.log($("cart-count").text());
-                          $("cart-count").text(data.cartItems);
-
+                          closeNav();
+                          UpdateCart();
                         }
                     });
                 });

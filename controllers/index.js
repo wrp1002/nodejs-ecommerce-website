@@ -60,18 +60,18 @@ router.get('/search', async (req, res) => {
     console.log("searching for " + search);
 
     const client = await pool.connect();
-        client.query("select * from products where upper(name) LIKE upper('%' || $1 || '%') OR upper(description) LIKE upper('%' || $1 || '%') OR upper(category) LIKE upper('%' || $1 || '%')", [search], (error, results) => {
-            if (error) {
-                console.log(error);
-                res.render('pages/search', { loggedIn: req.isAuthenticated(), products: [] });
-            } 
-            else {
-                console.log(results.rows.length + " results");
-                res.render('pages/search', { loggedIn: req.isAuthenticated(), cartCount: count, products: results.rows });
-            }
-        });
+    client.query("select * from products where upper(name) LIKE upper('%' || $1 || '%') OR upper(description) LIKE upper('%' || $1 || '%') OR upper(category) LIKE upper('%' || $1 || '%')", [search], (error, results) => {
+        if (error) {
+            console.log(error);
+            res.render('pages/search', { loggedIn: req.isAuthenticated(), products: [] });
+        } 
+        else {
+            console.log(results.rows.length + " results");
+            res.render('pages/search', { loggedIn: req.isAuthenticated(), cartCount: count, products: results.rows });
+        }
+    });
 
-        client.release();
+    client.release();
 });
 
 router.get('/add', async (req, res) => {
@@ -101,11 +101,31 @@ router.post('/add', async (req, res) => {
     
 });
 
-//router.get('/cart', ensureAuthenticated, async (req, res) => {
-//    res.render('pages/cart', { loggedIn: req.isAuthenticated(), currentUser: req.user });
-//});
+router.get('/cart', ensureAuthenticated, async (req, res) => {
+    let user = req.user;
+    let count = await Cart.GetCartCount(req.user);
 
-router.post('/cartCount', ensureAuthenticated, async (req, res) => {
+    const client = await pool.connect();
+    client.query("select * from cart_items where email = $1", [user], (error, results) => {
+        if (error) {
+            console.log(error);
+            res.render('pages/cart', { loggedIn: req.isAuthenticated(), cart: [] });
+        } 
+        else {
+            console.log(results.rows.length + " items");
+            res.render('pages/cart', { loggedIn: req.isAuthenticated(), cartCount: count, cart: results.rows });
+        }
+    });
+
+    client.release();
+});
+
+router.post('/cartCount', async (req, res) => {
+    if (!req.isAuthenticated()) {
+        res.json({cartItems: -1});
+        return;
+    }
+
     try {
         const client = await pool.connect();
 
@@ -141,7 +161,8 @@ router.post('/cartAdd', ensureAuthenticated, async (req, res) => {
         else {
             const client = await pool.connect();
             client.query('INSERT INTO cart_items (email, item_id, quantity) values ($1, $2, $3)', [req.user, req.body.id, req.body.quantity], (error, results) => {
-                if (error) throw error;    
+                if (error) throw error;
+                res.sendStatus(200); 
             });
 
             client.release();

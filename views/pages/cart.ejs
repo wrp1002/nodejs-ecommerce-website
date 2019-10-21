@@ -81,7 +81,9 @@
 
     <body>
       <div id="results">
-          <%= currentUser %>
+          <% for (let i = 0; i < cart.length; i++) { %>
+            <p><%=cart[i].item_id %></p>
+          <% } %>
       </div>
 
     </body>
