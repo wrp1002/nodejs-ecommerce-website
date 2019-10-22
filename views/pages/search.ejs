@@ -42,41 +42,6 @@
               <input type="button" value="Cancel" class="cart-button cancel-cart-submit" onclick="closeNav();">
           </form>
 
-
-          <script>
-            function UpdateCart() {
-              console.log("Updating cart...");
-              $.ajax({
-                  url: "/cartCount",
-                  type: 'POST',
-                  success: function(data) {
-                    console.log("cartItems:", data.cartItems);
-                    if (data.cartItems == -1)
-                      window.location = "/login";
-                    $("#cart-count").text(data.cartItems);
-                  }
-              });
-            }
-
-            $(function() {
-                $("#form").on("submit", function(e) {
-                    e.preventDefault();
-                    $.ajax({
-                        url: $(this).attr("action"),
-                        type: 'POST',
-                        data: $(this).serialize(),
-                        success: function(data) {
-                          console.log(data.cartItems);
-                          console.log($("cart-count").text());
-                          closeNav();
-                          UpdateCart();
-                        }
-                    });
-                });
-            });
-        </script>
-
-
       </div>
 
       <div id="fade" class="fade-background" onclick="closeNav();"></div>

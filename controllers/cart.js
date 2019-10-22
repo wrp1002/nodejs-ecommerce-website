@@ -29,7 +29,10 @@ module.exports = {
                 } 
                 else {
                     client.release();
-                    resolve(results.rows.length);
+                    total = 0;
+                    for (let i = 0; i < results.rows.length; i++)
+                        total += results.rows[i].quantity;
+                    resolve(total);
                 }
             });
         });

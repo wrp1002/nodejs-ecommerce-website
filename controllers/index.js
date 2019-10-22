@@ -106,45 +106,66 @@ router.get('/cart', ensureAuthenticated, async (req, res) => {
     let count = await Cart.GetCartCount(req.user);
 
     const client = await pool.connect();
-    client.query("select * from cart_items where email = $1", [user], (error, results) => {
+    client.query("SELECT cart_items.id, name, quantity, price, image_path FROM cart_items INNER JOIN products ON cart_items.item_id=products.id WHERE cart_items.email = $1", [user], (error, results) => {
         if (error) {
             console.log(error);
-            res.render('pages/cart', { loggedIn: req.isAuthenticated(), cart: [] });
+            res.render('pages/index', { loggedIn: req.isAuthenticated(), cartCount: count });
         } 
         else {
-            console.log(results.rows.length + " items");
-            res.render('pages/cart', { loggedIn: req.isAuthenticated(), cartCount: count, cart: results.rows });
+            //console.log(results.rows.length + " items");
+            let total = 0;
+            for (let i = 0; i < results.rows.length; i++)
+                total += results.rows[i].price * results.rows[i].quantity;
+
+            total = Math.floor(total * 100 + .5) / 100;
+
+            res.render('pages/cart', { loggedIn: req.isAuthenticated(), cartCount: count, cart: results.rows, totalPrice: total });
         }
     });
 
     client.release();
 });
 
-router.post('/cartCount', async (req, res) => {
-    if (!req.isAuthenticated()) {
-        res.json({cartItems: -1});
-        return;
-    }
-
-    try {
+router.delete('/cart', ensureAuthenticated, async (req, res) => {
+    if (req.body.id == "")
+        res.sendStatus(500);
+    else {
         const client = await pool.connect();
-
-        client.query("SELECT * FROM cart_items WHERE email = $1", [req.user], (error, results) => {
+        client.query("DELETE FROM cart_items WHERE id = $1", [req.body.id], (error, results) => {
             if (error) {
-                if (error) throw error;
+                console.log(error);
+                res.sendStatus(500);
             } 
-            else {
-                console.log(results.rows.length + " cart items");
-                res.json({cartItems: results.rows.length});
-            }
+            else
+                res.sendStatus(200);
         });
 
         client.release();
-    } 
-    catch (err) {
-        console.error(err);
-        res.send("Error " + err);
     }
+});
+
+router.patch('/cart', ensureAuthenticated, async (req, res) => {
+    if (req.body.id == "" || req.body.quantity == "")
+        res.sendStatus(500);
+    else {
+        const client = await pool.connect();
+        client.query("UPDATE cart_items SET quantity = $1 WHERE id = $2", [req.body.quantity, req.body.id], (error, results) => {
+            if (error) {
+                console.log(error);
+                res.sendStatus(500);
+            } 
+            else
+                res.sendStatus(200);
+        });
+
+        client.release();
+    }
+});
+
+router.get('/cartCount', async (req, res) => {
+    let count = await Cart.GetCartCount(req.user);
+    console.log("CartCount:" + count)
+    res.json({cartCount: count});
 });
 
 router.post('/cartAdd', ensureAuthenticated, async (req, res) => {

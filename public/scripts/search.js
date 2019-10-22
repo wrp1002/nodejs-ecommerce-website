@@ -37,5 +37,37 @@ function openNav(item) {
   
   function UpdatePrice() {
     let total = $("#price").val().replace(/\$/g, '') * $("#quantity").val();
+    total = Math.floor(total * 100 + .5) / 100;
     $("#total").val("$" + total);
   }
+
+function UpdateCart() {
+console.log("Updating cart...");
+$.ajax({
+    url: "/cartCount",
+    type: 'GET',
+    success: function(data) {
+        console.log("cartItems:", data.cartCount);
+        if (data.cartItems == -1)
+        window.location = "/login";
+        $("#cart-count").text(data.cartCount);
+    }
+});
+}
+
+$(function() {
+    $("#form").on("submit", function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: $(this).attr("action"),
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(data) {
+            console.log(data.cartItems);
+            console.log($("cart-count").text());
+            closeNav();
+            UpdateCart();
+            }
+        });
+    });
+});
