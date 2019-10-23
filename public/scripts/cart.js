@@ -23,7 +23,8 @@ function GetResults() {
 }
 
 function RemoveItem(item) {
-    item =$(item);
+    item = $(item);
+    item.html("Removing...");
     let id = item.attr('id');
     console.log(id);
 

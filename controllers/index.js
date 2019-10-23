@@ -74,12 +74,12 @@ router.get('/search', async (req, res) => {
     client.release();
 });
 
-router.get('/add', async (req, res) => {
+router.get('/add', ensureAuthenticated, async (req, res) => {
     let count = await Cart.GetCartCount(req.user);
     res.render('pages/add', { loggedIn: req.isAuthenticated(), cartCount: count });
 });
 
-router.post('/add', async (req, res) => {
+router.post('/add', ensureAuthenticated, async (req, res) => {
     try {
         if (req.body.name == "" || req.body.description == "" || req.body.price == "" || req.body.image_path == "" || req.body.category == "") {
             res.send("Error: not all fields were filled");
@@ -162,7 +162,7 @@ router.patch('/cart', ensureAuthenticated, async (req, res) => {
     }
 });
 
-router.get('/cartCount', async (req, res) => {
+router.get('/cartCount', ensureAuthenticated, async (req, res) => {
     let count = await Cart.GetCartCount(req.user);
     console.log("CartCount:" + count)
     res.json({cartCount: count});
@@ -193,6 +193,11 @@ router.post('/cartAdd', ensureAuthenticated, async (req, res) => {
         console.error(err);
         res.send("Error " + err);
     }
+});
+
+router.get('/checkout', ensureAuthenticated, async (req, res) => {
+    let count = await Cart.GetCartCount(req.user);
+    res.render('pages/checkout', { loggedIn: req.isAuthenticated(), cartCount: count });
 });
 
 router.get('/account', async (req, res) => {

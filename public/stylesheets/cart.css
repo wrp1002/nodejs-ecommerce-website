@@ -21,10 +21,15 @@
     border-radius: 5px;
     padding: 1px;
     margin-left: 5px;
+    outline:none;
 }
 
 .update-cart:hover {
-    background-image: linear-gradient(rgb(255, 235, 150), rgb(255, 215, 50));
+    background-image: linear-gradient(rgb(255, 255, 150), rgb(255, 215, 100));
+}
+
+.update-cart:active {
+    padding: 0px;
 }
 
 .remove-cart {
@@ -32,6 +37,7 @@
     color: rgb(255, 0, 0);
     background: none;
     border: none;
+    outline:none;
 }
 
 .remove-cart:hover {
@@ -43,17 +49,26 @@
     float: right;
 }
 
-.checkoutContainer button {
-    background-color: green;
+.checkoutContainer a {
+    display: inline-block;
+    text-align: center;
+    background-image: linear-gradient(rgb(0, 200, 0), rgb(0, 150, 0));
     width: 100%;
     font-size: 18px;
     border-radius: 10px;
     color: white;
-    border: 1px solid gray;
+    border: 2px solid darkgray;
+    padding: 3px;
+    text-decoration: none;
 }
 
-.checkoutContainer button:hover {
-    background-color: rgb(0, 200, 0);
+.checkoutContainer a:hover {
+    background-image: linear-gradient(rgb(0, 230, 0), rgb(0, 200, 0));
+}
+
+.checkoutContainer a:active {
+    background-image: none;
+    background-color: rgb(0, 255, 0);
 }
 
 .checkoutBox {

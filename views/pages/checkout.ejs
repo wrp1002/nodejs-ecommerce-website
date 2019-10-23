@@ -1,0 +1,34 @@
+<html>
+    <head>
+        <% include ../partials/header.ejs %>
+        <%- include("../partials/nav.ejs", { loggedIn, cartCount} ) %>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/cart.css" />
+        <script src="/scripts/cart.js"></script>
+
+        <script>
+            function GetResults() {
+                let search = document.getElementById('search').value;
+                document.getElementById('results').innerHTML = "Searching...";
+
+                $.ajax({
+                    type: "POST",
+                    url: "/search",
+                    data: JSON.stringify({search: search}),
+                    contentType: "application/json; charset=utf-8",
+                    //success: function(data){ console.log(data); },
+                    failure: function(errMsg) { console.log(errMsg); }
+                }).then(function(data) {
+                    document.getElementById('results').innerHTML = data; //.replace(new RegExp(search, 'g'), '<b>'+search+'</b>');
+                });
+            }
+        </script>
+    </head>
+
+    <body>
+      <div class="mainContainer">
+          <h1>Checkout</h1>
+      </div>
+
+    </body>
+
+</html>
