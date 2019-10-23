@@ -2,33 +2,23 @@
     <head>
         <% include ../partials/header.ejs %>
         <%- include("../partials/nav.ejs", { loggedIn, cartCount} ) %>
-        <link rel="stylesheet" type="text/css" href="/stylesheets/cart.css" />
-        <script src="/scripts/cart.js"></script>
-
-        <script>
-            function GetResults() {
-                let search = document.getElementById('search').value;
-                document.getElementById('results').innerHTML = "Searching...";
-
-                $.ajax({
-                    type: "POST",
-                    url: "/search",
-                    data: JSON.stringify({search: search}),
-                    contentType: "application/json; charset=utf-8",
-                    //success: function(data){ console.log(data); },
-                    failure: function(errMsg) { console.log(errMsg); }
-                }).then(function(data) {
-                    document.getElementById('results').innerHTML = data; //.replace(new RegExp(search, 'g'), '<b>'+search+'</b>');
-                });
-            }
-        </script>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/checkout.css" />
     </head>
 
     <body>
-      <div class="mainContainer">
-          <h1>Checkout</h1>
-      </div>
+        <div class="mainContainer">
+            <h1>Order summary</h1>
+            <hr>
 
+            <div class="checkoutLabel">Subtotal(<%= cartCount %> items):</div><div class="checkoutValue">$<%= subtotal %></div><br>
+            <div class="checkoutLabel">Shipping:</div><div class="checkoutValue">$<%= shipping %></div><br>
+            <div class="checkoutLabel">Tax:</div><div class="checkoutValue">$<%= tax %></div><br>
+            <hr>
+            <div class="checkoutLabel">Total:</div><div class="checkoutValue">$<%= total %></div>
+        </div>
+        <div class="orderContainer">
+            <a class="placeOrder" href="/placeorder">Place your order</a>
+        </div>
     </body>
 
 </html>

@@ -196,8 +196,38 @@ router.post('/cartAdd', ensureAuthenticated, async (req, res) => {
 });
 
 router.get('/checkout', ensureAuthenticated, async (req, res) => {
+    let user = req.user;
     let count = await Cart.GetCartCount(req.user);
-    res.render('pages/checkout', { loggedIn: req.isAuthenticated(), cartCount: count });
+
+    const client = await pool.connect();
+    client.query("SELECT quantity, price FROM cart_items INNER JOIN products ON cart_items.item_id=products.id WHERE cart_items.email = $1", [user], (error, results) => {
+        if (error) {
+            console.log(error);
+            res.render('pages/index', { loggedIn: req.isAuthenticated(), cartCount: count });
+        } 
+        else {
+            //console.log(results.rows.length + " items");
+            let subtotal = 0;
+            for (let i = 0; i < results.rows.length; i++)
+                subtotal += results.rows[i].price * results.rows[i].quantity;
+
+            subtotal = Math.floor(subtotal * 100 + .5) / 100;
+            let taxPercent = 0.01;          // This could be changed and improved if actual purchases were added
+            let tax = Math.floor(subtotal * taxPercent + .5) / 100;    // This could be changed and improved if actual purchases were added
+            let shipping = 9.99;            // This could be changed and improved if actual purchases were added
+
+            let total = subtotal + tax + shipping;
+
+            res.render('pages/checkout', { loggedIn: req.isAuthenticated(), cartCount: count, subtotal: subtotal, tax: tax, shipping: shipping, total: total });
+        }
+    });
+
+    client.release();
+});
+
+router.get('/placeorder', async (req, res) => {
+    let count = await Cart.GetCartCount(req.user);
+    res.render('pages/placeorder', { loggedIn: req.isAuthenticated(), cartCount: count });
 });
 
 router.get('/account', async (req, res) => {
