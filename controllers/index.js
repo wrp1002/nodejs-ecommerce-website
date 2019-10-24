@@ -169,16 +169,11 @@ router.get('/cartCount', ensureAuthenticated, async (req, res) => {
 });
 
 router.post('/cartAdd', ensureAuthenticated, async (req, res) => {
-    console.log(req.user);
-    console.log(req.body.id);
-    console.log(req.body.quantity);
-    
-    //res.render('pages/account', { loggedIn: req.isAuthenticated(), currentUser: req.user });
+    let count = await Cart.GetCartCount(req.user);
 
     try {
-        if (req.user == "" || req.body.id == "" || req.body.quantity == "") {
-            res.send("Error: not all fields were filled");
-        }
+        if (req.user == "" || req.body.id == "" || req.body.quantity == "")
+            res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count });
         else {
             const client = await pool.connect();
             client.query('INSERT INTO cart_items (email, item_id, quantity) values ($1, $2, $3)', [req.user, req.body.id, req.body.quantity], (error, results) => {
@@ -191,55 +186,119 @@ router.post('/cartAdd', ensureAuthenticated, async (req, res) => {
     } 
     catch (err) {
         console.error(err);
-        res.send("Error " + err);
+        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count });
     }
 });
 
 router.get('/checkout', ensureAuthenticated, async (req, res) => {
     let user = req.user;
-    let count = await Cart.GetCartCount(req.user);
+    let count = await Cart.GetCartCount(user);
+    let checkoutInfo = await Cart.GetTotalPrice(user);
 
-    const client = await pool.connect();
-    client.query("SELECT quantity, price FROM cart_items INNER JOIN products ON cart_items.item_id=products.id WHERE cart_items.email = $1", [user], (error, results) => {
-        if (error) {
-            console.log(error);
-            res.render('pages/index', { loggedIn: req.isAuthenticated(), cartCount: count });
-        } 
-        else {
-            //console.log(results.rows.length + " items");
-            let subtotal = 0;
-            for (let i = 0; i < results.rows.length; i++)
-                subtotal += results.rows[i].price * results.rows[i].quantity;
-
-            subtotal = Math.floor(subtotal * 100 + .5) / 100;
-            let taxPercent = 0.01;          // This could be changed and improved if actual purchases were added
-            let tax = Math.floor(subtotal * taxPercent + .5) / 100;    // This could be changed and improved if actual purchases were added
-            let shipping = 9.99;            // This could be changed and improved if actual purchases were added
-
-            let total = subtotal + tax + shipping;
-
-            res.render('pages/checkout', { loggedIn: req.isAuthenticated(), cartCount: count, subtotal: subtotal, tax: tax, shipping: shipping, total: total });
-        }
-    });
-
-    client.release();
+    res.render('pages/checkout', { loggedIn: req.isAuthenticated(), cartCount: count, subtotal: checkoutInfo.subtotal, tax: checkoutInfo.tax, shipping: checkoutInfo.shipping, total: checkoutInfo.total });
 });
 
-router.get('/placeorder', async (req, res) => {
-    let count = await Cart.GetCartCount(req.user);
-    res.render('pages/placeorder', { loggedIn: req.isAuthenticated(), cartCount: count });
+router.get('/placeorder', ensureAuthenticated, async (req, res) => {
+    let user = req.user;
+    let count = await Cart.GetCartCount(user);
+    let checkoutInfo = await Cart.GetTotalPrice(user);
+    let errors = false;
+
+    try {
+        const client = await pool.connect();
+        client.query('INSERT INTO orders (email, total_price) values ($1, $2) RETURNING *;', [req.user, checkoutInfo.total], (error, results) => {
+            if (error) {
+                console.error(error);
+                errors = true;
+            } 
+            else {
+                let orderID = results.rows[0].id;
+
+                client.query("SELECT products.id, cart_items.quantity FROM cart_items INNER JOIN products ON cart_items.item_id=products.id WHERE cart_items.email = $1", [user], (error, results) => {
+                    if (error) {
+                        console.error(error);
+                        errors = true;
+                    } 
+                    else {
+                        for (let i = 0; i < results.rows.length; i++)  {
+                            client.query("INSERT INTO order_items (order_id, product_id, quantity) VALUES($1, $2, $3);", [orderID, results.rows[i].id, results.rows[i].quantity], (error, results) => {
+                                if (error) {
+                                    console.error(error);
+                                    errors = true;
+                                } 
+                            });
+                        }
+                        client.query("DELETE FROM cart_items where email= $1", [req.user], (error, results) => {
+                            if (error) {
+                                console.error(error);
+                                errors = true;
+                            } 
+                        });
+                    }
+                });
+            }
+        });
+
+        client.release();
+    } 
+    catch (err) {
+        console.error(err);
+        errors = true;
+    }
+
+    if (errors)
+        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count });
+    else
+        res.render('pages/placeorder', { loggedIn: req.isAuthenticated(), cartCount: 0 });
 });
 
-router.get('/account', async (req, res) => {
-
+router.get('/account', ensureAuthenticated, async (req, res) => {
     // Purchase history and other info
+
     let count = await Cart.GetCartCount(req.user);
-    res.render('pages/account', { loggedIn: req.isAuthenticated(), cartCount: count, currentUser: req.user });
+
+    try {
+        const client = await pool.connect();
+        client.query('select * from orders where email = $1;', [req.user], async (error, results) => {
+            if (error)
+                res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count });
+            else {
+                let orders = results.rows;
+                console.log(orders);
+
+                for (let i = 0; i < orders.length; i++)
+                    orders[i].items = await new Promise(async (resolve, reject) => {
+                        client.query('select products.name, order_items.quantity from products INNER JOIN order_items ON products.id=order_items.product_id WHERE order_items.order_id = $1;', [orders[i].id], (error, results) => {
+                            if (error)
+                                resolve([]);
+                            else {
+                                resolve(results.rows);
+                            }
+                        });
+                    });
+
+                for (let i = 0; i < orders.length; i++) {
+                    var monthNames = [
+                        "January", "February", "March",
+                        "April", "May", "June", "July",
+                        "August", "September", "October",
+                        "November", "December"
+                      ];
+                    let date = monthNames[orders[i].date.getMonth()] + " " + orders[i].date.getDate() + ", " + orders[i].date.getFullYear();
+                    orders[i].date = date;
+                }
+
+                res.render('pages/account', { loggedIn: req.isAuthenticated(), cartCount: count, currentUser: req.user, orders: orders.reverse() });
+            }
+        });
+
+        client.release();
+    } 
+    catch (err) {
+        console.error(err);
+        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count });
+    }
 });
 
-router.get('/cart', async (req, res) => {
-    
-    //res.render('pages/index');
-});
 
 module.exports = router;
