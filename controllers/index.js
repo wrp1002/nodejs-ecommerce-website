@@ -286,7 +286,7 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
         purchaseHistory = JSON.stringify(purchaseHistory);
 
         let date = new Date();
-        let fileName = process.cwd() + "\\output.txt";
+        let fileName = process.cwd() + "/output.txt";
         console.log("Saving as", fileName);
 
         fs.writeFile(fileName, purchaseHistory, function(err) {
