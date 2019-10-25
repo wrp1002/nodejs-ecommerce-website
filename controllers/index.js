@@ -4,6 +4,7 @@ const User = require('../controllers/user.js')
 
 const { Pool } = require('pg');
 const fs = require('fs');
+var path = require("path");
 
 /*
 const pool = new Pool({
@@ -286,7 +287,13 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
         purchaseHistory = JSON.stringify(purchaseHistory);
 
         let date = new Date();
-        let fileName = process.cwd() + "/output.txt";
+
+        var temp_dir = path.join(process.cwd(), 'archive/');
+
+        if (!fs.existsSync(temp_dir))
+            fs.mkdirSync(temp_dir);
+
+        let fileName = temp_dir + "/output.txt";
         console.log("Saving as", fileName);
 
         fs.writeFile(fileName, purchaseHistory, function(err) {
