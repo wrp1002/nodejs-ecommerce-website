@@ -293,7 +293,7 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
         if (!fs.existsSync(temp_dir))
             fs.mkdirSync(temp_dir);
 
-        let fileName = temp_dir + "/output.txt";
+        let fileName = temp_dir + "output.txt";
         console.log("Saving as", fileName);
 
         fs.writeFile(fileName, purchaseHistory, function(err) {
