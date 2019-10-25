@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <% include ../partials/header.ejs %>
+        <%- include("../partials/nav.ejs", { loggedIn, cartCount} ) %>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/account.css" />
+        <script src="/scripts/account.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    </head>
+
+    <body>
+        <div class="mainContainer">
+            <h1>Archived files</h1>
+            <hr>
+
+            <% for (let i = 0; i < items.length; i++) { %>
+                <a href="<%= items[i]%>" download="<%= items[i]%>"><%= items[i]%></a><br>
+            <% } %>
+            
+
+        </div>
+    </body>
+
+</html>

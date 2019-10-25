@@ -296,13 +296,14 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
             purchaseHistory = JSON.stringify(purchaseHistory);
 
             let date = new Date();
+            let name = req.body.email + " " + date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " " + date.getHours() + ";" + date.getMinutes() + ".txt";
 
-            var temp_dir = path.join(process.cwd(), 'archive/');
+            var archive_dir = path.join(process.cwd(), 'public/archive/');
 
-            if (!fs.existsSync(temp_dir))
-                fs.mkdirSync(temp_dir);
+            if (!fs.existsSync(archive_dir))
+                fs.mkdirSync(archive_dir);
 
-            let fileName = temp_dir + "output.txt";
+            let fileName = archive_dir + name;
             console.log("Saving as", fileName);
 
             fs.writeFile(fileName, purchaseHistory, function(err) {
@@ -312,10 +313,6 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
                 }
                 else {
                     console.log("Did it");
-                    let tmpPath = path.join(process.cwd(), "archive");
-                    fs.readdir(tmpPath, function(err, items) {
-                        console.log(items);
-                    });
                     res.sendStatus(200);
                 }
             });
@@ -324,11 +321,21 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
 });
 
 router.get('/archive', ensureAuthenticated, async (req, res) => {
+    let count = await User.GetCartCount(req.user);
     let accountType = await User.GetAccountType(req.user);
 
     if (accountType != 'admin')
         res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
     else {
+        let tmpPath = path.join(process.cwd(), "public/archive");
+        console.log(tmpPath);
+        fs.readdir(tmpPath, function(err, items) {
+            if (err)
+                res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
+            else {
+                res.render('pages/archive', { loggedIn: req.isAuthenticated(), cartCount: count, items: items});
+            }
+        });
     }
 });
 
