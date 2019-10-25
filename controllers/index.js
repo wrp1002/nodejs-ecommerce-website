@@ -3,6 +3,7 @@ const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth.js
 const User = require('../controllers/user.js')
 
 const { Pool } = require('pg');
+const fs = require('fs');
 
 /*
 const pool = new Pool({
@@ -269,7 +270,35 @@ router.get('/purchaseHistory', ensureAuthenticated, async (req, res) => {
         res.send("");
     else {
         let purchaseHistory = await User.GetPurchaseHistory(req.query.email);
-        res.render("partials/purchaseHistory", { orders: purchaseHistory });
+        if (purchaseHistory.length == 0)
+            res.send("No results");
+        else
+            res.render("partials/purchaseHistory", { orders: purchaseHistory });
+    }
+});
+
+router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
+    console.log("Archiving...");
+    if (req.body.email == "")
+        res.sendStatus(500);
+    else {
+        let purchaseHistory = await User.GetPurchaseHistory(req.body.email);
+        purchaseHistory = JSON.stringify(purchaseHistory);
+
+        let date = new Date();
+        let fileName = req.user + date.getDate()+ "-" + (date.getMonth()+1) + "-" + date.getFullYear() + ".txt";
+        console.log("Saving as", fileName);
+
+        fs.writeFile(fileName, purchaseHistory, function(err) {
+            if (err) {
+                console.log("fail");
+                res.sendStatus(500);
+            }
+            else {
+                console.log("Did it");
+                res.sendStatus(200);
+            }
+        });
     }
 });
 
