@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth.js')
-const Cart = require('../controllers/cart.js')
+const User = require('../controllers/user.js')
 
 const { Pool } = require('pg');
 
@@ -26,17 +26,17 @@ const pool = new Pool({
 router.get('/', async (req, res) => {
 
     //recommended stuff
-    let count = await Cart.GetCartCount(req.user);
+    let count = await User.GetCartCount(req.user);
     res.render('pages/index', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals });
 });
 
 router.get('/register', forwardAuthenticated, async(req, res) => {
-    let count = await Cart.GetCartCount(req.user);
+    let count = await User.GetCartCount(req.user);
     res.render('pages/register', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals })
 })
 
 router.get('/login', forwardAuthenticated, async(req, res) => {
-    let count = await Cart.GetCartCount(req.user);
+    let count = await User.GetCartCount(req.user);
     res.render('pages/login', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals })
 })
 
@@ -49,12 +49,12 @@ router.get('/resetpassword/:token', async (req, res) => {
 });
 
 router.get('/forgotpassword', async (req, res) => {
-    let count = await Cart.GetCartCount(req.user);
+    let count = await User.GetCartCount(req.user);
     res.render('pages/forgotpassword', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals});
 });
 
 router.get('/search', async (req, res) => {
-    let count = await Cart.GetCartCount(req.user);
+    let count = await User.GetCartCount(req.user);
     let search = req.query.search;
 
     console.log("searching for " + search);
@@ -75,7 +75,7 @@ router.get('/search', async (req, res) => {
 });
 
 router.get('/add', ensureAuthenticated, async (req, res) => {
-    let count = await Cart.GetCartCount(req.user);
+    let count = await User.GetCartCount(req.user);
     res.render('pages/add', { loggedIn: req.isAuthenticated(), cartCount: count });
 });
 
@@ -103,7 +103,7 @@ router.post('/add', ensureAuthenticated, async (req, res) => {
 
 router.get('/cart', ensureAuthenticated, async (req, res) => {
     let user = req.user;
-    let count = await Cart.GetCartCount(req.user);
+    let count = await User.GetCartCount(req.user);
 
     const client = await pool.connect();
     client.query("SELECT cart_items.id, name, quantity, price, image_path FROM cart_items INNER JOIN products ON cart_items.item_id=products.id WHERE cart_items.email = $1", [user], (error, results) => {
@@ -163,13 +163,12 @@ router.patch('/cart', ensureAuthenticated, async (req, res) => {
 });
 
 router.get('/cartCount', ensureAuthenticated, async (req, res) => {
-    let count = await Cart.GetCartCount(req.user);
-    console.log("CartCount:" + count)
+    let count = await User.GetCartCount(req.user);
     res.json({cartCount: count});
 });
 
 router.post('/cartAdd', ensureAuthenticated, async (req, res) => {
-    let count = await Cart.GetCartCount(req.user);
+    let count = await User.GetCartCount(req.user);
 
     try {
         if (req.user == "" || req.body.id == "" || req.body.quantity == "")
@@ -192,16 +191,16 @@ router.post('/cartAdd', ensureAuthenticated, async (req, res) => {
 
 router.get('/checkout', ensureAuthenticated, async (req, res) => {
     let user = req.user;
-    let count = await Cart.GetCartCount(user);
-    let checkoutInfo = await Cart.GetTotalPrice(user);
+    let count = await User.GetCartCount(user);
+    let checkoutInfo = await User.GetTotalPrice(user);
 
     res.render('pages/checkout', { loggedIn: req.isAuthenticated(), cartCount: count, subtotal: checkoutInfo.subtotal, tax: checkoutInfo.tax, shipping: checkoutInfo.shipping, total: checkoutInfo.total });
 });
 
 router.get('/placeorder', ensureAuthenticated, async (req, res) => {
     let user = req.user;
-    let count = await Cart.GetCartCount(user);
-    let checkoutInfo = await Cart.GetTotalPrice(user);
+    let count = await User.GetCartCount(user);
+    let checkoutInfo = await User.GetTotalPrice(user);
     let errors = false;
 
     try {
@@ -255,48 +254,22 @@ router.get('/placeorder', ensureAuthenticated, async (req, res) => {
 router.get('/account', ensureAuthenticated, async (req, res) => {
     // Purchase history and other info
 
-    let count = await Cart.GetCartCount(req.user);
+    let count = await User.GetCartCount(req.user);
+    let accountType = await User.GetAccountType(req.user);
+    let purchaseHistory = await User.GetPurchaseHistory(req.user);
 
-    try {
-        const client = await pool.connect();
-        client.query('select * from orders where email = $1;', [req.user], async (error, results) => {
-            if (error)
-                res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count });
-            else {
-                let orders = results.rows;
-                console.log(orders);
+    if (purchaseHistory != null)
+        res.render('pages/account', { loggedIn: req.isAuthenticated(), cartCount: count, currentUser: req.user, orders: purchaseHistory, accountType: accountType });
+    else
+        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
+});
 
-                for (let i = 0; i < orders.length; i++)
-                    orders[i].items = await new Promise(async (resolve, reject) => {
-                        client.query('select products.name, order_items.quantity from products INNER JOIN order_items ON products.id=order_items.product_id WHERE order_items.order_id = $1;', [orders[i].id], (error, results) => {
-                            if (error)
-                                resolve([]);
-                            else {
-                                resolve(results.rows);
-                            }
-                        });
-                    });
-
-                for (let i = 0; i < orders.length; i++) {
-                    var monthNames = [
-                        "January", "February", "March",
-                        "April", "May", "June", "July",
-                        "August", "September", "October",
-                        "November", "December"
-                      ];
-                    let date = monthNames[orders[i].date.getMonth()] + " " + orders[i].date.getDate() + ", " + orders[i].date.getFullYear();
-                    orders[i].date = date;
-                }
-
-                res.render('pages/account', { loggedIn: req.isAuthenticated(), cartCount: count, currentUser: req.user, orders: orders.reverse() });
-            }
-        });
-
-        client.release();
-    } 
-    catch (err) {
-        console.error(err);
-        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count });
+router.get('/purchaseHistory', ensureAuthenticated, async (req, res) => {
+    if (req.query.email == "")
+        res.send("");
+    else {
+        let purchaseHistory = await User.GetPurchaseHistory(req.query.email);
+        res.render("partials/purchaseHistory", { orders: purchaseHistory });
     }
 });
 

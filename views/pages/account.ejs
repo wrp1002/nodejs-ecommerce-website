@@ -4,6 +4,7 @@
         <% include ../partials/header.ejs %>
         <%- include("../partials/nav.ejs", { loggedIn, cartCount} ) %>
         <link rel="stylesheet" type="text/css" href="/stylesheets/account.css" />
+        <script src="/scripts/account.js"></script>
     </head>
 
     <body>
@@ -12,27 +13,15 @@
             <hr>
             <p>info here</p>
 
+            <% if (accountType == 'admin') {%>
+                <% include ../partials/accountAdminTools.ejs %>
+            <% } %>
+
             <br><br>
             <h1>Purchase History</h1>
             <hr>
+            <%- include("../partials/purchaseHistory.ejs", { orders } ) %>
             
-            <% for (let i = 0; i < orders.length; i++) { %>
-                <h3><%= orders[i].date %> - Total: $<%= orders[i].total_price %></h3>
-                <div class="historyProduct">
-                    <div class="historyHeader">Product</div>
-                    <% for (let j = 0; j < orders[i].items.length; j++) { %>
-                        <div class="historyItem"><%= orders[i].items[j].name %></div>
-                    <% } %>
-                </div>
-                <div class="historyQuantity">
-                    <div class="historyHeader">Quantity</div>
-                    <% for (let j = 0; j < orders[i].items.length; j++) { %>
-                        <div class="historyItem"><%= orders[i].items[j].quantity %></div>
-                    <% } %>
-                </div>
-                <br clear="all" />
-                <hr>
-            <% } %>
 
         </div>
     </body>
