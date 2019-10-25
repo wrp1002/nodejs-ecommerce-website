@@ -267,7 +267,11 @@ router.get('/account', ensureAuthenticated, async (req, res) => {
 });
 
 router.get('/purchaseHistory', ensureAuthenticated, async (req, res) => {
-    if (req.query.email == "")
+    let accountType = await User.GetAccountType(req.user);
+
+    if (accountType != 'admin')
+        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
+    else if (req.query.email == "")
         res.send("");
     else {
         let purchaseHistory = await User.GetPurchaseHistory(req.query.email);
@@ -279,33 +283,52 @@ router.get('/purchaseHistory', ensureAuthenticated, async (req, res) => {
 });
 
 router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
-    console.log("Archiving...");
-    if (req.body.email == "")
-        res.sendStatus(500);
+    let accountType = await User.GetAccountType(req.user);
+
+    if (accountType != 'admin')
+        res.sendStatus(401);
     else {
-        let purchaseHistory = await User.GetPurchaseHistory(req.body.email);
-        purchaseHistory = JSON.stringify(purchaseHistory);
+        console.log("Archiving...");
+        if (req.body.email == "")
+            res.sendStatus(500);
+        else {
+            let purchaseHistory = await User.GetPurchaseHistory(req.body.email);
+            purchaseHistory = JSON.stringify(purchaseHistory);
 
-        let date = new Date();
+            let date = new Date();
 
-        var temp_dir = path.join(process.cwd(), 'archive/');
+            var temp_dir = path.join(process.cwd(), 'archive/');
 
-        if (!fs.existsSync(temp_dir))
-            fs.mkdirSync(temp_dir);
+            if (!fs.existsSync(temp_dir))
+                fs.mkdirSync(temp_dir);
 
-        let fileName = temp_dir + "output.txt";
-        console.log("Saving as", fileName);
+            let fileName = temp_dir + "output.txt";
+            console.log("Saving as", fileName);
 
-        fs.writeFile(fileName, purchaseHistory, function(err) {
-            if (err) {
-                console.log("fail");
-                res.sendStatus(500);
-            }
-            else {
-                console.log("Did it");
-                res.sendStatus(200);
-            }
-        });
+            fs.writeFile(fileName, purchaseHistory, function(err) {
+                if (err) {
+                    console.log("fail");
+                    res.sendStatus(500);
+                }
+                else {
+                    console.log("Did it");
+                    let tmpPath = path.join(process.cwd(), "archive");
+                    fs.readdir(tmpPath, function(err, items) {
+                        console.log(items);
+                    });
+                    res.sendStatus(200);
+                }
+            });
+        }
+    }
+});
+
+router.get('/archive', ensureAuthenticated, async (req, res) => {
+    let accountType = await User.GetAccountType(req.user);
+
+    if (accountType != 'admin')
+        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
+    else {
     }
 });
 
