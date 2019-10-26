@@ -58,6 +58,7 @@ module.exports = {
                     let shipping = 9.99;            // This could be changed and improved if actual purchases were added
         
                     let total = Math.floor((subtotal + tax + shipping) * 100 + .5) / 100
+                    client.release();
                     resolve({subtotal: subtotal, tax: tax, shipping: shipping, total: total});
                 }
             });
@@ -70,9 +71,11 @@ module.exports = {
 
             client.query("SELECT account_type FROM users WHERE email = $1", [user], (error, results) => {
                 if (error) {
+                    client.release();
                     throw error;
                 } 
                 else {
+                    client.release();
                     let type = results.rows[0].account_type;
                     resolve(type);
                 }
@@ -85,16 +88,19 @@ module.exports = {
             let orders = [];
             const client = await pool.connect();
             client.query('select * from orders where email = $1;', [user], async (error, results) => {
-                if (error)
+                if (error) {
+                    client.release();
                     resolve(null);
+                }
                 else {
                     orders = results.rows;
 
                     for (let i = 0; i < orders.length; i++) {
                         orders[i].items = await new Promise(async (resolve, reject) => {
                             client.query('select products.name, order_items.quantity from products INNER JOIN order_items ON products.id=order_items.product_id WHERE order_items.order_id = $1;', [orders[i].id], (error, results) => {
-                                if (error)
+                                if (error) {
                                     resolve([]);
+                                }
                                 else {
                                     resolve(results.rows);
                                 }
@@ -117,5 +123,39 @@ module.exports = {
                 }
             });
         });
+    },
+
+    DeletePurchaseHistory(user) {
+        return new Promise(async (resolve, reject) => {
+            let orders = await module.exports.GetPurchaseHistory(user);
+            console.log(orders);
+
+            const client = await pool.connect();
+            for (let i = 0; i < orders.length; i++) {
+                await new Promise(async (resolve, reject) => {
+                    client.query('DELETE FROM orders WHERE email = $1;', [orders[i].email], (error, results) => {
+                        if (error) {
+                            client.release();
+                            resolve(false);
+                        }
+                    });
+                });
+                console.log("Deleting items");
+                await new Promise(async (resolve, reject) => {
+                    client.query('DELETE FROM order_items WHERE order_id = $1;', [orders[i].id], (error, results) => {
+                        if (error) {
+                            client.release();
+                            resolve(false);
+                        }
+                        else {
+                            console.log("Deleted");
+                        }
+                    });
+                });
+            }
+            client.release();
+            resolve(true);
+        });
     }
+
 }

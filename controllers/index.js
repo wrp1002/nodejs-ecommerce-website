@@ -298,7 +298,7 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
             let date = new Date();
             let name = req.body.email + " " + date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear() + " " + date.getHours() + ";" + date.getMinutes() + ".txt";
 
-            var archive_dir = path.join(process.cwd(), 'public/archive/');
+            var archive_dir = path.join(process.cwd(), 'archive/');
 
             if (!fs.existsSync(archive_dir))
                 fs.mkdirSync(archive_dir);
@@ -312,8 +312,12 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
                     res.sendStatus(500);
                 }
                 else {
-                    console.log("Did it");
-                    res.sendStatus(200);
+                    console.log("Saved");
+
+                    if (User.DeletePurchaseHistory(req.body.email))
+                        res.sendStatus(200);
+                    else
+                    res.sendStatus(500);
                 }
             });
         }
@@ -327,11 +331,11 @@ router.get('/archive', ensureAuthenticated, async (req, res) => {
     if (accountType != 'admin')
         res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
     else {
-        let tmpPath = path.join(process.cwd(), "public/archive");
+        let tmpPath = path.join(process.cwd(), "archive");
         console.log(tmpPath);
         fs.readdir(tmpPath, function(err, items) {
             if (err)
-                res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
+                res.render('pages/archive', { loggedIn: req.isAuthenticated(), cartCount: count, items: []});
             else {
                 res.render('pages/archive', { loggedIn: req.isAuthenticated(), cartCount: count, items: items});
             }
@@ -339,5 +343,19 @@ router.get('/archive', ensureAuthenticated, async (req, res) => {
     }
 });
 
+router.get('/archiveDownload', ensureAuthenticated, async (req, res) => {
+    let accountType = await User.GetAccountType(req.user);
+
+    if (accountType != 'admin')
+        res.sendStatus(401);
+    else {
+        file = path.join(process.cwd(), "archive");
+        file = path.join(file, req.query.file);
+        if (fs.existsSync(file))
+            res.download(file);
+        else
+            res.sendStatus(404);
+    }
+});
 
 module.exports = router;
