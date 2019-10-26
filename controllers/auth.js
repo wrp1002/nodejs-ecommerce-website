@@ -1,10 +1,8 @@
-const bcrypt = require('bcryptjs')
-const passport = require('passport')
-const router = require('express').Router()
+const bcrypt = require('bcryptjs');
+const passport = require('passport');
+const router = require('express').Router();
 const { Pool } = require('pg');
-const { check, validationResult } = require('express-validator/check');
-const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const { check, validationResult } = require('express-validator');
 const mailer = require('../logic/mailer');
 
 /*
@@ -142,69 +140,30 @@ router.post('/forgotpassword', [
     // input validation
     const errors = validationResult(req);
     const { email } = req.body;
+
     if (!errors.isEmpty()) {
+        // email not valid
         const emailError = errors.mapped().email.msg;
         req.flash("error", emailError);
-        return res.redirect("/forgotpassword");
+        return res.status(400).redirect("/forgotpassword");
     }
 
     try {
-        const client = await databasePool.connect();
-
-        // check if inputted email address exists
-        client.query("SELECT * FROM users WHERE email = $1", [email])
-            .then(userInformation => {
-                // user does not exist in database, send them an email anyway but without reset token
-                if (userInformation.rowCount == 0) {
-                    console.log("sending email for when email address does not exist in the database");
-                    await mailer.sendNoUserFoundEmail(email)
-                        .then(response => {
-                            console.log("Email response ", response);
-                            req.flash('info', `An email has successfully been sent to ${email} with further instructions.\n If you did not receive an email, please check your spam.`);
-                            return res.status(200).redirect("/login");
-                        })
-                        .catch(err => {
-                            console.error("Error sending email " + err);
-                            req.flash('error', 'An error occurred trying to process your request. Please try again');
-                            return res.redirect(500, "/forgotpassword");
-                        });
-                }
-
-                // verified email exists, proceed with generating reset password token
-                const token = crypto.randomBytes(20).toString('hex');
-                console.log("token", token);
-
-                // add token and token expiry time to user row in db
-                await client
-                    .query(`UPDATE users SET reset_token = $1, token_expiry = to_timestamp($2 / 1000.0) WHERE email = $3`, [token, Date.now() + 900000, email])
-                    .then(() => {
-                        await mailer.sendResetTokenEmail(email, token)
-                            .then(response => {
-                                console.log("Email response ", response);
-                                req.flash('info', `An email has successfully been sent to ${email} with further instructions.\n If you did not receive an email, please check your spam.`);
-                                return res.status(200).redirect("/login");
-                            })
-                            .catch(err => {
-                                console.error("Error sending email " + err);
-                                req.flash('error', 'An error occurred trying to process your request. Please try again');
-                                return res.redirect(500, "/forgotpassword");
-                            })
-
-
-                    })
-                    .catch(err => {
-                        console.log("error updating database: ", err);
-                        throw err;
-                    });
-            }).catch(err => {
-                throw err;
+        mailer.sendPasswordResetEmail(email)
+            .then(response => {
+                console.log("Email response ", response);
+                req.flash('info', `An email has successfully been sent to ${email} with further instructions.\n If you did not receive an email, please check your spam.`);
+                return res.status(200).redirect("/login");
+            })
+            .catch(err => {
+                console.error("Error sending email " + err);
+                req.flash('error', 'An error occurred trying to process your request. Please try again');
+                return res.status(500).redirect("/forgotpassword");
             });
-
     } catch (Error) {
         console.error(String(Error));
         return res.status(500).send('An error occurred trying to process your request');
     }
-
 })
 
 module.exports = router;

@@ -1,4 +1,6 @@
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
+const db = require('../db/auth');
 
 /**
  * mail transporter object
@@ -22,7 +24,7 @@ const transporter = nodemailer.createTransport({
  * @param {*} email 
  * @param {*} token 
  */
-async function sendResetTokenEmail(email, token) {
+async function sendEmailWithToken(email, token) {
     const message = {
         from: `e-commerce@nwen.com`,
         to: `${email}`,
@@ -35,7 +37,7 @@ async function sendResetTokenEmail(email, token) {
 
     }
 
-    transporter.sendMail(message)
+    return transporter.sendMail(message)
         .then(response => {
             return response;
         })
@@ -55,7 +57,7 @@ async function sendResetTokenEmail(email, token) {
  * 
  * @param {*} email 
  */
-async function sendNoUserFoundEmail(email) {
+async function sendEmailWithoutToken(email) {
     const message = {
         from: `e-commerce@nwen.com`,
         to: `${email}`,
@@ -77,7 +79,34 @@ async function sendNoUserFoundEmail(email) {
         });
 }
 
+async function sendPasswordResetEmail(email) {
+    return db.getUser(email)
+        .then(userInformation => {
+            // user does not exist in database, send them an email anyway but without reset token
+            if (userInformation.rowCount == 0) {
+                console.log("sending email for when email address does not exist in the database");
+                return sendEmailWithoutToken(email);
+            } else {
+                console.log("sending email with reset token to email: ", email);
+                // verified email exists, proceed with generating reset password token
+                const token = crypto.randomBytes(20).toString('hex');
+                console.log("token", token);
+
+                // add token and token expiry time to user row in db
+                return db.setResetToken(email, token)
+                    .then(() => {
+                        return sendEmailWithToken(email, token);
+                    })
+                    .catch(err => {
+                        throw err;
+                    });
+            }
+        })
+        .catch(err => {
+            throw err;
+        })
+}
+
 module.exports = {
-    sendNoUserFoundEmail: sendNoUserFoundEmail,
-    sendResetTokenEmail: sendResetTokenEmail
+    sendPasswordResetEmail: sendPasswordResetEmail
 };
