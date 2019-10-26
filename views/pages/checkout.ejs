@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <% include ../partials/header.ejs %>
+        <%- include("../partials/nav.ejs", { loggedIn, cartCount} ) %>
+        <link rel="stylesheet" type="text/css" href="/stylesheets/checkout.css" />
+    </head>
+
+    <body>
+        <div class="mainContainer">
+            <h1>Order summary</h1>
+            <hr>
+
+            <div class="checkoutLabel">Subtotal(<%= cartCount %> items):</div><div class="checkoutValue">$<%= subtotal %></div><br>
+            <div class="checkoutLabel">Shipping:</div><div class="checkoutValue">$<%= shipping %></div><br>
+            <div class="checkoutLabel">Tax:</div><div class="checkoutValue">$<%= tax %></div><br>
+            <hr>
+            <div class="checkoutLabel">Total:</div><div class="checkoutValue">$<%= total %></div>
+        </div>
+        <div class="orderContainer">
+            <a class="placeOrder" href="/placeorder">Place your order</a>
+        </div>
+    </body>
+
+</html>

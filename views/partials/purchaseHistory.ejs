@@ -1,0 +1,21 @@
+<% if (orders.length == 0) { %>
+    <div class="historyHeader">No purchases made yet</div>
+<% } %>
+
+<% for (let i = 0; i < orders.length; i++) { %>
+    <h3><%= orders[i].date %> - Total: $<%= orders[i].total_price %></h3>
+    <div class="historyProduct">
+        <div class="historyHeader">Product</div>
+        <% for (let j = 0; j < orders[i].items.length; j++) { %>
+            <div class="historyItem"><%= orders[i].items[j].name %></div>
+        <% } %>
+    </div>
+    <div class="historyQuantity">
+        <div class="historyHeader">Quantity</div>
+        <% for (let j = 0; j < orders[i].items.length; j++) { %>
+            <div class="historyItem"><%= orders[i].items[j].quantity %></div>
+        <% } %>
+    </div>
+    <br clear="all" />
+    <hr>
+<% } %>

@@ -1,0 +1,39 @@
+
+<br><br>
+<h1>Admin Tools</h1>
+<hr>
+
+<a href="/archive">Go to archived purchase history</a><br><br>
+
+<form onsubmit="return GetPurchaseHistory();">
+    <input id="id" name="id" style="visibility:hidden; display:none;">
+
+    <label for="email">Account Email:</label>
+    <input type="text" name="email" id="email">
+
+    <input type="submit" value="Show Purchase History">
+</form>
+
+<div id="results"></div>
+
+<input type="button" value="Archive Purchase History" id="archive" class="archive">
+<hr>
+
+
+<div id="archive-confirm" title="Archive purchase history">
+    <form>
+        <p>Are you sure you want to archive the purchase history of this user?</p>
+    </form>
+</div>
+
+<div id="archive-confirmed" title="Archive purchase history">
+    <form>
+        <p>Archiving...</p>
+    </form>
+</div>
+
+<div id="archive-done" title="Archive purchase history">
+    <form>
+        <p id="archive-done-result"></p>
+    </form>
+</div>

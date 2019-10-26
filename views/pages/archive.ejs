@@ -11,18 +11,16 @@
 
     <body>
         <div class="mainContainer">
-            <h1>Account Information for <%= currentUser %> </h1>
+            <h1>Archived files</h1>
             <hr>
-            <p>info here</p>
 
-            <% if (accountType == 'admin') {%>
-                <% include ../partials/accountAdminTools.ejs %>
+            <% if (items.length == 0) { %>
+                <h5>No items found</h5>
             <% } %>
 
-            <br><br>
-            <h1>Purchase History</h1>
-            <hr>
-            <%- include("../partials/purchaseHistory.ejs", { orders } ) %>
+            <% for (let i = 0; i < items.length; i++) { %>
+                <a href="../archiveDownload?file=<%= items[i]%>"><%= items[i]%></a><br>
+            <% } %>
             
 
         </div>

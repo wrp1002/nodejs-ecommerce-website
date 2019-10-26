@@ -1,0 +1,53 @@
+.mainContainer {
+    width:90%; 
+    margin:0 auto; 
+    padding: 10px 10px;
+}
+
+.historyHeader {
+    font-size: 18px;
+    font-weight: bold;
+    padding: 0 0 5px 0;
+}
+
+.historyProduct {
+    float: left;
+    padding: 0 10px 0 0;
+    width: 50%;
+}
+
+.historyQuantity {
+    float: left;
+    text-align: right;
+    padding: 5px;
+}
+
+.historyItem {
+    font-size: 16px;
+}
+
+.archive {
+    text-align: center;
+    background-image: linear-gradient(rgb(200, 0, 0), rgb(150, 0, 0));
+    width: 25%;
+    font-size: 20px;
+    border-radius: 10px;
+    color: white;
+    border: 2px solid darkgray;
+    padding: 3px;
+    outline: none;
+    visibility: hidden;
+}
+
+.archive:hover {
+    background-image: linear-gradient(rgb(220, 0, 0), rgb(200, 0, 0));
+}
+
+.archive:active {
+    background-image: linear-gradient(rgb(255, 0, 0), rgb(220, 0, 0));
+}
+
+.noclose .ui-dialog-titlebar-close
+{
+    display:none;
+}

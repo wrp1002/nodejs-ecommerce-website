@@ -1,0 +1,79 @@
+.mainContainer {
+    width:90%; 
+    margin:0 auto; 
+    padding: 10px 10px;
+}
+
+.cartContainer {
+    width: 75%;
+    float: left;
+}
+
+.cartContainer input[type=number] {
+    width: 10%;
+}
+
+.update-cart {
+    font-size: 14px;
+    background-image: linear-gradient(rgb(255, 235, 119), rgb(255, 215, 0));
+    visibility: hidden;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 1px;
+    margin-left: 5px;
+    outline:none;
+}
+
+.update-cart:hover {
+    background-image: linear-gradient(rgb(255, 255, 150), rgb(255, 215, 100));
+}
+
+.update-cart:active {
+    padding: 0px;
+}
+
+.remove-cart {
+    font-size: 18px;
+    color: rgb(255, 0, 0);
+    background: none;
+    border: none;
+    outline:none;
+}
+
+.remove-cart:hover {
+    color: rgb(255, 100, 100);
+}
+
+.checkoutContainer {
+    width: 20%;
+    float: right;
+}
+
+.checkoutContainer a {
+    display: inline-block;
+    text-align: center;
+    background-image: linear-gradient(rgb(0, 200, 0), rgb(0, 150, 0));
+    width: 100%;
+    font-size: 18px;
+    border-radius: 10px;
+    color: white;
+    border: 2px solid darkgray;
+    padding: 3px;
+    text-decoration: none;
+}
+
+.checkoutContainer a:hover {
+    background-image: linear-gradient(rgb(0, 230, 0), rgb(0, 200, 0));
+}
+
+.checkoutContainer a:active {
+    background-image: none;
+    background-color: rgb(0, 255, 0);
+}
+
+.checkoutBox {
+    background-color: #DDD;
+    border: 1px solid #AAA;
+    border-radius: 5px;
+    padding: 0 3px 10px 3px;
+}

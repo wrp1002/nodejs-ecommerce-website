@@ -2,88 +2,53 @@
     <head>
         <% include ../partials/header.ejs %>
         <%- include("../partials/nav.ejs", { loggedIn, cartCount} ) %>
-
-        <script>
-            function GetResults() {
-                let search = document.getElementById('search').value;
-                document.getElementById('results').innerHTML = "Searching...";
-
-                $.ajax({
-                    type: "POST",
-                    url: "/search",
-                    data: JSON.stringify({search: search}),
-                    contentType: "application/json; charset=utf-8",
-                    //success: function(data){ console.log(data); },
-                    failure: function(errMsg) { console.log(errMsg); }
-                }).then(function(data) {
-                    document.getElementById('results').innerHTML = data; //.replace(new RegExp(search, 'g'), '<b>'+search+'</b>');
-                });
-            }
-        </script>
-
-        <style>
-            /* Add a black background color to the top navigation bar */
-.topnav {
-  overflow: hidden;
-  background-color: #e9e9e9;
-}
-
-/* Style the links inside the navigation bar */
-.topnav a {
-  float: left;
-  display: block;
-  color: black;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-  font-size: 17px;
-}
-
-/* Change the color of links on hover */
-.topnav a:hover {
-  background-color: #ddd;
-  color: black;
-}
-
-/* Style the "active" element to highlight the current page */
-.topnav a.active {
-  background-color: #2196F3;
-  color: white;
-}
-
-/* Style the search box inside the navigation bar */
-.topnav input[type=text] {
-  float: right;
-  padding: 6px;
-  border: none;
-  margin-top: 8px;
-  margin-right: 16px;
-  font-size: 17px;
-}
-
-/* When the screen is less than 600px wide, stack the links and the search field vertically instead of horizontally */
-@media screen and (max-width: 600px) {
-  .topnav a, .topnav input[type=text] {
-    float: none;
-    display: block;
-    text-align: left;
-    width: 100%;
-    margin: 0;
-    padding: 14px;
-  }
-  .topnav input[type=text] {
-    border: 1px solid #ccc;
-  }
-}
-        </style>
-
+        <link rel="stylesheet" type="text/css" href="/stylesheets/cart.css" />
+        <script src="/scripts/cart.js"></script>
     </head>
 
     <body>
-      <div id="results">
+      <div class="mainContainer">
+        <div class="cartContainer">
+          <h1>Shopping Cart</h1>
+          <hr>
+
           <% for (let i = 0; i < cart.length; i++) { %>
-            <p><%=cart[i].item_id %></p>
+            <div>
+                <div style="display:inline-block; width:15%; padding: 0;">
+                    <img style="max-width: 100%;  margin: 0; padding: 0 20px 0 20px;" src=<%= "..\\" + cart[i].image_path %>>
+                </div><div style="display:inline-block; width:65%; vertical-align: top; position: relative; top: -20px;">
+                        <h3 class="name"><%= cart[i].name %></h3>
+                        <label for="quantity">Quantity:&nbsp;</label><input type="number" name="quantity" class="quantity" onkeyup="ShowButton(this);" onchange="ShowButton(this);" min="1" value=<%= cart[i].quantity %>><input type="number" class="quantityInitial" hidden value=<%= cart[i].quantity %>>
+                        <button class="update-cart" onclick="UpdateCart(this);">
+                            <span class="glyphicon glyphicon-refresh"></span>
+                            Update
+                        </button>
+                        
+                </div><div style="float:right; width:20%; text-align: right; position: relative; top: -20px;">
+                    <h3 class="price">$<%= cart[i].price %></h3>
+                    <button class="remove-cart" id="<%= cart[i].id %>" onclick="RemoveItem(this);">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Remove
+                    </button>
+                </div>
+            </div>
+            <hr>
           <% } %>
+        </div>
+
+        <div class="checkoutContainer">
+          <h1>Checkout</h1>
+          <hr>
+          <div class="checkoutBox">
+            <h4>Subtotal (<%= cartCount %> items): $<%= totalPrice %></h4>
+            <br>
+            <a href="/checkout">
+                Proceed to checkout
+                <span class="glyphicon glyphicon-ok"></span>
+            </a>
+          </div>
+        </div>
+
       </div>
 
     </body>
