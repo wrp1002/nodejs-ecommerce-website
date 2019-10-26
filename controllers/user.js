@@ -128,27 +128,24 @@ module.exports = {
     DeletePurchaseHistory(user) {
         return new Promise(async (resolve, reject) => {
             let orders = await module.exports.GetPurchaseHistory(user);
-            console.log(orders);
 
             const client = await pool.connect();
             for (let i = 0; i < orders.length; i++) {
                 await new Promise(async (resolve, reject) => {
-                    client.query('DELETE FROM orders WHERE email = $1;', [orders[i].email], (error, results) => {
-                        if (error) {
-                            client.release();
-                            resolve(false);
-                        }
-                    });
-                });
-                console.log("Deleting items");
-                await new Promise(async (resolve, reject) => {
-                    client.query('DELETE FROM order_items WHERE order_id = $1;', [orders[i].id], (error, results) => {
+                    client.query('DELETE FROM order_items WHERE order_id = $1;', [orders[i].id], async (error, results) => {
                         if (error) {
                             client.release();
                             resolve(false);
                         }
                         else {
-                            console.log("Deleted");
+                            await new Promise(async (resolve, reject) => {
+                                client.query('DELETE FROM orders WHERE email = $1;', [orders[i].email], (error, results) => {
+                                    if (error) {
+                                        client.release();
+                                        resolve(false);
+                                    }
+                                });
+                            });
                         }
                     });
                 });

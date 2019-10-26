@@ -304,20 +304,16 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
                 fs.mkdirSync(archive_dir);
 
             let fileName = archive_dir + name;
-            console.log("Saving as", fileName);
 
             fs.writeFile(fileName, purchaseHistory, function(err) {
                 if (err) {
-                    console.log("fail");
                     res.sendStatus(500);
                 }
                 else {
-                    console.log("Saved");
-
                     if (User.DeletePurchaseHistory(req.body.email))
                         res.sendStatus(200);
                     else
-                    res.sendStatus(500);
+                        res.sendStatus(500);
                 }
             });
         }

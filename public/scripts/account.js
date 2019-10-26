@@ -35,14 +35,17 @@ $(document).ready(function(e) {
                 data: JSON.stringify({email: email}),
                 contentType: "application/json; charset=utf-8",
                 success: function(data){
-                    alert('horray! 200 status code!');
-                    $("#archive-done-result").innerHTML = "Successfully archived purchase history";
+                    $("#archive-done-result").html("Successfully archived purchase history");
                     $("#archive-confirmed").dialog('close');
                     $("#archive-done").dialog('open');
                 },
                 error: function(data){
                     //get the status code
-                    $("#archive-done-result").innerHTML = "Failed to archive purchase history";
+                    $("#archive-done-result").html("Failed to archive purchase history");
+                    $('#archive-done').dialog.buttons = { "Okay" : function () { location.reload(); } };
+                    $('#archive-done').dialog('option', 'buttons', { "Okay" : function () { location.reload(); } });
+                    $("#archive-confirmed").dialog('close');
+                    $("#archive-done").dialog('open');
                 }
             }).then(function(data) {
                 
@@ -55,7 +58,7 @@ $(document).ready(function(e) {
     $('#archive-done').dialog({
         modal : true, autoOpen : false,
         buttons : {
-            "Okay" : function () { location.reload(); }
+            "Okay" : function () { location.replace("/archive") }
         }
     });
 
