@@ -20,6 +20,7 @@ function openNav(item) {
     console.log(item);
     $("#name").text(item.parent().parent().find('.name').text());
     $("#price").val(item.parent().parent().find('.price').text());
+    $("#quantity").val("1");
     $("#id").val(item.attr('id'));
     UpdatePrice();
   
@@ -57,16 +58,18 @@ $.ajax({
 
 $(function() {
     $("#form").on("submit", function(e) {
+        $("#add-cart-button").val("Adding...");
         e.preventDefault();
         $.ajax({
             url: $(this).attr("action"),
             type: 'POST',
             data: $(this).serialize(),
             success: function(data) {
-            console.log(data.cartItems);
-            console.log($("cart-count").text());
-            closeNav();
-            UpdateCart();
+                console.log(data.cartItems);
+                console.log($("cart-count").text());
+                closeNav();
+                UpdateCart();
+                $("#add-cart-button").val("Add to cart");
             }
         });
     });

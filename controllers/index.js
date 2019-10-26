@@ -169,17 +169,49 @@ router.get('/cartCount', ensureAuthenticated, async (req, res) => {
     res.json({cartCount: count});
 });
 
-router.post('/cartAdd', ensureAuthenticated, async (req, res) => {
+router.post('/cart', ensureAuthenticated, async (req, res) => {
     let count = await User.GetCartCount(req.user);
 
     try {
         if (req.user == "" || req.body.id == "" || req.body.quantity == "")
-            res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count });
+            res.sendStatus(400);
         else {
+            let item_id = req.body.id;
+            let quantity = req.body.quantity;
             const client = await pool.connect();
-            client.query('INSERT INTO cart_items (email, item_id, quantity) values ($1, $2, $3)', [req.user, req.body.id, req.body.quantity], (error, results) => {
-                if (error) throw error;
-                res.sendStatus(200); 
+            client.query('SELECT quantity FROM cart_items WHERE item_id = $1 AND email = $2', [item_id, req.user], (error, results) => {
+                if (error) {
+                    console.error(error);
+                    res.sendStatus(500);
+                }
+                else {
+                    let currentQuantity = 0;
+                    if (results.rows.length == 1)
+                        currentQuantity = results.rows[0].quantity;
+
+                    if (currentQuantity > 0) {
+                        client.query('UPDATE cart_items SET quantity = quantity + $1 WHERE item_id = $2 AND email = $3', [quantity, item_id, req.user], (error, results) => {
+                            if (error) {
+                                console.error(error);
+                                res.sendStatus(500);
+                            }
+                            else {
+                                res.sendStatus(200);
+                            }
+                        });
+                    }
+                    else {
+                        client.query('INSERT INTO cart_items (email, item_id, quantity) VALUES($1, $2, $3)', [req.user, item_id, quantity], (error, results) => {
+                            if (error) {
+                                console.error(error);
+                                res.sendStatus(500);
+                            }
+                            else {
+                                res.sendStatus(200);
+                            }
+                        });
+                    }
+                }
             });
 
             client.release();
@@ -270,9 +302,9 @@ router.get('/purchaseHistory', ensureAuthenticated, async (req, res) => {
     let accountType = await User.GetAccountType(req.user);
 
     if (accountType != 'admin')
-        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
+        res.send("No results");
     else if (req.query.email == "")
-        res.send("");
+        res.send("No results");
     else {
         let purchaseHistory = await User.GetPurchaseHistory(req.query.email);
         if (purchaseHistory.length == 0)

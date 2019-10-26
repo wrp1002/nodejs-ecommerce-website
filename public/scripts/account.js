@@ -12,9 +12,10 @@ function GetPurchaseHistory() {
     }).then(function(data) {
         console.log(data);
         document.getElementById('results').innerHTML = data;
-        if (data != "No results") {
+        if (data != "No results")
             $("#archive").css("visibility", "visible");
-        }
+        else 
+        $("#archive").css("visibility", "hidden");
     });
     return false;
 }

@@ -20,7 +20,7 @@
           <hr>
 
           
-          <form id="form" action="/cartAdd">
+          <form id="form" action="/cart">
               <input id="id" name="id" style="visibility:hidden; display:none;">
 
               <label for="price">Price:</label>
@@ -34,7 +34,7 @@
               <input type="text" class="cart-input" name="total" id="total" disabled><br>
 
               <% if (loggedIn) { %>
-                <input type="submit" value="Add to cart" class="cart-button add-cart-submit"><br>
+                <input id="add-cart-button" type="submit" value="Add to cart" class="cart-button add-cart-submit"><br>
               <% } %>
               <% if (!loggedIn) { %>
                 <input type="submit" value="Log in to purchase" class="cart-button add-cart-submit"><br>
