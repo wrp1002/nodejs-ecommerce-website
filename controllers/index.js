@@ -26,8 +26,6 @@ const pool = new Pool({
 
 
 router.get('/', async (req, res) => {
-
-    //recommended stuff
     let count = await User.GetCartCount(req.user);
     res.render('pages/index', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals });
 });
@@ -59,8 +57,6 @@ router.get('/search', async (req, res) => {
     let count = await User.GetCartCount(req.user);
     let search = req.query.search;
 
-    console.log("searching for " + search);
-
     const client = await pool.connect();
     client.query("select * from products where upper(name) LIKE upper('%' || $1 || '%') OR upper(description) LIKE upper('%' || $1 || '%') OR upper(category) LIKE upper('%' || $1 || '%')", [search], (error, results) => {
         if (error) {
@@ -68,7 +64,6 @@ router.get('/search', async (req, res) => {
             res.render('pages/search', { loggedIn: req.isAuthenticated(), products: [] });
         } 
         else {
-            console.log(results.rows.length + " results");
             res.render('pages/search', { loggedIn: req.isAuthenticated(), cartCount: count, products: results.rows });
         }
     });
@@ -385,5 +380,35 @@ router.get('/archiveDownload', ensureAuthenticated, async (req, res) => {
             res.sendStatus(404);
     }
 });
+
+router.get('/recommendation', async (req, res) => {
+    let weatherTemp = 20;
+    let weatherDescription = req.query.weatherDescription;
+    if (req.query.weatherTemp != "")
+        weatherTemp = parseFloat(req.query.weatherTemp);
+    let search = '';
+
+    if (weatherDescription.includes('rain') || weatherDescription.includes('shower'))
+        search = 'rain';
+    else if (weatherDescription.includes('snow') || weatherTemp <= 0)
+        search = 'winter';
+
+    console.log("Searching:", search);
+
+    const client = await pool.connect();
+    client.query("select * from products where upper(category) LIKE upper('%' || $1 || '%')", [search], (error, results) => {
+        if (error) {
+            console.log(error);
+            res.send("Error getting recommendation");
+        } 
+        else {
+            recommend = [results.rows[Math.floor(Math.random() * results.rows.length)]];
+            res.render('partials/searchResults', { loggedIn: req.isAuthenticated(), products: recommend, small: true });
+        }
+    });
+
+    client.release();
+});
+
 
 module.exports = router;

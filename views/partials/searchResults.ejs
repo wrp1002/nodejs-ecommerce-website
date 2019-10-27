@@ -1,21 +1,36 @@
-<div>
-    <%= products.length + " results found" %>
-    <hr>
-</div>
+<% if (!small) { %>
+    <div>
+        <%= products.length + " results found" %>
+        <hr>
+    </div>
+<% } %>
 
 <% for (let i = 0; i < products.length; i++) { %>
         <div>
-            <div style="display:inline-block; width:15%; padding: 0">
-                <img style="max-width: 100%;  margin: 0; padding: 0 20px 0 20px;" src=<%= "..\\" + products[i].image_path %>>
-            </div><div style="display:inline-block; width:65%; vertical-align: top">
+            <% if (small) { %>
+                <div style="display:inline-block; width:30%; padding: 0">
+            <% } %>
+            <% if (!small) { %>
+                <div style="display:inline-block; padding: 0">
+            <% } %>
+                <img style="width: 170px;  margin: 0; padding: 0 20px 0 20px;" src=<%= "..\\" + products[i].image_path %>>
+            </div><div style="display:inline-block; width:50%; vertical-align: top; position:relative; top: -20px;">
                     <h3 class="name"><%= products[i].name %></h3>
                     <div style="display:inline-block;"><%= products[i].description %></div>
-            </div><div style="float:right; width:20%; text-align: right;">
+            </div><div style="float:right; text-align: right;">
                 <h3 class="price">$<%= products[i].price %></h3>
-                <button class="add-cart" id="<%= products[i].id %>" onclick="openNav(this);">
-                    <span class="glyphicon glyphicon-plus"></span>
-                    Add to cart
-                </button>
+                <% if (small) { %>
+                    <a class="add-cart" href="/search?search=<%= products[i].name %>">
+                        <span class="glyphicon glyphicon-search"></span>
+                        View product
+                    </a>
+                <% } %>
+                <% if (!small) { %>
+                    <button class="add-cart" id="<%= products[i].id %>" onclick="openNav(this);">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Add to cart
+                    </button>
+                <% } %>
             </div>
         </div>
     <hr>
