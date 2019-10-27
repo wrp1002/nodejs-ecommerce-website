@@ -393,8 +393,6 @@ router.get('/recommendation', async (req, res) => {
     else if (weatherDescription.includes('snow') || weatherTemp <= 0)
         search = 'winter';
 
-    console.log("Searching:", search);
-
     const client = await pool.connect();
     client.query("select * from products where upper(category) LIKE upper('%' || $1 || '%')", [search], (error, results) => {
         if (error) {
