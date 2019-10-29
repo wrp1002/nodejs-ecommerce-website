@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
-const db = require('../db/auth');
+const db = require('../db/users');
 
 /**
  * mail transporter object

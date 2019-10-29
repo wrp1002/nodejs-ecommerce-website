@@ -133,6 +133,13 @@ router.get('/logout', async (req, res) => {
 
 })
 
+router.get('resetpassword/:token', async (req, res) => {
+    const token = req.params.token;
+    // check if token is valid
+    // if not valid leave
+    // valid - render resetpassword page
+})
+
 router.post('/forgotpassword', [
     check('email', `The email entered is not valid. Please enter a valid email address`).not().isEmpty().isEmail().normalizeEmail()
 ], async (req, res) => {
