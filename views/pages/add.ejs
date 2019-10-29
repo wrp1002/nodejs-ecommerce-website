@@ -7,14 +7,13 @@
     <body>
         <img id="product">
 
-        <form action="/add" method="POST">
+        <form action="/addproduct" method="POST">
             Image path: <input type="text" id="in" name="image_path" oninput="document.getElementById('product').src=document.getElementById('in').value"><br>
             Name: <input type="text" name="name"><br>
             Description: <input type="text" name="description"><br>
             Category: <input type="text" name="category"><br>
             Price: <input type="text" name="price"><br>
             <input type="submit" value="Submit">
-            
         </form>
 
         <script>
