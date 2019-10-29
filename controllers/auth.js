@@ -26,29 +26,33 @@ const databasePool = new Pool({
 });
 
 
-router.post('/register', async (req, res) => {
+router.post('/register',[
+    check('email', 'The email entered is not valid. Please enter a valid email address').not().isEmpty().isEmail().normalizeEmail(),
+    check('name', 'Name Required. Please enter your name').not().isEmpty().trim().escape(),
+    check('password', 'Your password must be at least six characters').not().isEmpty().isLength({ min: 6 }),
+    check('confirm', 'Passwords do not match').custom((value, { req }) => (value === req.body.password))
+],async (req, res) => {
+    // input validation
+    const errors = validationResult(req);
+    const { email, name, password, confirm } = req.body;
+    let count = await User.GetCartCount(req.user);
+
+    if (!errors.isEmpty()) {
+
+        const errorMessages = errors.array().map(error => {return error.msg}); 
+        return res.render('pages/register', {
+            loggedIn: req.isAuthenticated(),
+            flashMessages: {error: errorMessages, success: [], info: []},
+            cartCount: count,
+            name,
+            email,
+            password,
+            confirm
+        });
+    }
+
 
     try {
-
-        var errorList = [];
-        const { email, name, password, confirm } = req.body;
-
-        if (!name || !email || !password || !confirm) errorList.push({ msg: 'Please enter all fields' });
-        if (password != confirm) errorList.push({ msg: 'Passwords do not match' });
-        if (password.length < 6) errorList.push({ msg: 'Password must be at least 6 characters' });
-
-        if (errorList.length > 0) {
-
-            return res.render('pages/register', {
-                loggedIn: req.isAuthenticated(),
-                errorList,
-                name,
-                email,
-                password,
-                confirm
-            });
-        }
-
         const client = await databasePool.connect();
 
         await client.query("SELECT * FROM users WHERE email = $1", [email], function (errorMessage, userInformation) {
@@ -81,7 +85,7 @@ router.post('/register', async (req, res) => {
                         if (errorMessage) throw errorMessage
 
                         req.flash(
-                            'success_msg',
+                            'success',
                             'You are now registered and can log in'
                         );
 
