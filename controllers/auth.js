@@ -3,7 +3,7 @@ const passport = require('passport');
 const router = require('express').Router();
 const { Pool } = require('pg');
 const { check, validationResult } = require('express-validator');
-const mailer = require('../logic/mailer');
+const mailer = require('../services/mailer');
 const usersDB = require('../db/users');
 const User = require('../controllers/user.js');
 
