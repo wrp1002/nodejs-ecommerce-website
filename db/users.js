@@ -5,6 +5,9 @@ module.exports = {
         return db.query("SELECT * FROM users WHERE email = $1", [email]);
     },
     setResetToken: (email, token) => {
-        return db.query(`UPDATE users SET reset_token = $1, token_expiry = to_timestamp($2 / 1000.0) WHERE email = $3`, [token, Date.now() + 900000, email]);
+        return db.query(`UPDATE users SET reset_token = $1, token_expiry = now() + interval '15 minutes' WHERE email = $2`, [token, email]);
+    },
+    checkResetTokenValidity: (token) => {
+        return db.query(`SELECT email FROM users WHERE token_expiry > now() AND reset_token = $1`, [token]);
     }
 }
