@@ -4,6 +4,7 @@ const router = require('express').Router();
 const { Pool } = require('pg');
 const { check, validationResult } = require('express-validator');
 const mailer = require('../services/mailer');
+const hashGenerator = require('../services/hashGenerator');
 const usersDB = require('../db/users');
 const User = require('../controllers/user.js');
 
@@ -54,6 +55,7 @@ router.post('/register', [
     usersDB.getUser(email)
         .then(userInformation => {
             if (userInformation.rowCount != 0) {
+                // all fields valid but email exists => return to register page
                 return res.render('pages/register', {
                     loggedIn: req.isAuthenticated(),
                     flashMessages: { error: ['Email already exists'], success: [], info: [] },
@@ -66,33 +68,25 @@ router.post('/register', [
             }
 
             // email valid and does not exist in database. Proceed with creation
-            bcrypt.genSalt(10, (saltError, generatedSalt) => {
+            return hashGenerator.generateSaltedHash(10, password)
+                .then(hash => {
+                    return usersDB.createNewUser(email, hash)
+                        .then(() => {
+                            req.flash(
+                                'success',
+                                'You are now registered and can log in'
+                            );
 
-                if (saltError) throw saltError
-
-                bcrypt.hash(password, generatedSalt, async (hashError, passwordHash) => {
-
-                    if (hashError) throw hashError
-
-                    await client.query("INSERT INTO users (email, password_hash, salt) VALUES ($1, $2, $3)", [email, String(passwordHash), generatedSalt], function (errorMessage, results) {
-
-                        if (errorMessage) throw errorMessage
-
-                        req.flash(
-                            'success',
-                            'You are now registered and can log in'
-                        );
-
-                        res.redirect('/login');
-
-                    })
-
+                            res.redirect('/login');
+                        })
+                        .catch(err => { throw err });
                 })
-
-            })
+                .catch(err => {
+                    throw err;
+                })
         })
         .catch(err => {
-            console.error(String(Error));
+            console.error(err);
             return res.status(500).send('An error occurred trying to process your request');
         })
 
