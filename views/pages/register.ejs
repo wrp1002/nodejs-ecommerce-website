@@ -22,7 +22,7 @@
       <p>Please fill in this form to create an account.</p>
       <hr>
 
-      <% include ../partials/messages.ejs %>
+      <% include ../partials/flashMessages.ejs %>
 
       <label for="name"><b>Name</b></label>
       <p><input type="text" placeholder="Enter name" name="name" id="name" autocomplete="name" value="<%= typeof name != 'undefined' ? name : '' %>"required></p>
