@@ -26,12 +26,12 @@ const databasePool = new Pool({
 });
 
 
-router.post('/register',[
+router.post('/register', [
     check('email', 'The email entered is not valid. Please enter a valid email address').not().isEmpty().isEmail().normalizeEmail(),
     check('name', 'Name Required. Please enter your name').not().isEmpty().trim().escape(),
     check('password', 'Your password must be at least six characters').not().isEmpty().isLength({ min: 6 }),
     check('confirm', 'Passwords do not match').custom((value, { req }) => (value === req.body.password))
-],async (req, res) => {
+], async (req, res) => {
     // input validation
     const errors = validationResult(req);
     const { email, name, password, confirm } = req.body;
@@ -39,10 +39,10 @@ router.post('/register',[
 
     if (!errors.isEmpty()) {
 
-        const errorMessages = errors.array().map(error => {return error.msg}); 
+        const errorMessages = errors.array().map(error => { return error.msg });
         return res.render('pages/register', {
             loggedIn: req.isAuthenticated(),
-            flashMessages: {error: errorMessages, success: [], info: []},
+            flashMessages: { error: errorMessages, success: [], info: [] },
             cartCount: count,
             name,
             email,
@@ -51,20 +51,13 @@ router.post('/register',[
         });
     }
 
-
-    try {
-        const client = await databasePool.connect();
-
-        await client.query("SELECT * FROM users WHERE email = $1", [email], function (errorMessage, userInformation) {
-
-            if (errorMessage) throw errorMessage
-
+    usersDB.getUser(email)
+        .then(userInformation => {
             if (userInformation.rowCount != 0) {
-
-                errorList.push({ msg: 'Email already exists' });
                 return res.render('pages/register', {
                     loggedIn: req.isAuthenticated(),
-                    errorList,
+                    flashMessages: { error: ['Email already exists'], success: [], info: [] },
+                    cartCount: count,
                     name,
                     email,
                     password,
@@ -72,6 +65,7 @@ router.post('/register',[
                 });
             }
 
+            // email valid and does not exist in database. Proceed with creation
             bcrypt.genSalt(10, (saltError, generatedSalt) => {
 
                 if (saltError) throw saltError
@@ -96,10 +90,11 @@ router.post('/register',[
                 })
 
             })
-
         })
-
-    } catch (Error) { console.error(String(Error)) }
+        .catch(err => {
+            console.error(String(Error));
+            return res.status(500).send('An error occurred trying to process your request');
+        })
 
 })
 
