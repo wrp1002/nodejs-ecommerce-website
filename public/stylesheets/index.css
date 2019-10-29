@@ -1,0 +1,17 @@
+.add-cart {
+    color: white!important;
+    background-color: #2196F3;
+    font-size: 14px;
+    border-radius: 10px;
+    padding: 4px;
+    outline-style: none;
+    text-decoration: none!important;
+  }
+
+.add-cart:hover {
+    background-color: rgb(73, 166, 243);
+}
+
+.add-cart:active {
+    background-color: rgb(1, 103, 187);
+}
