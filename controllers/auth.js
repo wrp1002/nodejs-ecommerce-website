@@ -4,6 +4,8 @@ const router = require('express').Router();
 const { Pool } = require('pg');
 const { check, validationResult } = require('express-validator');
 const mailer = require('../logic/mailer');
+const usersDB = require('../db/users');
+const User = require('../controllers/user.js');
 
 /*
 const pool = new Pool({
@@ -133,11 +135,26 @@ router.get('/logout', async (req, res) => {
 
 })
 
-router.get('resetpassword/:token', async (req, res) => {
+router.get('/resetpassword/:token', async (req, res) => {
+    console.log("checking validity of reset token");
     const token = req.params.token;
+    let count = await User.GetCartCount(req.user);
     // check if token is valid
-    // if not valid leave
-    // valid - render resetpassword page
+    usersDB.checkResetTokenValidity(token)
+        .then(results => {
+            // if not valid render invalid resetpassword page
+            if (results.rowCount == 0) {
+                console.log("reset token is not valid: ", token);
+                res.status(403).render('pages/resetpassword', { loggedIn: req.isAuthenticated(), cartCount: count, isValid: false });
+            } else {
+                // valid - render resetpassword page
+                console.log("reset token valid. Rendering page");
+                res.status(200).render('pages/resetpassword', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals, isValid: true });
+            }
+        }).catch(err => {
+            console.error(err);
+            return res.status(500).send('An error occurred trying to process your request');
+        });
 })
 
 router.post('/forgotpassword', [
