@@ -78,6 +78,7 @@
     border-radius: 10px;
     color: white;
     border-color: #AAA;
+    outline-style: none;
   }
 
   .add-cart-submit {
@@ -95,6 +96,7 @@
     background-color: red;
     position:absolute;
     bottom: 60px;
+    outline-style: none;
   }
 
   .cancel-cart-submit:hover {

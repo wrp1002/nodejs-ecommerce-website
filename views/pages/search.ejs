@@ -19,8 +19,12 @@
           <span id="name" class="cart-title">name</span>
           <hr>
 
-          
-          <form id="form" action="/cart">
+          <% if (loggedIn) {%>
+            <form id="form" action="/cart">
+          <% } %>
+          <% if (!loggedIn) {%>
+            <form id="formLogin" action="/login">
+          <% } %>
               <input id="id" name="id" style="visibility:hidden; display:none;">
 
               <label for="price">Price:</label>
