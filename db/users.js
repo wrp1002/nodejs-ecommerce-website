@@ -11,6 +11,6 @@ module.exports = {
         return db.query(`SELECT email FROM users WHERE token_expiry > now() AND reset_token = $1`, [token]);
     },
     createNewUser: (email, hash) => {
-        return db.query(`INSERT INTO users (email, password_hash, salt) VALUES ($1, $2, $3)`, [email, hash]);
+        return db.query(`INSERT INTO users (email, password_hash) VALUES ($1, $2)`, [email, hash]);
     }
 }
