@@ -32,7 +32,7 @@ async function sendEmailWithToken(email, token) {
         text:
             'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
             'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-            'https://nwen304finalproject.herokuapp.com/resetpassword/' + token + '\n\n' +
+            'https://nwen304finalproject.herokuapp.com/auth/resetpassword/' + token + '\n\n' +
             'If you did not request this, please ignore this email and your password will remain unchanged.\n'
 
     }
