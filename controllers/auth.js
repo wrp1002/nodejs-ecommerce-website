@@ -137,7 +137,7 @@ router.post('/login', async (req, res, next) => {
 router.get('/logout', async (req, res) => {
 
     req.logout();
-    req.flash('success_msg', 'You are logged out');
+    req.flash('success', 'You are logged out');
     res.redirect('/login');
 
 })
