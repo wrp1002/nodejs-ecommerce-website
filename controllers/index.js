@@ -40,14 +40,6 @@ router.get('/login', forwardAuthenticated, async(req, res) => {
     res.render('pages/login', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals })
 })
 
-router.get('/resetpassword/:token', async (req, res) => {
-    // check that token is valid
-    const client = await pool.connect();
-
-
-    //res.render('pages/index');
-});
-
 router.get('/forgotpassword', async (req, res) => {
     let count = await User.GetCartCount(req.user);
     res.render('pages/forgotpassword', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals});
