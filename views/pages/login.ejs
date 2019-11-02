@@ -39,12 +39,9 @@
 						autocomplete="current-password"></p>
 
 				<p><a href="/forgotpassword">Forgot Password?</a></p>
-				<p><a href="/auth/google">Sign in with google OAuth</a></p>
 				<p><a href="/register">Don't have an account? Create one!</a></p>
 
-
 				<button type="submit" class="loginbtn" id="loginbtn" disabled>Login</button>
-
 
 			</fieldset>
 
@@ -53,17 +50,18 @@
 		<p><span class="btn-round">or</span></p>
 
 		<p>
-
-			<a class="facebook-before"><span class="fontawesome-facebook"></span></a>
-			<button class="facebook">Login Using Facbook</button>
-
+			<a class="oauth-before google-before"></a>
+			<button class="google oauth" onclick="window.location.href ='/auth/google'">Login Using Google</button>
 		</p>
 
 		<p>
+			<a class="oauth-before facebook-before"><span class="fontawesome-facebook"></span></a>
+			<button class="oauth facebook">Login Using Facebook</button>
+		</p>
 
-			<a class="twitter-before"><span class="fontawesome-twitter"></span></a>
-			<button class="twitter">Login Using Twitter</button>
-
+		<p>
+			<a class="oauth-before twitter-before"><span class="fontawesome-twitter"></span></a>
+			<button class="oauth twitter">Login Using Twitter</button>
 		</p>
 
 	</div> <!-- end login -->
