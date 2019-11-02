@@ -142,7 +142,62 @@ router.get('/resetpassword/:token', async (req, res) => {
             } else {
                 // valid - render resetpassword page
                 console.log("reset token valid. Rendering page");
-                res.status(200).render('pages/resetpassword', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals, isValid: true });
+                res.status(200).render('pages/resetpassword', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals, isValid: true, token: token });
+            }
+        }).catch(err => {
+            console.error(err);
+            return res.status(500).send('An error occurred trying to process your request');
+        });
+})
+
+router.post('/resetpassword/', [
+    check('password', 'Your password must be at least six characters').not().isEmpty().isLength({ min: 6 }),
+    check('confirm', 'Passwords do not match').custom((value, { req }) => (value === req.body.password))
+], async (req, res) => {
+    // check validity of token 
+    const token = req.body.token;
+    let count = await User.GetCartCount(req.user);
+
+    usersDB.checkResetTokenValidity(token)
+        .then(results => {
+            // if not valid render invalid resetpassword page
+            if (results.rowCount == 0) {
+                console.log("reset token is not valid: ", token);
+                res.status(403).render('pages/resetpassword', { loggedIn: req.isAuthenticated(), cartCount: count, isValid: false, token: token });
+            } else {
+                // valid - continue with input validation
+                console.log("reset token valid. Checking input validity");
+                const errors = validationResult(req);
+                const { password, confirm } = req.body;
+
+                if (!errors.isEmpty()) {
+                    // error, so re-render register page
+                    const errorMessages = errors.array().map(error => { return error.msg });
+                    return res.render('pages/resetpassword', {
+                        loggedIn: req.isAuthenticated(),
+                        flashMessages: { error: errorMessages, success: [], info: [] },
+                        cartCount: count,
+                        isValid: true,
+                        token: token
+                    });
+                } else {
+                    // update account and redirect to home
+                    return hashGenerator.generateSaltedHash(10, password)
+                        .then(hash => {
+                            return usersDB.updateUserHash(token, hash)
+                                .then(() => {
+                                    req.flash(
+                                        'success',
+                                        'Your password has been updated.'
+                                    );
+
+                                    res.redirect('/login');
+                                }).catch(err => { throw err; });
+                        }).catch(err => {
+                            throw err;
+                        });
+
+                }
             }
         }).catch(err => {
             console.error(err);
