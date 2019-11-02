@@ -15,7 +15,7 @@
         </a>
         <h1>Super Fashion Shop</h1>
         <p>Dedicated to providing the highest quality clothing, jewelry, watches, shoes and more at unbeatable prices. Check back for new deals and exciting new products!</p>
-        <a type="button" class="btn btn-lg btn-default" href="/search?search="><span class="glyphicon glyphicon-eye-open"></span> View our products <span class="glyphicon glyphicon-eye-open"></span></a>
+        <a type="button" class="btn btn-lg btn-default" href="/search?search="><span class="glyphicon glyphicon-eye-open"></span> View our products</a>
         <% if (loggedIn) { %>
           <a type="button" class="btn btn-lg btn-primary" href="/account"><span class="glyphicon glyphicon-user"></span> View my account</a>
         <% } %>
@@ -25,13 +25,10 @@
       </div>
     </div>
     <div class="container">
-      <div class="alert alert-info text-center" role="alert">
-        To deploy your own copy, and learn the fundamentals of the Heroku platform, head over to the <a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs" class="alert-link">Getting Started with Node on Heroku</a> tutorial.
-      </div>
-      <hr>
       <div class="row">
         <div class="col-md-6">
           <h3><span class="glyphicon glyphicon-info-sign"></span> Categories</h3>
+          <hr>
           <ul>
             <li><a href="/search?search=pants">Pants</a></li>
             <li><a href="/search?search=shorts">Shorts</a></li>
@@ -45,23 +42,11 @@
           </ul>
         </div>
         <div class="col-md-6">
-          <h3><span class="glyphicon glyphicon-link"></span> Recommended for you</h3><hr>
+          <h3>Recommended for you</h3><hr>
             <div id="weather">Loading...</div>
-          <h3><span class="glyphicon glyphicon-link"></span> Helpful Links</h3>
-          <ul>
-            <li><a href="https://www.heroku.com/home">Heroku</a></li>
-            <li><a href="https://devcenter.heroku.com/">Heroku Dev Center</a></li>
-            <li><a href="https://devcenter.heroku.com/articles/getting-started-with-nodejs">Getting Started with Node on Heroku</a></li>
-            <li><a href="https://devcenter.heroku.com/articles/deploying-nodejs">Deploying Node Apps on Heroku</a></li>
-          </ul>
         </div>
       </div> <!-- row -->
-      <div class="alert alert-info text-center" role="alert">
-        Please do work through the Getting Started guide, even if you do know how to build such an application.  The guide covers the basics of working with Heroku, and will familiarize you with all the concepts you need in order to build and deploy your own apps.
-      </div>
     </div>
-
-
   </body>
 </html>
 
