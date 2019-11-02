@@ -71,31 +71,41 @@ router.get('/search', async (req, res) => {
     client.release();
 });
 
-router.get('/add', ensureAuthenticated, async (req, res) => {
+router.get('/addproduct', ensureAuthenticated, async (req, res) => {
     let count = await User.GetCartCount(req.user);
-    res.render('pages/add', { loggedIn: req.isAuthenticated(), cartCount: count });
+    let accountType = await User.GetAccountType(req.user);
+
+    if (accountType != 'admin')
+        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
+    else
+        res.render('pages/add', { loggedIn: req.isAuthenticated(), cartCount: count });
 });
 
-router.post('/add', ensureAuthenticated, async (req, res) => {
-    try {
-        if (req.body.name == "" || req.body.description == "" || req.body.price == "" || req.body.image_path == "" || req.body.category == "") {
-            res.send("Error: not all fields were filled");
-        }
-        else {
-            const client = await pool.connect();
-            client.query('INSERT INTO products (name, description, price, image_path, category) values ($1, $2, $3, $4, $5)', [req.body.name, req.body.description, req.body.price, req.body.image_path, req.body.category], (error, results) => {
-                if (error) throw error;    
-            });
-            res.send('<html><head><script>window.close();</script></head></html>');
+router.post('/addproduct', ensureAuthenticated, async (req, res) => {
+    let accountType = await User.GetAccountType(req.user);
 
-            client.release();
+    if (accountType != 'admin')
+        res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
+    else {
+        try {
+            if (req.body.name == "" || req.body.description == "" || req.body.price == "" || req.body.image_path == "" || req.body.category == "") {
+                res.send("Error: not all fields were filled");
+            }
+            else {
+                const client = await pool.connect();
+                client.query('INSERT INTO products (name, description, price, image_path, category) values ($1, $2, $3, $4, $5)', [req.body.name, req.body.description, req.body.price, req.body.image_path, req.body.category], (error, results) => {
+                    if (error) throw error;    
+                });
+                res.send('<html><head><script>window.close();</script></head></html>');
+
+                client.release();
+            }
+        } 
+        catch (err) {
+            console.error(err);
+            res.send("Error " + err);
         }
-    } 
-    catch (err) {
-        console.error(err);
-        res.send("Error " + err);
     }
-    
 });
 
 router.get('/cart', ensureAuthenticated, async (req, res) => {
