@@ -12,5 +12,8 @@ module.exports = {
     },
     createNewUser: (email, hash) => {
         return db.query(`INSERT INTO users (email, password_hash) VALUES ($1, $2)`, [email, hash]);
+    },
+    updateUserHash: (token, hash) => {
+        return db.query(`UPDATE users SET password_hash = $2 WHERE reset_token = $1`, [token, hash]);
     }
 }
