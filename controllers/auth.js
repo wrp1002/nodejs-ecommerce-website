@@ -110,14 +110,28 @@ router.get('/google/callback', async (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
 
-    passport.authenticate('local', {
-
-        successRedirect: '/',
-        failureRedirect: '/login',
-        failureFlash: true
-
+    passport.authenticate('local', function (err, user, info) {
+        if (err) {
+            console.error(err);
+            req.flash('error', 'An error occurred processing your request. Please try again later');
+            return res.redirect('/login');
+        }
+        if (!user) {
+            req.flash('error', 'Invalid email or password.');
+            return res.redirect('/login');
+        }
+        req.logIn(user, function (err) {
+            if (err) {
+                console.error(err);
+                req.flash('error', 'An error occurred processing your request. Please try again later');
+                return res.redirect('/login');
+            }
+            usersDB.removeResetToken(user)
+                .then(() => { console.log("removed any saved reset tokens under the email ", email) })
+                .catch(err => { console.error(err) });
+            return res.redirect('/');
+        });
     })(req, res, next);
-
 })
 
 router.get('/logout', async (req, res) => {
