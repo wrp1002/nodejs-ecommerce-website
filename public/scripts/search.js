@@ -31,9 +31,11 @@ function openNav(item) {
   
   /* Set the width of the side navigation to 0 */
   function closeNav() {
-    document.getElementById("mySidenav").style.right = "-400px";
-    document.getElementById("fade").style.visibility = "hidden";
-    document.getElementById("fade").style.backgroundColor = "rgba(0,0,0,0.0)";
+    if (!wait) {
+        document.getElementById("mySidenav").style.right = "-400px";
+        document.getElementById("fade").style.visibility = "hidden";
+        document.getElementById("fade").style.backgroundColor = "rgba(0,0,0,0.0)";
+    }
   }
   
   function UpdatePrice() {
@@ -60,17 +62,28 @@ $(function() {
     $("#form").on("submit", function(e) {
         $("#add-cart-button").val("Adding...");
         e.preventDefault();
-        $.ajax({
-            url: $(this).attr("action"),
-            type: 'POST',
-            data: $(this).serialize(),
-            success: function(data) {
-                console.log(data.cartItems);
-                console.log($("cart-count").text());
-                closeNav();
-                UpdateCart();
-                $("#add-cart-button").val("Add to cart");
-            }
-        });
+
+        if (!wait) {
+            wait = true;
+
+            $.ajax({
+                url: $(this).attr("action"),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(data) {
+                    wait = false;
+                    //console.log(data.cartItems);
+                    //console.log($("cart-count").text());
+                    closeNav();
+                    UpdateCart();
+                    $("#add-cart-button").val("Add to cart");
+                    
+                }
+            });
+        }
     });
+});
+
+$(document).ready(function() {
+    wait = false;
 });
