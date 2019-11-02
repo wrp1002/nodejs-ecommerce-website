@@ -14,6 +14,9 @@ module.exports = {
         return db.query(`INSERT INTO users (email, password_hash) VALUES ($1, $2)`, [email, hash]);
     },
     updateUserHash: (token, hash) => {
-        return db.query(`UPDATE users SET password_hash = $2 WHERE reset_token = $1`, [token, hash]);
+        return db.query(`UPDATE users SET password_hash = $2, reset_token = NULL, token_expiry = NULL WHERE reset_token = $1`, [token, hash]);
+    },
+    removeResetToken: (email) => {
+        return db.query(`UPDATE users SET reset_token = NULL, token_expiry = NULL WHERE email = $1`, [email]);
     }
 }
