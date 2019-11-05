@@ -28,12 +28,16 @@ const databasePool = new Pool({
 
 
 router.post('/register', [
+
     check('email', 'The email entered is not valid. Please enter a valid email address').not().isEmpty().isEmail().normalizeEmail(),
     check('name', 'Name Required. Please enter your name').not().isEmpty().trim().escape(),
     check('password', 'Your password must be at least six characters').not().isEmpty().isLength({ min: 6 }),
     check('confirm', 'Passwords do not match').custom((value, { req }) => (value === req.body.password))
-], async (req, res) => {
-    // input validation
+], 
+
+async (req, res) => {
+
+    // Input validation
     const errors = validationResult(req);
     const { email, name, password, confirm } = req.body;
     let count = await User.GetCartCount(req.user);
@@ -111,24 +115,30 @@ router.get('/google/callback', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
 
     passport.authenticate('local', function (err, user, info) {
+        
         if (err) {
             console.error(err);
             req.flash('error', 'An error occurred processing your request. Please try again later');
             return res.redirect('/login');
         }
+        
         if (!user) {
             req.flash('error', 'Invalid email or password.');
             return res.redirect('/login');
         }
+        
         req.logIn(user, function (err) {
+            
             if (err) {
                 console.error(err);
                 req.flash('error', 'An error occurred processing your request. Please try again later');
                 return res.redirect('/login');
             }
+            
             usersDB.removeResetToken(user)
                 .then(() => { console.log("removed any saved reset tokens under the email ", email) })
                 .catch(err => { console.error(err) });
+            
             return res.redirect('/');
         });
     })(req, res, next);
@@ -138,12 +148,14 @@ router.get('/logout', async (req, res) => {
 
     req.logout();
     req.flash('success', 'You are logged out');
+    res.set('Cache-Control', 'private, max-age=3600');
     res.redirect('/login');
 
 })
 
 router.get('/resetpassword/:token', async (req, res) => {
-    console.log("checking validity of reset token");
+
+    console.log("Checking validity of reset token");
     const token = req.params.token;
     let count = await User.GetCartCount(req.user);
     // check if token is valid

@@ -76,6 +76,8 @@ module.exports = function(passport) {
                 
                 await client.query("INSERT INTO users (email) VALUES ($1)", [googleInformation.email], function(errorMessage, results) {
 
+                    if(errorMessage) throw errorMessage
+
                     return done(null, userProfile.email)
 
                 })
