@@ -1,7 +1,6 @@
 $(document).ready(function () {
     const $resetPasswordForm = $('#resetPasswordForm');
     const $resetpasswordBtn = $('#resetpasswordbtn');
-    const $emailField = $('#email');
     const $passwordField = $('#password');
     const $confirmField = $('#confirm');
     let showError = true;
@@ -36,6 +35,28 @@ $(document).ready(function () {
             }
         }
     }).checkForm();
+
+    /**
+     * Change border colour of password field on change based on validity
+     */
+    $passwordField.on("blur keyup change", () => {
+        if ($passwordField.valid()) {
+            $passwordField.css("border", "none");
+        } else {
+            $passwordField.css("border", "1px solid red");
+        }
+    });
+
+    /**
+     * Change border colour of confirm password field on change based on validity
+     */
+    $confirmField.on("blur keyup change", () => {
+        if ($emailField.valid()) {
+            $emailField.css("border", "none");
+        } else {
+            $emailField.css("border", "1px solid red");
+        }
+    });
 
 
     /**

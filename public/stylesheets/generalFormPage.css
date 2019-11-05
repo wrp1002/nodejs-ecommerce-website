@@ -9,14 +9,6 @@ form:not(.form-inline) {
   border: 1px solid #ccc;
 }
 
-p input:valid {
-  border: 1px solid black;
-}
-
-p input:not(:only-child):invalid {
-  border: 1px solid red;
-}
-
 .error {
   font-weight: normal;
 }
