@@ -6,13 +6,24 @@ $(document).ready(function () {
     let showError = true;
 
     /**
+     * Custom email validation as html5 and jquery validation 
+     * classify emails without domains as valid (backend verifies it as invalid though)
+     */
+    $.validator.addMethod("emailMustHaveDomain",
+        function (value, element) {
+            return /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(value);
+        },
+        "A valid email address is required"
+    );
+
+    /**
      * Validation for the login form
      */
     $loginForm.validate({
         rules: {
             email: {
                 required: true,
-                email: true
+                emailMustHaveDomain: true
             },
             password: {
                 required: true
@@ -34,9 +45,30 @@ $(document).ready(function () {
         }
     });
 
+    /**
+     * Change border colour of email field on change based on validity
+     */
+    $emailField.on("blur keyup change", () => {
+        if ($emailField.valid()) {
+            $emailField.css("border", "none");
+        } else {
+            $emailField.css("border", "1px solid red");
+        }
+    });
 
     /**
-     * Disables login button until all fields are valid
+     * Change border colour of password field on change based on validity
+     */
+    $passwordField.on("blur keyup change", () => {
+        if ($passwordField.valid()) {
+            $passwordField.css("border", "none");
+        } else {
+            $passwordField.css("border", "1px solid red");
+        }
+    });
+
+    /**
+     * Disables login button until all fields are valid.
      */
     $loginForm.on("blur keyup change", "input", () => {
         showError = false;

@@ -70,14 +70,6 @@ input[type="password"] {
   -webkit-appearance: none;
 }
 
-form fieldset input:valid {
-  border: 1px solid black;
-}
-
-form fieldset input:not(:only-child):invalid  {
-  border: 1px solid red;
-}
-
 .error {
     font-weight: normal;
 }
