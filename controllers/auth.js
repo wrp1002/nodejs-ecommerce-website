@@ -127,7 +127,7 @@ router.post('/login', async (req, res, next) => {
                 return res.redirect('/login');
             }
             usersDB.removeResetToken(user)
-                .then(() => { console.log("removed any saved reset tokens under the email ", email) })
+                .then(() => { console.log("removed any saved reset tokens under the email ", user) })
                 .catch(err => { console.error(err) });
             return res.redirect('/');
         });
