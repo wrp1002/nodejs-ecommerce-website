@@ -27,13 +27,13 @@
       <label for="name"><b>Name</b></label>
       <p><input type="text" placeholder="Enter name" name="name" id="name" autocomplete="name" value="<%= typeof name != 'undefined' ? name : '' %>"required></p>
 
-      <label for="email"><b>Email</b></label>
+      <label for="email"><b>Email<span class="required">*</span></b></label>
       <p><input type="email" placeholder="Enter Email" name="email" id="email" autocomplete="email" value="<%= typeof email != 'undefined' ? email : '' %>" required></p>
 
-      <label for="password"><b>Password</b></label>
+      <label for="password"><b>Password<span class="required">*</span></b></label>
       <p><input type="password" placeholder="Enter Password" name="password" id="password" autocomplete="new-password" value="<%= typeof password != 'undefined' ? password : '' %>" required></p>
 
-      <label for="confirmPassword"><b>Confirm Password</b></label>
+      <label for="confirmPassword"><b>Confirm Password<span class="required">*</span></b></label>
       <p><input type="password" placeholder="Confirm Password" name="confirm" id="confirm" autocomplete="new-password" value="<%= typeof password != 'undefined' ? password : '' %>" required></p>
 
       <label>
