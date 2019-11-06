@@ -27,27 +27,32 @@ const pool = new Pool({
 
 router.get('/', async (req, res) => {
     let count = await User.GetCartCount(req.user);
+    res.set('Cache-Control', 'private, max-age=3600');
     res.render('pages/index', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals });
 });
 
 router.get('/register', forwardAuthenticated, async(req, res) => {
     let count = await User.GetCartCount(req.user);
+    res.set('Cache-Control', 'private, max-age=3600');
     res.render('pages/register', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals })
 })
 
 router.get('/login', forwardAuthenticated, async(req, res) => {
     let count = await User.GetCartCount(req.user);
+    res.set('Cache-Control', 'private, max-age=3600');
     res.render('pages/login', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals })
 })
 
 router.get('/forgotpassword', async (req, res) => {
     let count = await User.GetCartCount(req.user);
+    res.set('Cache-Control', 'private, max-age=3600');
     res.render('pages/forgotpassword', { loggedIn: req.isAuthenticated(), cartCount: count, flashMessages: res.locals});
 });
 
 router.get('/search', async (req, res) => {
     let count = await User.GetCartCount(req.user);
     let search = req.query.search;
+    res.set('Cache-Control', 'private, max-age=3600');
 
     const client = await pool.connect();
     client.query("select * from products where upper(name) LIKE upper('%' || $1 || '%') OR upper(description) LIKE upper('%' || $1 || '%') OR upper(category) LIKE upper('%' || $1 || '%')", [search], (error, results) => {
@@ -66,6 +71,7 @@ router.get('/search', async (req, res) => {
 router.get('/addproduct', ensureAuthenticated, async (req, res) => {
     let count = await User.GetCartCount(req.user);
     let accountType = await User.GetAccountType(req.user);
+    res.set('Cache-Control', 'private, max-age=3600');
 
     if (accountType != 'admin')
         res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
@@ -224,6 +230,7 @@ router.get('/checkout', ensureAuthenticated, async (req, res) => {
     let user = req.user;
     let count = await User.GetCartCount(user);
     let checkoutInfo = await User.GetTotalPrice(user);
+    res.set('Cache-Control', 'private, max-age=3600');
 
     res.render('pages/checkout', { loggedIn: req.isAuthenticated(), cartCount: count, subtotal: checkoutInfo.subtotal, tax: checkoutInfo.tax, shipping: checkoutInfo.shipping, total: checkoutInfo.total });
 });
@@ -233,6 +240,7 @@ router.get('/placeorder', ensureAuthenticated, async (req, res) => {
     let count = await User.GetCartCount(user);
     let checkoutInfo = await User.GetTotalPrice(user);
     let errors = false;
+    res.set('Cache-Control', 'private, max-age=3600');
 
     try {
         const client = await pool.connect();
@@ -288,6 +296,7 @@ router.get('/account', ensureAuthenticated, async (req, res) => {
     let count = await User.GetCartCount(req.user);
     let accountType = await User.GetAccountType(req.user);
     let purchaseHistory = await User.GetPurchaseHistory(req.user);
+    res.set('Cache-Control', 'private, max-age=3600');
 
     if (purchaseHistory != null)
         res.render('pages/account', { loggedIn: req.isAuthenticated(), cartCount: count, currentUser: req.user, orders: purchaseHistory, accountType: accountType });
@@ -297,6 +306,7 @@ router.get('/account', ensureAuthenticated, async (req, res) => {
 
 router.get('/purchaseHistory', ensureAuthenticated, async (req, res) => {
     let accountType = await User.GetAccountType(req.user);
+    res.set('Cache-Control', 'private, max-age=3600');
 
     if (accountType != 'admin')
         res.send("No results");
@@ -352,6 +362,7 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
 router.get('/archive', ensureAuthenticated, async (req, res) => {
     let count = await User.GetCartCount(req.user);
     let accountType = await User.GetAccountType(req.user);
+    res.set('Cache-Control', 'private, max-age=3600');
 
     if (accountType != 'admin')
         res.render('pages/error', { loggedIn: req.isAuthenticated(), cartCount: count});
@@ -370,6 +381,7 @@ router.get('/archive', ensureAuthenticated, async (req, res) => {
 
 router.get('/archiveDownload', ensureAuthenticated, async (req, res) => {
     let accountType = await User.GetAccountType(req.user);
+    res.set('Cache-Control', 'private, max-age=3600');
 
     if (accountType != 'admin')
         res.sendStatus(401);
@@ -386,6 +398,8 @@ router.get('/archiveDownload', ensureAuthenticated, async (req, res) => {
 router.get('/recommendation', async (req, res) => {
     let weatherTemp = 20;
     let weatherDescription = req.query.weatherDescription;
+    res.set('Cache-Control', 'private, max-age=3600');
+
     if (req.query.weatherTemp != "")
         weatherTemp = parseFloat(req.query.weatherTemp);
     let search = '';
