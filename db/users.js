@@ -1,5 +1,9 @@
 const db = require('./index');
 
+// User functions in this file were originally written by Dylan Hoefsloot but then made concise and improved upon by Deanna Alabastro
+
+// The reset functions were made by Deanne Alabastro
+
 module.exports = {
     getUser: (email, callback = null) => {
         return db.query("SELECT * FROM users WHERE email = $1", [email], callback ? callback : null);

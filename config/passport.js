@@ -22,6 +22,8 @@ const databasePool = new Pool({
     ssl: true
 });
 
+// Everything in this file was made by Dylan Hoefsloot
+
 module.exports = function(passport) {
         
     passport.use('local', new LocalStrategy({ usernameField: 'email' }, async(email, password, done) => {

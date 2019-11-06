@@ -24,6 +24,7 @@ const pool = new Pool({
     ssl: true
 });
 
+// This file was a group effort but the vast majority was written by Wesley Paglia
 
 router.get('/', async (req, res) => {
     let count = await User.GetCartCount(req.user);

@@ -18,6 +18,8 @@ const pool = new Pool({
     ssl: true
 });
 
+// This file was written by Wesley Paglia
+
 module.exports = {
     GetCartCount: function(user) {
         return new Promise(async (resolve, reject) => {

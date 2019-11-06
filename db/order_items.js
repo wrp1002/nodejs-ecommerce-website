@@ -1,5 +1,7 @@
 const db = require('./index');
 
+// This file was written by Wesley Paglia
+
 module.exports = {
     deleteOrderItems: (orderId, callback = null) => {
         return db.query("DELETE FROM order_items WHERE order_id = $1;", [orderId], callback ? callback : null);

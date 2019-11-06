@@ -1,5 +1,7 @@
 const db = require('./index');
 
+// This file was written by Wesley Paglia
+
 module.exports = {
     addProduct: (name, description, price, image_path, category, callback = null) => {
         return db.query("INSERT INTO products (name, description, price, image_path, category) values ($1, $2, $3, $4, $5)", [name, description, price, image_path, category], callback ? callback : null);

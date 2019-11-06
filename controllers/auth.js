@@ -26,6 +26,9 @@ const databasePool = new Pool({
     ssl: true
 });
 
+// Registration, OAuth and Login routes on this page were made by Dylan Hoefsloot
+
+// Reset and forgot password routes were made by Deanna Alabastro
 
 router.post('/register', [
 
@@ -151,7 +154,6 @@ router.get('/logout', async (req, res) => {
     req.flash('success', 'You are logged out');
 
     res.redirect('/login');
-
 })
 
 router.get('/resetpassword/:token', async (req, res) => {
