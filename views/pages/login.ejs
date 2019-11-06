@@ -18,13 +18,11 @@
 </head>
 
 <body>
-	<%- include("../partials/flashMessages.ejs") %>
+
 	<div id="login">
 
 		<h1><strong>Welcome.</strong> Please login.</h1>
-
-		<% include ../partials/messages.ejs %>
-
+		<%- include("../partials/flashMessages.ejs") %>
 		<form action="/auth/login" method="POST" id="loginForm">
 
 			<fieldset>
