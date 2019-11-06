@@ -140,22 +140,6 @@ form fieldset a:hover {
   background: #4285F4;
 }
 
-.facebook-before {
-  background: #0064ab;
-}
-
-.facebook {
-  background: #0079ce;
-}
-
-.twitter-before {
-  background: #189bcb;
-}
-
-.twitter {
-  background: #1bb2e9;
-}
-
 #loginbtn {
   background-color: #532f8c; /* Green */
   border: none;
