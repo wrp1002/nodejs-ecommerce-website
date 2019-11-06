@@ -136,11 +136,12 @@ router.post('/login', async (req, res, next) => {
             }
             
             usersDB.removeResetToken(user)
-                .then(() => { console.log("removed any saved reset tokens under the email ", email) })
+                .then(() => { console.log("Removed any saved reset tokens under the email ", email) })
                 .catch(err => { console.error(err) });
             
             return res.redirect('/');
         });
+        
     })(req, res, next);
 })
 
@@ -148,7 +149,7 @@ router.get('/logout', async (req, res) => {
 
     req.logout();
     req.flash('success', 'You are logged out');
-    res.set('Cache-Control', 'private, max-age=3600');
+
     res.redirect('/login');
 
 })
