@@ -136,16 +136,12 @@ router.post('/login', async (req, res, next) => {
             }
             
             usersDB.removeResetToken(user)
-<<<<<<< HEAD
                 .then(() => { console.log("Removed any saved reset tokens under the email ", email) })
-=======
-                .then(() => { console.log("removed any saved reset tokens under the email ", user) })
->>>>>>> 1f08c457eccfdf69d296aa1b6ed2564cfd71c451
                 .catch(err => { console.error(err) });
             
             return res.redirect('/');
         });
-        
+
     })(req, res, next);
 })
 
