@@ -1,22 +1,28 @@
 const db = require('./index');
 
 module.exports = {
-    getUser: (email) => {
-        return db.query("SELECT * FROM users WHERE email = $1", [email]);
+    getUser: (email, callback = null) => {
+        return db.query("SELECT * FROM users WHERE email = $1", [email], callback ? callback : null);
     },
-    setResetToken: (email, token) => {
-        return db.query(`UPDATE users SET reset_token = $1, token_expiry = now() + interval '15 minutes' WHERE email = $2`, [token, email]);
+    getAccountType: (user, callback = null) => {
+        return db.query("SELECT account_type FROM users WHERE email = $1", [user], callback ? callback : null);
     },
-    checkResetTokenValidity: (token) => {
-        return db.query(`SELECT email FROM users WHERE token_expiry > now() AND reset_token = $1`, [token]);
+    setResetToken: (email, token, callback = null) => {
+        return db.query(`UPDATE users SET reset_token = $1, token_expiry = now() + interval '15 minutes' WHERE email = $2`, [token, email], callback ? callback : null);
     },
-    createNewUser: (email, hash) => {
-        return db.query(`INSERT INTO users (email, password_hash) VALUES ($1, $2)`, [email, hash]);
+    checkResetTokenValidity: (token, callback = null) => {
+        return db.query(`SELECT email FROM users WHERE token_expiry > now() AND reset_token = $1`, [token], callback ? callback : null);
     },
-    updateUserHash: (token, hash) => {
-        return db.query(`UPDATE users SET password_hash = $2, reset_token = NULL, token_expiry = NULL WHERE reset_token = $1`, [token, hash]);
+    createNewUser: (email, hash, callback = null) => {
+        return db.query(`INSERT INTO users (email, password_hash) VALUES ($1, $2)`, [email, hash], callback ? callback : null);
     },
-    removeResetToken: (email) => {
-        return db.query(`UPDATE users SET reset_token = NULL, token_expiry = NULL WHERE email = $1`, [email]);
+    createNewOAuthUser: (email, callback = null) => {
+        return db.query(`INSERT INTO users (email) VALUES ($1)`, [email], callback ? callback : null);
+    },
+    updateUserHash: (token, hash, callback = null) => {
+        return db.query(`UPDATE users SET password_hash = $2, reset_token = NULL, token_expiry = NULL WHERE reset_token = $1`, [token, hash], callback ? callback : null);
+    },
+    removeResetToken: (email, callback = null) => {
+        return db.query(`UPDATE users SET reset_token = NULL, token_expiry = NULL WHERE email = $1`, [email], callback ? callback : null);
     }
 }

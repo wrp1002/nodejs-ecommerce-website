@@ -4,7 +4,7 @@
 
 	<meta charset="utf-8">
 
-	<title>Login with Facebook or Twitter</title>
+	<title>Login with Email or Google</title>
 
 	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Open+Sans:400,300'>
 	<link rel="stylesheet" type="text/css" href="/stylesheets/login.css" />
@@ -18,24 +18,21 @@
 </head>
 
 <body>
-	<%- include("../partials/flashMessages.ejs") %>
+
 	<div id="login">
-
+		<%- include("../partials/flashMessages.ejs") %>
 		<h1><strong>Welcome.</strong> Please login.</h1>
-
-		<% include ../partials/messages.ejs %>
 
 		<form action="/auth/login" method="POST" id="loginForm">
 
 			<fieldset>
 
 				<label for="email">Email Address</label>
-				<p><input type="email" id="email" placeholder="Enter email address" name="email" required
-						pattern="[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*"
-						autocomplete="email"></p>
+				<p><input type="email" id="email" placeholder="Enter email address" name="email" autocomplete="email">
+				</p>
 
 				<label for="password">Password</label>
-				<p><input type="password" id="password" placeholder="Enter password" name="password" required
+				<p><input type="password" id="password" placeholder="Enter password" name="password"
 						autocomplete="current-password"></p>
 
 				<p><a href="/forgotpassword">Forgot Password?</a></p>
@@ -53,17 +50,6 @@
 			<a class="oauth-before google-before"></a>
 			<button class="google oauth" onclick="window.location.href ='/auth/google'">Login Using Google</button>
 		</p>
-
-		<p>
-			<a class="oauth-before facebook-before"><span class="fontawesome-facebook"></span></a>
-			<button class="oauth facebook">Login Using Facebook</button>
-		</p>
-
-		<p>
-			<a class="oauth-before twitter-before"><span class="fontawesome-twitter"></span></a>
-			<button class="oauth twitter">Login Using Twitter</button>
-		</p>
-
 	</div> <!-- end login -->
 </body>
 
