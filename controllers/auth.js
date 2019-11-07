@@ -28,7 +28,7 @@ const databasePool = new Pool({
 
 // Registration, OAuth and Login routes on this page were made by Dylan Hoefsloot
 
-// Reset and forgot password routes were made by Deanna Alabastro
+// Reset and forgot password routes were made by Deanne Alabastro
 
 router.post('/register', [
 
@@ -139,7 +139,7 @@ router.post('/login', async (req, res, next) => {
             }
             
             usersDB.removeResetToken(user)
-                .then(() => { console.log("Removed any saved reset tokens under the email ", email) })
+                .then(() => { console.log("Removed any saved reset tokens under the email ", user) })
                 .catch(err => { console.error(err) });
             
             return res.redirect('/');
