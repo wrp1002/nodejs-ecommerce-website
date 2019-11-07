@@ -21,4 +21,7 @@ module.exports = {
     addItemToCart: (email, itemId, quantity, callback = null ) => {
         return db.query("INSERT INTO cart_items (email, item_id, quantity) VALUES($1, $2, $3)", [quantity, itemId, email], callback ? callback : null);
     },
+    getTotalPrice: (email, callback = null) => {
+        return db.query("SELECT quantity, price FROM cart_items INNER JOIN products ON cart_items.item_id=products.id WHERE cart_items.email = $1", [email], callback? callback: null);
+    }
 }
