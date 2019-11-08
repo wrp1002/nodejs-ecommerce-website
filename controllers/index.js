@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth.js')
-const User = require('../services/shoppingService.js/index.js.js')
+const User = require('../services/shoppingService')
 const { products, cart} = require('../db/all_tables');
 const {placeOrder} = require('../db/transactions/placeorder');
 const fs = require('fs');
