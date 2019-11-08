@@ -54,6 +54,9 @@ router.get('/search', async (req, res) => {
     let search = req.query.search;
     res.set('Cache-Control', 'private, max-age=3600');
 
+    if (!search) 
+        search='';
+
     const client = await pool.connect();
     client.query("select * from products where upper(name) LIKE upper('%' || $1 || '%') OR upper(description) LIKE upper('%' || $1 || '%') OR upper(category) LIKE upper('%' || $1 || '%')", [search], (error, results) => {
         if (error) {
