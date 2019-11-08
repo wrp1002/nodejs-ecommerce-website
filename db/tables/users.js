@@ -18,10 +18,10 @@ module.exports = {
         return db.query(`SELECT email FROM users WHERE token_expiry > now() AND reset_token = $1`, [token], callback ? callback : null);
     },
     createNewUser: (email, hash, callback = null) => {
-        return db.query(`INSERT INTO users (email, password_hash) VALUES ($1, $2)`, [email, hash], callback ? callback : null);
+        return db.query(`INSERT INTO users (email, password_hash) VALUES ($1, $2) RETURNING *`, [email, hash], callback ? callback : null);
     },
     createNewOAuthUser: (email, callback = null) => {
-        return db.query(`INSERT INTO users (email) VALUES ($1)`, [email], callback ? callback : null);
+        return db.query(`INSERT INTO users (email) VALUES ($1) RETURNING *`, [email], callback ? callback : null);
     },
     updateUserHash: (token, hash, callback = null) => {
         return db.query(`UPDATE users SET password_hash = $2, reset_token = NULL, token_expiry = NULL WHERE reset_token = $1`, [token, hash], callback ? callback : null);
