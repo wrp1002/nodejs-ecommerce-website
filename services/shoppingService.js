@@ -101,13 +101,14 @@ module.exports = {
 
     DeletePurchaseHistory(user) {
         return new Promise(async (resolve, reject) => {
-            orders.deleteUserOrders(user, async (error, results) => {
-                if (error) {
-                    console.error(error);
-                    resolve(false);
-                }
-                resolve(true);
-            });
+            return deletePurchaseHistory(user)
+            .then(() => {
+               return resolve(true);
+            })
+            .catch(err => {
+                console.error(err);
+                return resolve(false);
+            })
         });
     }
 
