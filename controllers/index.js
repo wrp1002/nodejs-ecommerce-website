@@ -274,15 +274,19 @@ router.delete('/purchaseHistory', ensureAuthenticated, async (req, res) => {
 
             let fileName = archive_dir + name;
 
-            fs.writeFile(fileName, purchaseHistory, function (err) {
+            fs.writeFile(fileName, purchaseHistory, async function (err) {
                 if (err) {
                     res.sendStatus(500);
                 }
                 else {
-                    if (User.DeletePurchaseHistory(req.body.email))
+                    const deleteSuccess = await User.DeletePurchaseHistory(req.body.email);
+                    
+                    if (deleteSuccess) {
                         res.sendStatus(200);
-                    else
+                    }
+                    else {
                         res.sendStatus(500);
+                    }
                 }
             });
         }
