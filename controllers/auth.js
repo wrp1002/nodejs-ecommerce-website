@@ -5,7 +5,7 @@ const { check, validationResult } = require('express-validator');
 const mailer = require('../services/mailer');
 const hashGenerator = require('../services/hashGenerator');
 const usersDB = require('../db/tables/users');
-const User = require('../controllers/user.js');
+const User = require('../services/shoppingService.js/index.js.js');
 
 /*
 const pool = new Pool({
