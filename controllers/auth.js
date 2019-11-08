@@ -1,11 +1,10 @@
-const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const router = require('express').Router();
 const { Pool } = require('pg');
 const { check, validationResult } = require('express-validator');
 const mailer = require('../services/mailer');
 const hashGenerator = require('../services/hashGenerator');
-const usersDB = require('../db/users');
+const usersDB = require('../db/tables/users');
 const User = require('../controllers/user.js');
 
 /*

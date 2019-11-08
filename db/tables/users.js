@@ -1,4 +1,4 @@
-const db = require('./index');
+const db = require('../index');
 
 // User functions in this file were originally written by Dylan Hoefsloot but then made concise and improved upon by Deanna Alabastro
 

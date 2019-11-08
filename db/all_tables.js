@@ -1,8 +1,8 @@
-const cart_items = require("./cart_items");
-const order_items = require("./order_items");
-const orders = require("./orders");
-const products = require("./products");
-const users = require("./users");
+const cart_items = require("./tables/cart_items");
+const order_items = require("./tables/order_items");
+const orders = require("./tables/orders");
+const products = require("./tables/products");
+const users = require("./tables/users");
 
 module.exports = {
     cart: cart_items,

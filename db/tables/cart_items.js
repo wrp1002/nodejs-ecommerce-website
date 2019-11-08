@@ -1,4 +1,4 @@
-const db = require('./index');
+const db = require('../index');
 
 // This file was written by Wesley Paglia
 
