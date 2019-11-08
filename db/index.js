@@ -26,8 +26,7 @@ module.exports = {
         }
     },
     getClient: (callback) => {
-        pool.connect((err, client, done) => {
-            callback(err, client, done);
-        })
-    }
+        pool.connect(callback);
+    },
+    pool: pool
 }
