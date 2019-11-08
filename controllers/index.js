@@ -6,13 +6,6 @@ const {placeOrder} = require('../db/transactions/placeorder');
 const fs = require('fs');
 var path = require("path");
 
-/*
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: false
-});
-*/
-
 // This file was a group effort but the vast majority was written by Wesley Paglia
 
 router.get('/', async (req, res) => {
