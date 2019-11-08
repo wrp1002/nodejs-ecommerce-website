@@ -39,6 +39,9 @@ router.get('/search', async (req, res) => {
     let count = await User.GetCartCount(req.user);
     let search = req.query.search;
 
+    if (!search) 
+        search='';
+        
     products.searchProducts(search, (error, results) => {
         if (error) {
             console.log(error);
@@ -316,11 +319,13 @@ router.get('/archive', ensureAuthenticated, async (req, res) => {
 router.get('/archiveDownload', ensureAuthenticated, async (req, res) => {
     let accountType = await User.GetAccountType(req.user);
 
-    if (accountType != 'admin')
+    let fileQuery = req.query.file;
+
+    if (accountType != 'admin' || !fileQuery)
         res.sendStatus(401);
     else {
         file = path.join(process.cwd(), "archive");
-        file = path.join(file, req.query.file);
+        file = path.join(file, fileQuery);
         if (fs.existsSync(file))
             res.download(file);
         else
