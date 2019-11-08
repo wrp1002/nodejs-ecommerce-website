@@ -11,7 +11,16 @@ a. How to use our system
 
     If you are an administrator, you can go to the account page. On here, you will see additional options that other users cannot see. Here you can search for a user and view their purchase history. You also have the option to archive their purchase history. After doing this, you will be able to download the history as a text file. 
 
+    File Structure:
 
+        * config directory: contains the configuration files for passport module used in the auth controller.
+        * controllers directory: contains all of the files that manage whether a user can go to a page or not (api)
+        * db directory: contains all of the files for managing and accessing the database. More information in the database access and management section of the report.
+        * services directory: used by the controllers when a single query is not enough to determine what route a user can access and be redirected to. An example is the mailer service that decides what email to send to a user. The shoppingService contains all of the miscellaneous logic related to shopping such as accessing accounts, calculating cart number, calculating total price and many more.
+        * public directory: contains all of the view related code that users can see such as html, css, images, and client side scripts.
+        * The root index file contains the configuration for the server.
+
+    Heroku Access: https://nwen304finalproject.herokuapp.com/
 
 b. What the REST interface is
 
@@ -19,10 +28,24 @@ b. What the REST interface is
         GET: Returns a rendered view of the homepage
     '/register'
         GET: Returns a rendered view of the registration form
+    '/auth/register'
+        POST: check inputs are valid. If valid, generates hash and salt and adds user to database. It then redirects to login if successful. If not valid, re-renders register with flash message of the errors
     '/login'
         GET: Returns a rendered view of the login form
+    '/auth/login'
+        POST: Check if input is valid. Then checks if authentication is successful. If successful, redirects to homepage and deletes any stored password reset tokens in database. Else, redirects back to login with error flash message.
+    '/auth/google'
+        GET: redirects user to Google OAuth Login.
+    '/auth/logout'
+        POST: Logs user out and redirects them to login page with success flash message
     '/forgotpassword'
         GET: Returns a rendered view of the forgot password form
+    '/auth/forgotpassword'
+        POST: If the email is a valid email, it sends either an email containing a link with a password reset token (if user exists in database) or an email telling the user that their account does not exist and links to register or forget password again. The second option is to prevent attackers from spamming the forget password page to find which accounts exist in the database.
+    '/auth/resetpassword/:token'
+        GET: Checks if token is valid (less than fifteen minutes old). If valid, renders resetpassword page. Else renders page with error message.
+    '/auth/resetpassword/'
+        POST: First checks if the token is still valid. If valid, checks the validity of new password. If valid, generates and saves new hash and redirects to login with success message. Else, redirects to resetpassword with error message.
     '/search'
         GET: Returns a rendered view of the search page with search results given from query parameter 'search'
     '/addproduct'
@@ -52,4 +75,4 @@ b. What the REST interface is
         GET: Returns a rendered view of a weather based recommendation. 
 
 c. What error handling has been implemented in your system
-    Error handling is done in each API call. Checks are done to be sure that sql queries execute properly and have the correct data given to them. Checks are also done to be sure that the user is logged in and/or is an admin. Error pages are rendered in cases where the user should not be able to access certain pages. For some API calls, status codes are sent depending on how the request is processed. 
+    Error handling is done in each API call. Checks are done to be sure that sql queries execute properly and have the correct data given to them. Checks are also done to be sure that the user is logged in and/or is an admin. Error pages are rendered in cases where the user should not be able to access certain pages. Checks are also done for inputs and flash messages (i.e. req.flash) are used to tell the user if inputs for forms are invalid and if certain actions are successful (e.g. sending a password reset email). For some API calls, status codes are sent depending on how the request is processed. The error is also printed to console.
