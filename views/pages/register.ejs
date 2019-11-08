@@ -24,9 +24,6 @@
 
       <% include ../partials/flashMessages.ejs %>
 
-      <label for="name"><b>Name</b></label>
-      <p><input type="text" placeholder="Enter name" name="name" id="name" autocomplete="name" value="<%= typeof name != 'undefined' ? name : '' %>"required></p>
-
       <label for="email"><b>Email<span class="required">*</span></b></label>
       <p><input type="email" placeholder="Enter Email" name="email" id="email" autocomplete="email" value="<%= typeof email != 'undefined' ? email : '' %>" required></p>
 

@@ -13,7 +13,6 @@ const User = require('../services/shoppingService');
 router.post('/register', [
 
     check('email', 'The email entered is not valid. Please enter a valid email address').not().isEmpty().isEmail().normalizeEmail(),
-    check('name', 'Name Required. Please enter your name').not().isEmpty().trim().escape(),
     check('password', 'Your password must be at least six characters').not().isEmpty().isLength({ min: 6 }),
     check('confirm', 'Passwords do not match').custom((value, { req }) => (value === req.body.password))
 ], 
@@ -22,7 +21,7 @@ async (req, res) => {
 
     // Input validation
     const errors = validationResult(req);
-    const { email, name, password, confirm } = req.body;
+    const { email, password, confirm } = req.body;
     let count = await User.GetCartCount(req.user);
 
     if (!errors.isEmpty()) {
@@ -32,7 +31,6 @@ async (req, res) => {
             loggedIn: req.isAuthenticated(),
             flashMessages: { error: errorMessages, success: [], info: [] },
             cartCount: count,
-            name,
             email,
             password,
             confirm
@@ -47,7 +45,6 @@ async (req, res) => {
                     loggedIn: req.isAuthenticated(),
                     flashMessages: { error: ['Email already exists'], success: [], info: [] },
                     cartCount: count,
-                    name,
                     email,
                     password,
                     confirm
