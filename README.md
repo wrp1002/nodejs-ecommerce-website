@@ -17,7 +17,7 @@ a. How to use our system
         * controllers directory: contains all of the files that manage whether a user can go to a page or not (api)
         * db directory: contains all of the files for managing and accessing the database. More information in the database access and management section of the report.
         * services directory: used by the controllers when a single query is not enough to determine what route a user can access and be redirected to. An example is the mailer service that decides what email to send to a user. The shoppingService contains all of the miscellaneous logic related to shopping such as accessing accounts, calculating cart number, calculating total price and many more.
-        * public directory: contains all of the view related code that users can see such as html, css, images, and client side scripts.
+        * public and views directory: contains all of the view related code that users can see such as html, css, images, and client side scripts.
         * The root index file contains the configuration for the server.
 
     Heroku Access: https://nwen304finalproject.herokuapp.com/
