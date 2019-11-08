@@ -129,7 +129,7 @@ form fieldset a:hover {
   cursor: pointer;
   height: 50px;
   text-transform: uppercase;
-  width: 250px;
+  width: 230px;
 }
 
 .google-before {
@@ -138,22 +138,6 @@ form fieldset a:hover {
 }
 .google {
   background: #4285F4;
-}
-
-.facebook-before {
-  background: #0064ab;
-}
-
-.facebook {
-  background: #0079ce;
-}
-
-.twitter-before {
-  background: #189bcb;
-}
-
-.twitter {
-  background: #1bb2e9;
 }
 
 #loginbtn {

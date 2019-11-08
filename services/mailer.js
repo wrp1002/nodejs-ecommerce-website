@@ -4,6 +4,8 @@ const OAuth2 = google.auth.OAuth2;
 const crypto = require('crypto');
 const db = require('../db/users');
 
+// This file was written by Deanne Alabastro
+
 /**
  * OAuth2 client for gmail
  */

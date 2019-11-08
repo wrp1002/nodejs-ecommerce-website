@@ -1,3 +1,5 @@
+// Everything in this file were made by Dylan Hoefsloot
+
 module.exports = {
     
     ensureAuthenticated: function(req, res, next) {

@@ -26,6 +26,9 @@ const databasePool = new Pool({
     ssl: true
 });
 
+// Registration, OAuth and Login routes on this page were made by Dylan Hoefsloot
+
+// Reset and forgot password routes were made by Deanna Alabastro
 
 router.post('/register', [
 
@@ -136,11 +139,12 @@ router.post('/login', async (req, res, next) => {
             }
             
             usersDB.removeResetToken(user)
-                .then(() => { console.log("removed any saved reset tokens under the email ", user) })
+                .then(() => { console.log("Removed any saved reset tokens under the email ", email) })
                 .catch(err => { console.error(err) });
             
             return res.redirect('/');
         });
+
     })(req, res, next);
 })
 
@@ -148,9 +152,8 @@ router.get('/logout', async (req, res) => {
 
     req.logout();
     req.flash('success', 'You are logged out');
-    res.set('Cache-Control', 'private, max-age=3600');
-    res.redirect('/login');
 
+    res.redirect('/login');
 })
 
 router.get('/resetpassword/:token', async (req, res) => {

@@ -1,5 +1,7 @@
 const db = require('./index');
 
+// This file was written by Wesley Paglia
+
 module.exports = {
     getCartItems: (user, callback = null) => {
         return db.query("SELECT * FROM cart_items WHERE email = $1", [user], callback ? callback : null);
