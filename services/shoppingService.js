@@ -1,5 +1,5 @@
 const { orders, cart, users, orderItems } = require('../db/all_tables');
-
+const {deletePurchaseHistory} = require('../db/transactions/deletePurchaseHistory');
 // This file was written by Wesley Paglia
 
 module.exports = {
@@ -103,6 +103,7 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             orders.deleteUserOrders(user, async (error, results) => {
                 if (error) {
+                    console.error(error);
                     resolve(false);
                 }
                 resolve(true);
