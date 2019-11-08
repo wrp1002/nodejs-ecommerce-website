@@ -3,7 +3,6 @@ const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth.js
 const User = require('../services/shoppingService.js/index.js.js')
 const { products, cart} = require('../db/all_tables');
 const {placeOrder} = require('../db/transactions/placeorder');
-const { Pool } = require('pg');
 const fs = require('fs');
 var path = require("path");
 
@@ -13,17 +12,6 @@ const pool = new Pool({
   ssl: false
 });
 */
-
-// Used to local testing
-
-const pool = new Pool({
-    user: 'eqoaufryrlziba',
-    host: 'ec2-54-235-104-136.compute-1.amazonaws.com',
-    database: 'debldnvrsqnjov',
-    password: 'ca96d213b57dca84daf23d6c6e76840266b0aa26f73bbf30bff67f81d84002ff',
-    port: 5432,
-    ssl: true
-});
 
 // This file was a group effort but the vast majority was written by Wesley Paglia
 
