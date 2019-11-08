@@ -1,8 +1,7 @@
 const router = require('express').Router()
 const { forwardAuthenticated, ensureAuthenticated } = require('../config/auth.js')
 const User = require('../controllers/user.js')
-const { products, cart, orders, orderItems } = require('../db/all_tables');
-const db = require('../db/index');
+const { products, cart} = require('../db/all_tables');
 const {placeOrder} = require('../db/transactions/placeorder');
 const { Pool } = require('pg');
 const fs = require('fs');
@@ -255,7 +254,6 @@ router.get('/account', ensureAuthenticated, async (req, res) => {
 router.get('/purchaseHistory', ensureAuthenticated, async (req, res) => {
     let accountType = await User.GetAccountType(req.user);
 
-
     if (accountType != 'admin')
         res.send("No results");
     else if (req.query.email == "")
@@ -330,7 +328,6 @@ router.get('/archive', ensureAuthenticated, async (req, res) => {
 router.get('/archiveDownload', ensureAuthenticated, async (req, res) => {
     let accountType = await User.GetAccountType(req.user);
 
-
     if (accountType != 'admin')
         res.sendStatus(401);
     else {
@@ -357,8 +354,7 @@ router.get('/recommendation', async (req, res) => {
     else if (weatherDescription.includes('snow') || weatherTemp <= 0)
         search = 'winter';
 
-    const client = await pool.connect();
-    client.query("select * from products where upper(category) LIKE upper('%' || $1 || '%')", [search], (error, results) => {
+    products.getProductRecommendation(search, (error, results) => {
         if (error) {
             console.log(error);
             res.send("Error getting recommendation");
@@ -368,8 +364,6 @@ router.get('/recommendation', async (req, res) => {
             res.render('partials/searchResults', { loggedIn: req.isAuthenticated(), products: recommend, small: true });
         }
     });
-
-    client.release();
 });
 
 
