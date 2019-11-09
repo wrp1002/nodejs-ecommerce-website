@@ -21,6 +21,8 @@ a. How to use our system
         * The root index file contains the configuration for the server.
 
     Heroku Access: https://nwen304finalproject.herokuapp.com/
+    Admin Account: Email: admin@test.com, Password: password
+    User Account: Recommended to create your own so you can test password reset. Or: Email: test@email.com Password: Tester
 
 b. What the REST interface is
 
