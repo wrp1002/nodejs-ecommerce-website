@@ -98,7 +98,7 @@ router.get('/cart', ensureAuthenticated, async (req, res) => {
 
             total = Math.floor(total * 100 + .5) / 100;
 
-            res.render('pages/cart', { loggedIn: req.isAuthenticated(), cartCount: count, cart: results.rows, totalPrice: total });
+            res.render('pages/cart', { loggedIn: req.isAuthenticated(), cartCount: count, cart: results.rows, totalPrice: total, flashMessages: res.locals });
         }
     });
 });
@@ -195,16 +195,17 @@ router.get('/checkout', ensureAuthenticated, async (req, res) => {
     let count = await User.GetCartCount(user);
     let checkoutInfo = await User.GetTotalPrice(user);
 
+    if (count < 1) {
+        req.flash(
+            'error',
+            'You have no items to checkout. Please add items to cart'
+        );
+
+        return res.redirect("/cart");
+    }
 
     res.render('pages/checkout', { loggedIn: req.isAuthenticated(), cartCount: count, subtotal: checkoutInfo.subtotal, tax: checkoutInfo.tax, shipping: checkoutInfo.shipping, total: checkoutInfo.total });
 });
-
-function expand(rowCount, columnCount, startAt = 1) {
-    let index = startAt;
-    return Array(rowCount).fill(0).map(v =>
-        `(${Array(columnCount).fill(0).map(v => `$${index++}`).join(", ")})`
-    ).join(", ");
-}
 
 router.get('/placeorder', ensureAuthenticated, async (req, res) => {
     let user = req.user;
@@ -227,7 +228,6 @@ router.get('/account', ensureAuthenticated, async (req, res) => {
     let count = await User.GetCartCount(req.user);
     let accountType = await User.GetAccountType(req.user);
     let purchaseHistory = await User.GetPurchaseHistory(req.user);
-
 
     if (purchaseHistory != null)
         res.render('pages/account', { loggedIn: req.isAuthenticated(), cartCount: count, currentUser: req.user, orders: purchaseHistory, accountType: accountType });
