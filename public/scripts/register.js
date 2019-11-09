@@ -82,10 +82,10 @@ $(document).ready(function () {
      * Change border colour of confirm password field on change based on validity
      */
     $confirmField.on("blur keyup change", () => {
-        if ($emailField.valid()) {
-            $emailField.css("border", "none");
+        if ($confirmField.valid()) {
+            $confirmField.css("border", "none");
         } else {
-            $emailField.css("border", "1px solid red");
+            $confirmField.css("border", "1px solid red");
         }
     });
 
